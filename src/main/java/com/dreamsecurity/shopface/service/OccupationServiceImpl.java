@@ -1,0 +1,53 @@
+package com.dreamsecurity.shopface.service;
+
+
+import com.dreamsecurity.shopface.domain.Occupation;
+import com.dreamsecurity.shopface.dto.occupation.OccupationAddRequestDto;
+import com.dreamsecurity.shopface.dto.occupation.OccupationEditRequestDto;
+import com.dreamsecurity.shopface.dto.occupation.OccupationListResponseDto;
+import com.dreamsecurity.shopface.repository.OccupationRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RequiredArgsConstructor
+@Service
+public class OccupationServiceImpl implements OccupationService{
+    private final OccupationRepository occupationRepository;
+
+    @Transactional
+    @Override
+    public Long addOccupation(OccupationAddRequestDto requestDto) {
+        return occupationRepository.save(requestDto.toEntity()).getNo();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<OccupationListResponseDto> getOccupationList(long no) {
+        return occupationRepository.findAll().stream()
+                .map(OccupationListResponseDto::new).collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public Long editOccupation(long no, OccupationEditRequestDto requestDto) {
+        Occupation entity = occupationRepository.findById(no)
+                .orElseThrow(() -> new IllegalArgumentException("해당 업무가 존재하지 않습니다."));
+
+        entity.update(requestDto.getName());
+
+        return no;
+    }
+
+    @Transactional
+    @Override
+    public void removeOccupation(long no) {
+        Occupation entity = occupationRepository.findById(no)
+                .orElseThrow(() -> new IllegalArgumentException("해당 업무가 존재하지 않습니다."));
+
+        occupationRepository.delete(entity);
+    }
+}

@@ -1,0 +1,18 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+
+== Employ API DOCS - edit
+
+=== Request
+CURL:
+include::{snippets}/Employ-edit/curl-request.adoc[]
+
+Request Parameters:
+include::{snippets}/Employ-edit/http-request.adoc[]
+
+Request HTTP Example:
+include::{snippets}/Employ-edit/http-request.adoc[]
+
+=== Response
+include::{snippets}/Employ-edit/http-response.adoc[]

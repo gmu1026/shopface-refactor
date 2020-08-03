@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    active: local
+  mvc:
+    log-request-details: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+
+---
+spring:
+  profiles:
+    active: prod
+    include: aws, db
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG

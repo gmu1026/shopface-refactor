@@ -1,0 +1,32 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+
+== Member API DOCS - add
+
+=== Request
+== Businessman
+CURL:
+include::{snippets}/Member-add-businessman/curl-request.adoc[]
+
+Request Parameters:
+include::{snippets}/Member-add-businessman/http-request.adoc[]
+
+Request HTTP Example:
+include::{snippets}/Member-add-businessman/http-request.adoc[]
+
+=== Response
+include::{snippets}/Member-add-businessman/http-response.adoc[]
+
+== Employee
+CURL:
+include::{snippets}/Member-add-employee/curl-request.adoc[]
+
+Request Parameters:
+include::{snippets}/Member-add-employee/http-request.adoc[]
+
+Request HTTP Example:
+include::{snippets}/Member-add-employee/http-request.adoc[]
+
+=== Response
+include::{snippets}/Member-add-employee/http-response.adoc[]

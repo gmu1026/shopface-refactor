@@ -1,0 +1,19 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+
+== Member API DOCS - remove
+
+=== Request
+
+CURL:
+include::{snippets}/Member-remove/curl-request.adoc[]
+
+Request Parameters:
+include::{snippets}/Member-remove/http-request.adoc[]
+
+Request HTTP Example:
+include::{snippets}/Member-remove/http-request.adoc[]
+
+=== Response
+include::{snippets}/Member-remove/http-response.adoc[]

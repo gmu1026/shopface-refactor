@@ -1,0 +1,19 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+
+== Member API DOCS - edit
+
+=== Request
+
+CURL:
+include::{snippets}/Member-edit/curl-request.adoc[]
+
+Request Parameters:
+include::{snippets}/Member-edit/http-request.adoc[]
+
+Request HTTP Example:
+include::{snippets}/Member-edit/http-request.adoc[]
+
+=== Response
+include::{snippets}/Member-edit/http-response.adoc[]

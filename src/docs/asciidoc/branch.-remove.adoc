@@ -1,0 +1,18 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+
+== Branch API DOCS - remove
+
+=== Request
+CURL:
+include::{snippets}/Branch-remove/curl-request.adoc[]
+
+Request Parameters:
+include::{snippets}/Branch-remove/http-request.adoc[]
+
+Request HTTP Example:
+include::{snippets}/Branch-remove/http-request.adoc[]
+
+=== Response
+include::{snippets}/Branch-remove/http-response.adoc[]
