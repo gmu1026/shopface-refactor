@@ -6,6 +6,9 @@ import com.dreamsecurity.shopface.service.BranchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,7 +32,7 @@ public class BranchApiController {
 
   @PutMapping(value = "/branch/{no}")
   public ResponseEntity editBranch(
-      @PathVariable("no") long no, @RequestBody BranchEditRequestDto requestDto) {
+          @PathVariable("no") long no, @RequestBody BranchEditRequestDto requestDto) throws IOException {
     return ResponseEntity.ok().body(branchService.editBranch(no, requestDto));
   }
 

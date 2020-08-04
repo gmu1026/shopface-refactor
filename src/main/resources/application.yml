@@ -1,6 +1,12 @@
 spring:
   profiles:
     active: local
+---
+spring:
+  profiles: local
+    include:
+      - aws
+      - db
   mvc:
     log-request-details: true
 
@@ -12,9 +18,7 @@ logging:
 
 ---
 spring:
-  profiles:
-    active: prod
-    include: aws, db
+  profiles: prod
 
 logging:
   level:
