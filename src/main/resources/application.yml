@@ -3,10 +3,8 @@ spring:
     active: local
 ---
 spring:
-  profiles: local
-    include:
-      - aws
-      - db
+  profiles:
+    include: aws, db
   mvc:
     log-request-details: true
 
