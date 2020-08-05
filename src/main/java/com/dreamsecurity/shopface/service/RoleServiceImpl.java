@@ -23,7 +23,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     @Override
     public Long addRole(RoleAddRequestDto requestDto) {
-        Branch branch = branchRepository.findById(requestDto.getNo())
+        Branch branch = branchRepository.findById(requestDto.getBranchNo())
                 .orElseThrow(() -> new IllegalArgumentException("해당 지점이 없습니다"));
         requestDto.setBranch(branch);
 

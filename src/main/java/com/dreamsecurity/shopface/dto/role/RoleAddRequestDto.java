@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class RoleAddRequestDto {
-  private long no;
+  private long branchNo;
   private String name;
   private Branch branch;
 

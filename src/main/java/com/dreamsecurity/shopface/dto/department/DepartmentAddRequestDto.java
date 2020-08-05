@@ -3,9 +3,12 @@ package com.dreamsecurity.shopface.dto.department;
 import com.dreamsecurity.shopface.domain.Branch;
 import com.dreamsecurity.shopface.domain.Department;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class DepartmentAddRequestDto {
+  private long branchNo;
   private String name;
   private Branch branch;
 
@@ -19,5 +22,9 @@ public class DepartmentAddRequestDto {
             .name(this.name)
             .branch(this.branch)
             .build();
+  }
+
+  public void setBranch(Branch branch) {
+    this.branch = branch;
   }
 }
