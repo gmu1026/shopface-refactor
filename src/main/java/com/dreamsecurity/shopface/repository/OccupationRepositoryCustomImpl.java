@@ -14,7 +14,7 @@ public class OccupationRepositoryCustomImpl implements OccupationRepositoryCusto
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<OccupationListResponseDto> findByAllBranchNo(long no) {
+    public List<OccupationListResponseDto> findAllByBranchNo(long no) {
         return jpaQueryFactory
                 .select(Projections.constructor(
                         OccupationListResponseDto.class,
