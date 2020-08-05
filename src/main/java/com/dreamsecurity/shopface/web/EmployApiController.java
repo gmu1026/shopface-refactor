@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class EmployApiController {
   private final EmployService employService;
 
-  @GetMapping(value = "/employ/branch/{no}")
+  @GetMapping(value = "/branch/{no}/employ")
   public ResponseEntity getEmployList(@PathVariable("no") long no) {
     return ResponseEntity.ok().body(employService.getEmployList(no));
   }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class ScheduleApiController {
   private final ScheduleService scheduleService;
 
-  @GetMapping(value = "/schedule/branch/{no}")
+  @GetMapping(value = "/branch/{no}/schedule")
   public ResponseEntity getScheduleList(@PathVariable("no") long no) {
     return ResponseEntity.ok().body(scheduleService.getScheduleList(no));
   }

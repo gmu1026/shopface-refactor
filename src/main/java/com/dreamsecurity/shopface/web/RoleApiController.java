@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class RoleApiController {
   private final RoleService roleService;
 
-  @GetMapping(value = "/role/branch/{no}")
+  @GetMapping(value = "/branch/{no}/role")
   public ResponseEntity getRoleList(@PathVariable("no") long no) {
     return ResponseEntity.ok().body(roleService.getRoleList(no));
   }

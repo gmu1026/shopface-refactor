@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class AlarmApiController {
   private final AlarmService alarmService;
 
-  @GetMapping(value = "/alarm/{id}")
+  @GetMapping(value = "/member/{id}/alarm")
   public ResponseEntity getAlarmList(@PathVariable("id") String memberId) {
     return ResponseEntity.ok().body(alarmService.getAlarmList(memberId));
   }

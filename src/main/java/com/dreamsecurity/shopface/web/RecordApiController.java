@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class RecordApiController {
   private final RecordService recordService;
 
-  @GetMapping(value = "/record/member/{id}")
+  @GetMapping(value = "/member/{id}/record")
   public ResponseEntity getRecordList(@PathVariable("id") String memberId) {
     return ResponseEntity.ok().body(recordService.getRecordList(memberId));
   }

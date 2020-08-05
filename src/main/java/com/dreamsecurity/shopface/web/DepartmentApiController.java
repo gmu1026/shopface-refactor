@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class DepartmentApiController {
   private final DepartmentService departmentService;
 
-  @GetMapping(value = "/department/branch/{no}")
+  @GetMapping(value = "/branch/{no}/department")
   public ResponseEntity getDepartmentList(@PathVariable("no") long no) {
     return ResponseEntity.ok().body(departmentService.getDepartmentList(no));
   }

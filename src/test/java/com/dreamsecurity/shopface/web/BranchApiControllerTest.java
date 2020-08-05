@@ -138,7 +138,7 @@ public class BranchApiControllerTest {
         }
         String content = objectMapper.writeValueAsString(resultLists);
         //when
-        mockMvc.perform(get("/branch/member/" + businessman.getId()))
+        mockMvc.perform(get("/member/" + businessman.getId() + "/branch"))
                 .andExpect(status().isOk())
                 .andDo(document("Branch-list"));
         //then

@@ -166,7 +166,7 @@ public class EmployApiControllerTest {
 
         System.out.println(content);
         //when
-        mockMvc.perform(get("/employ/branch/" + branch.getNo()))
+        mockMvc.perform(get("/branch/" + branch.getNo() + "/employ"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(content))
                 .andDo(document("Employ-list"));

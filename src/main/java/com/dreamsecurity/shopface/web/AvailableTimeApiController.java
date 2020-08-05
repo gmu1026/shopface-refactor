@@ -17,7 +17,7 @@ public class AvailableTimeApiController {
         return ResponseEntity.ok().body(availableTimeService.getAvailableTime(no));
     }
 
-    @GetMapping(value = "/availabletime/member/{id}")
+    @GetMapping(value = "/member/{id}/availabletime")
     public ResponseEntity getAvailableTimeList(@PathVariable("id") String memberId) {
         return ResponseEntity.ok().body(availableTimeService.getAvailableTimeList(memberId));
     }

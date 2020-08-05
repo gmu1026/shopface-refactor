@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class OccupationApiController {
   private final OccupationService occupationService;
 
-  @GetMapping(value = "/occupation/branch/{no}")
+  @GetMapping(value = "/branch/{no}/occupation")
   public ResponseEntity getOccupationList(@PathVariable("no") long no) {
     return ResponseEntity.ok().body(occupationService.getOccupationList(no));
   }

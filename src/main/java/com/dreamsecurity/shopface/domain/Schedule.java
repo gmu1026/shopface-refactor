@@ -11,6 +11,12 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 public class Schedule {
+  @PrePersist
+  public void setDefaultState() {
+    this.state = this.state == null ? "R" : this.state;
+    // R = Ready
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long no;
@@ -64,5 +70,15 @@ public class Schedule {
     this.workEndTime = workEndTime;
     this.occupation = occupation;
     this.color = color;
+  }
+
+  public void startSchedule() {
+    this.state = "W";
+    // W = Working
+  }
+
+  public void endSchedule() {
+    this.state = "C";
+    // C = Complete
   }
 }

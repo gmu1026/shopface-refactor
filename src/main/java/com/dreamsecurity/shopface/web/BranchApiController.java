@@ -17,7 +17,7 @@ import java.io.IOException;
 public class BranchApiController {
   private final BranchService branchService;
 
-  @GetMapping(value = "/branch/member/{id}")
+  @GetMapping(value = "/member/{id}/branch")
   public ResponseEntity getBranchList(@PathVariable("id") String memberId) {
     return ResponseEntity.ok().body(branchService.getBranchList(memberId));
   }

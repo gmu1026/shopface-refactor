@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -34,15 +33,20 @@ public class EmployServiceImpl implements EmployService {
         Branch branch = branchRepository.findById(requestDto.getBranchNo())
                 .orElseThrow(() -> new IllegalArgumentException("해당 지점이 없습니다"));
 
-        Role role = roleRepository.findById(requestDto.getRoleNo())
-                .orElseThrow(() -> new IllegalArgumentException("해당 역할이 없습니다"));
+        if (requestDto.getRoleNo() > 0) {
+            Role role = roleRepository.findById(requestDto.getRoleNo())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 역할이 없습니다"));
 
-        Department department = departmentRepository.findById(requestDto.getDepartmentNo())
-                .orElseThrow(() -> new IllegalArgumentException("해당 부서가 없습니다"));
+            requestDto.setRole(role);
+        }
 
+        if (requestDto.getDepartmentNo() > 0) {
+            Department department = departmentRepository.findById(requestDto.getDepartmentNo())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 부서가 없습니다"));
+
+            requestDto.setDepartment(department);
+        }
         requestDto.setBranch(branch);
-        requestDto.setRole(role);
-        requestDto.setDepartment(department);
 
         return employRepository.save(requestDto.toEntity()).getNo();
     }
