@@ -22,7 +22,7 @@ public class Record {
     private String businessmanPhone;
 
     @Column(nullable = false)
-    private long branchNo;
+    private Long branchNo;
 
     @Column(nullable = false, length = 100)
     private String branchName;
@@ -52,13 +52,13 @@ public class Record {
     private Date quittingTime;
 
     @Column(nullable = true)
-    private long salaryPlan;
+    private Long salaryPlan;
 
     @Column(nullable = true)
-    private long salaryPay;
+    private Long salaryPay;
 
     @Column(nullable = true)
-    private long evaluation;
+    private Long evaluation;
 
     @Column(nullable = true, length = 4000)
     private String note;

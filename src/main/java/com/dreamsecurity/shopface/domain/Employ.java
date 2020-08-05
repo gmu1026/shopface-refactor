@@ -1,17 +1,18 @@
 package com.dreamsecurity.shopface.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@ToString
 @Getter
 @NoArgsConstructor
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Employ {
     @PrePersist
     public void setDefaultState() {
@@ -20,13 +21,13 @@ public class Employ {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long no;
+    private Long no;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn
     private Branch branch;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn
     private Member member;
 
@@ -42,7 +43,7 @@ public class Employ {
     private String name;
 
     @Column(nullable = true, insertable = false)
-    private long salary;
+    private Long salary;
 
     @Column(nullable = true, length = 6, insertable = false)
     private String certCode;

@@ -11,7 +11,7 @@ public class EmployResponseDto {
   private long no;
   private String name;
   private String state;
-  private long salary;
+  private Long salary;
   private Role role;
   private Department department;
 

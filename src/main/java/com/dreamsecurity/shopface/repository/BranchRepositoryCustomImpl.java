@@ -1,11 +1,13 @@
 package com.dreamsecurity.shopface.repository;
 
+import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.dto.branch.BranchListResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.dreamsecurity.shopface.domain.QBranch.branch;
 

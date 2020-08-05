@@ -20,7 +20,7 @@ public class Branch extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long no;
 
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne
   @JoinColumn(name = "member_id")
   private Member member;
 
