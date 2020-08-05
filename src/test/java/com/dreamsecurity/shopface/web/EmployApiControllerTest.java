@@ -163,8 +163,6 @@ public class EmployApiControllerTest {
                     role.getName(), department.getName()));
         }
         String content = objectMapper.writeValueAsString(results);
-
-        System.out.println(content);
         //when
         mockMvc.perform(get("/branch/" + branch.getNo() + "/employ"))
                 .andExpect(status().isOk())

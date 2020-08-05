@@ -18,7 +18,10 @@ public class BranchRepositoryCustomImpl implements BranchRepositoryCustom {
     @Override
     public List<BranchListResponseDto> findAllByMemberId(String memberId) {
         return queryFactory
-                .select(Projections.constructor(BranchListResponseDto.class, branch.no, branch.name, branch.businessLicensePath, branch.state, branch.registerDate))
+                .select(Projections.constructor(
+                        BranchListResponseDto.class,
+                        branch.no, branch.name, branch.businessLicensePath,
+                        branch.phone, branch.state, branch.registerDate))
                 .from(branch)
                 .where(branch.member.id.eq(memberId))
                 .fetch();

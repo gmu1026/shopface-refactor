@@ -23,8 +23,19 @@ server:
 spring:
   profiles: prod
 
+spring:
+  profiles:
+    include: aws, db
+  mvc:
+    log-request-details: true
+
 logging:
   level:
     org:
       hibernate:
         SQL: DEBUG
+        type: TRACE
+
+server:
+  error:
+    include-stacktrace: never
