@@ -35,9 +35,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Transactional(readOnly = true)
     @Override
     public List<DepartmentListResponseDto> getDepartmentList(long no) {
-        return departmentRepository.findAll().stream()
-                .map(DepartmentListResponseDto::new)
-                .collect(Collectors.toList());
+        return departmentRepository.findAllByBranchNo(no);
     }
 
     @Transactional

@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class OccupationAddRequestDto {
   private String name;
+  private Long branchNo;
   private Branch branch;
 
   public OccupationAddRequestDto(Occupation entity) {
@@ -19,5 +20,9 @@ public class OccupationAddRequestDto {
             .name(this.name)
             .branch(this.branch)
             .build();
+  }
+
+  public void setBranch(Branch branch) {
+    this.branch = branch;
   }
 }
