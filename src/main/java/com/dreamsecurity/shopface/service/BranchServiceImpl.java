@@ -54,9 +54,7 @@ public class BranchServiceImpl implements BranchService {
     @Transactional(readOnly = true)
     @Override
     public List<BranchListResponseDto> getBranchList(String memberId) {
-    return branchRepository.findAllByMemberId(memberId)
-            .stream().map(BranchListResponseDto::new)
-            .collect(Collectors.toList());
+    return branchRepository.findAllByMemberId(memberId);
     }
 
     @Transactional(readOnly = true)

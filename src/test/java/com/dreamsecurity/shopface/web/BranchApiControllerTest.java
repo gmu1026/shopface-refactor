@@ -133,16 +133,15 @@ public class BranchApiControllerTest {
         }
 
         branchRepository.saveAll(samples);
-        for (Branch result : branchRepository.findAllByMemberId(businessman.getId())) {
-            resultLists.add(new BranchListResponseDto(result));
-        }
+        resultLists = branchRepository.findAllByMemberId(businessman.getId());
+
         String content = objectMapper.writeValueAsString(resultLists);
         //when
         mockMvc.perform(get("/member/" + businessman.getId() + "/branch"))
                 .andExpect(status().isOk())
                 .andDo(document("Branch-list"));
         //then
-        List<Branch> results = branchRepository.findAllByMemberId(businessman.getId());
+        List<BranchListResponseDto> results = branchRepository.findAllByMemberId(businessman.getId());
 
         assertThat(results.get(0).getRegisterDate()).isAfter(now);
         assertThat(results.get(0).getName()).isEqualTo(samples.get(0).getName());
