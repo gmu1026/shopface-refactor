@@ -15,20 +15,20 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.properties.PropertyMapping;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -38,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Transactional
 public class BranchApiControllerTest {
     @Rule
     public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
@@ -90,11 +91,13 @@ public class BranchApiControllerTest {
                 .address("서울")
                 .detailAddress("강남")
                 .zipCode("11111")
-                .member(businessman)
                 .state("W")
                 .build();
 
-        String content = objectMapper.writeValueAsString(new BranchAddRequestDto(branch));
+        BranchAddRequestDto requestDto = new BranchAddRequestDto(branch);
+        requestDto.setMemberId("test");
+
+        String content = objectMapper.writeValueAsString(requestDto);
 
         //when
         mockMvc.perform(post("/branch")
@@ -111,6 +114,8 @@ public class BranchApiControllerTest {
     @Test
     public void 지점_목록_테스트() throws Exception {
         //given
+        LocalDateTime now = LocalDateTime.now();
+
         Member businessman = memberRepository.findAll().get(0);
         List<Branch> samples = new ArrayList<>();
         List<BranchListResponseDto> resultLists = new ArrayList<>();
@@ -122,23 +127,25 @@ public class BranchApiControllerTest {
                     .detailAddress("강남")
                     .zipCode("11111")
                     .member(businessman)
-                    .state("W")
                     .build();
 
             samples.add(branch);
         }
 
         branchRepository.saveAll(samples);
-        for (Branch result : branchRepository.findAll()) {
+        for (Branch result : branchRepository.findAllByMemberId(businessman.getId())) {
             resultLists.add(new BranchListResponseDto(result));
         }
         String content = objectMapper.writeValueAsString(resultLists);
         //when
         mockMvc.perform(get("/branch/member/" + businessman.getId()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(content))
                 .andDo(document("Branch-list"));
         //then
+        List<Branch> results = branchRepository.findAllByMemberId(businessman.getId());
+
+        assertThat(results.get(0).getRegisterDate()).isAfter(now);
+        assertThat(results.get(0).getName()).isEqualTo(samples.get(0).getName());
     }
 
     @Test

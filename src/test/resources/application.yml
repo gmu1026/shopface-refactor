@@ -24,3 +24,9 @@ cloud:
   aws:
     s3:
       bucket: shopface-bucket/img/license
+
+logging:
+  level:
+    org:
+      hibernate:
+        type: TRACE

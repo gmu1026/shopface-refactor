@@ -5,6 +5,7 @@ import com.dreamsecurity.shopface.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
@@ -16,6 +17,7 @@ public class BranchAddRequestDto {
   private String zipCode;
   private String state;
   private Member member;
+  private String memberId;
 
   public BranchAddRequestDto(Branch entity) {
     this.name = entity.getName();
@@ -37,5 +39,13 @@ public class BranchAddRequestDto {
             .state(this.state)
             .member(this.member)
             .build();
+  }
+
+  public void setMemberId(String memberId) {
+    this.memberId = memberId;
+  }
+
+  public void setMember(Member member) {
+    this.member = member;
   }
 }

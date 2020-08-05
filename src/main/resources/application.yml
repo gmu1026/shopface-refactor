@@ -13,6 +13,11 @@ logging:
     org:
       hibernate:
         SQL: DEBUG
+        type: TRACE
+
+server:
+  error:
+    include-stacktrace: never
 
 ---
 spring:

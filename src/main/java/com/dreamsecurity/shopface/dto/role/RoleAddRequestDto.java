@@ -3,9 +3,12 @@ package com.dreamsecurity.shopface.dto.role;
 import com.dreamsecurity.shopface.domain.Branch;
 import com.dreamsecurity.shopface.domain.Role;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class RoleAddRequestDto {
+  private long no;
   private String name;
   private Branch branch;
 
@@ -19,5 +22,9 @@ public class RoleAddRequestDto {
             .name(this.name)
             .branch(this.branch)
             .build();
+  }
+
+  public void setBranch(Branch branch) {
+    this.branch = branch;
   }
 }

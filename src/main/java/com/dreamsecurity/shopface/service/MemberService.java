@@ -13,4 +13,6 @@ public interface MemberService {
     MemberResponseDto getMember(String id);
     String editMember(String id, MemberEditRequestDto requestDto);
     void removeMember(String id);
+    boolean checkDuplicateId(String id);
+    String confirmMember(String id);
 }

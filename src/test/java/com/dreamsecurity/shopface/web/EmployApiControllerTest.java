@@ -3,15 +3,13 @@ package com.dreamsecurity.shopface.web;
 import com.dreamsecurity.shopface.domain.*;
 import com.dreamsecurity.shopface.dto.employ.EmployAddRequestDto;
 import com.dreamsecurity.shopface.dto.employ.EmployEditRequestDto;
-import com.dreamsecurity.shopface.dto.employ.EmployListResponse;
-import com.dreamsecurity.shopface.dto.employ.EmployResponseDto;
+import com.dreamsecurity.shopface.dto.employ.EmployListResponseDto;
 import com.dreamsecurity.shopface.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.jupiter.api.TestTemplate;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,12 +18,12 @@ import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -34,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Transactional
 public class EmployApiControllerTest {
     @Rule
     public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
@@ -97,9 +96,9 @@ public class EmployApiControllerTest {
         Role role = Role.builder().name("대리").branch(branch).build();
         Department department = Department.builder().name("인사").branch(branch).build();
 
+        branchRepository.save(branch);
         memberRepository.save(businessman);
         memberRepository.save(employee);
-        branchRepository.save(branch);
         roleRepository.save(role);
         departmentRepository.save(department);
     }
@@ -121,12 +120,14 @@ public class EmployApiControllerTest {
         Department department = departmentRepository.findAll().get(0);
         Employ employ = Employ.builder()
                 .name("홍길동")
-                .branch(branch)
-                .role(role)
-                .department(department)
                 .build();
 
-        String content = objectMapper.writeValueAsString(new EmployAddRequestDto(employ));
+        EmployAddRequestDto requestDto = new EmployAddRequestDto(employ);
+        requestDto.setBranchNo(branch.getNo());
+        requestDto.setRoleNo(role.getNo());
+        requestDto.setDepartmentNo(department.getNo());
+
+        String content = objectMapper.writeValueAsString(requestDto);
         //when
         mockMvc.perform(post("/employ").content(content).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -139,6 +140,7 @@ public class EmployApiControllerTest {
         assertThat(results.get(0).getDepartment().getName()).isEqualTo(department.getName());
     }
 
+    @Transactional
     @Test
     public void 고용_목록조회_테스트() throws Exception {
         //given
@@ -146,7 +148,7 @@ public class EmployApiControllerTest {
         Role role = roleRepository.findAll().get(0);
         Department department = departmentRepository.findAll().get(0);
 
-        List<Employ> samples = new ArrayList<>();
+        List<EmployListResponseDto> results = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             Employ employ = Employ.builder()
                     .name("홍길동" + i)
@@ -155,17 +157,14 @@ public class EmployApiControllerTest {
                     .department(department)
                     .build();
 
-            samples.add(employ);
+            employRepository.save(employ);
+            results.add(new EmployListResponseDto(employ.getNo(), employ.getName(),
+                    employ.getState(), employ.getSalary(), employ.getEmployDate(),
+                    role.getName(), department.getName()));
         }
-
-        employRepository.saveAll(samples);
-
-        List<EmployListResponse> results = new ArrayList<>();
-        for (Employ result : employRepository.findAll()) {
-            results.add(new EmployListResponse(result));
-        }
-
         String content = objectMapper.writeValueAsString(results);
+
+        System.out.println(content);
         //when
         mockMvc.perform(get("/employ/branch/" + branch.getNo()))
                 .andExpect(status().isOk())
@@ -174,6 +173,7 @@ public class EmployApiControllerTest {
         //then
     }
 
+    @Transactional
     @Test
     public void 고용_조회_테스트() throws Exception {
         //given
@@ -189,16 +189,15 @@ public class EmployApiControllerTest {
                 .build();
 
         employRepository.save(employ);
-
-        String content = objectMapper.writeValueAsString(new EmployResponseDto(employ));
         //when
         mockMvc.perform(get("/employ/" + employ.getNo()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(content))
+                .andExpect(jsonPath("$.name").value(employ.getName()))
                 .andDo(document("Employ-detail"));
         //then
     }
 
+    @Transactional
     @Test
     public void 고용_수정_테스트() throws Exception {
         //given
@@ -216,30 +215,28 @@ public class EmployApiControllerTest {
                 .department(department)
                 .build();
 
-        long no = employRepository.save(employ).getNo();
+        employRepository.save(employ);
         roleRepository.save(editRole);
         departmentRepository.save(editDepartment);
 
-        Employ target = Employ.builder()
-                .salary(10000L)
-                .role(editRole)
-                .department(editDepartment)
-                .build();
+        EmployEditRequestDto requestDto = new EmployEditRequestDto(
+                10000, editRole.getNo(), editDepartment.getNo());
 
-        String content = objectMapper.writeValueAsString(new EmployEditRequestDto(target));
+        String content = objectMapper.writeValueAsString(requestDto);
         //when
-        mockMvc.perform(put("/employ/" + no)
+        mockMvc.perform(put("/employ/" + employ.getNo())
                     .content(content)
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("Employ-edit"));
         //then
         List<Employ> results = employRepository.findAll();
-        assertThat(results.get(0).getSalary()).isEqualTo(target.getSalary());
-        assertThat(results.get(0).getRole().getName()).isEqualTo(target.getRole().getName());
-        assertThat(results.get(0).getDepartment().getName()).isEqualTo(target.getDepartment().getName());
+        assertThat(results.get(0).getSalary()).isEqualTo(requestDto.getSalary());
+        assertThat(results.get(0).getRole().getName()).isEqualTo(editRole.getName());
+        assertThat(results.get(0).getDepartment().getName()).isEqualTo(editDepartment.getName());
     }
 
+    @Transactional
     @Test
     public void 고용_삭제_테스트() throws Exception {
         //given

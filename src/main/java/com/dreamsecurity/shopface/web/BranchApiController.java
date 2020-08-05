@@ -4,6 +4,7 @@ import com.dreamsecurity.shopface.dto.branch.BranchAddRequestDto;
 import com.dreamsecurity.shopface.dto.branch.BranchEditRequestDto;
 import com.dreamsecurity.shopface.service.BranchService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RequiredArgsConstructor
+@Slf4j
 @RestController
 public class BranchApiController {
   private final BranchService branchService;

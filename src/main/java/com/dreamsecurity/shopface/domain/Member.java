@@ -14,6 +14,11 @@ import java.util.List;
 @Entity
 public class Member extends BaseTimeEntity {
     // TODO Address, DetailAddress, ZipCode => Embedded
+    @PrePersist
+    public void setDefaultState() {
+        this.state = this.state == null ? "D" : this.state;
+    }
+
     @Id
     private String id;
 
@@ -26,13 +31,13 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 100)
     private String phone;
 
-    @Column(nullable = true, length = 100)
+    @Column(nullable = true, length = 100, insertable = false)
     private String email;
 
-    @Column(nullable = true, length = 100)
+    @Column(nullable = true, length = 100, insertable = false)
     private String bankName;
 
-    @Column(nullable = true, length = 30)
+    @Column(nullable = true, length = 30, insertable = false)
     private String accountNum;
 
     @Column(nullable = false, length = 1)
@@ -41,17 +46,22 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 1)
     private String type;
 
-    @Column(nullable = true, length = 300)
+    @Column(nullable = true, length = 300, insertable = false)
     private String address;
 
-    @Column(nullable = true, length = 300)
+    @Column(nullable = true, length = 300, insertable = false)
     private String detailAddress;
 
-    @Column(nullable = true, length = 5)
+    @Column(nullable = true, length = 5, insertable = false)
     private String zipCode;
 
-//    @OneToMany
-//    private List<Alarm> alarms;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id")
+    private List<Branch> branches;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn
+    private List<Alarm> alarms;
 
     @Builder
     public Member(String id, String password, String name,
@@ -81,5 +91,13 @@ public class Member extends BaseTimeEntity {
         this.email = email;
         this.bankName = bankName;
         this.accountNum = accountNum;
+    }
+
+    public void confirm() {
+        this.state = "A";
+    }
+
+    public void deleteAccount() {
+        this.state = "D";
     }
 }

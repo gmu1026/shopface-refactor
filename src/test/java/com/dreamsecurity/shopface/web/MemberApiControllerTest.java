@@ -95,7 +95,10 @@ public class MemberApiControllerTest {
                 .password("1234")
                 .name("사업자")
                 .phone("01012345678")
-                .state("A")
+                .address("서울")
+                .detailAddress("강남")
+                .zipCode("12345")
+                .email("test@test.com")
                 .type("B")
                 .build();
 
@@ -119,13 +122,16 @@ public class MemberApiControllerTest {
     public void 근무자등록_테스트() throws Exception {
         //given
         Member employee = Member.builder()
-        .id("test_employee")
-        .password("1234")
-        .name("근무자")
-        .phone("01012345678")
-        .state("A")
-        .type("E")
-        .build();
+                            .id("test_employee")
+                            .password("1234")
+                            .name("근무자")
+                            .phone("01012345678")
+                            .address("서울")
+                            .detailAddress("강남")
+                            .zipCode("12345")
+                            .email("test@test.com")
+                            .type("E")
+                            .build();
 
         String content = objectMapper.writeValueAsString(new MemberAddRequestDto(employee));
         //when

@@ -3,6 +3,7 @@ package com.dreamsecurity.shopface.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -10,11 +11,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 public class Branch extends BaseTimeEntity {
+  @PrePersist
+  public void setDefaultState() {
+    this.state = this.state == null ? "W" : this.state;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long no;
 
-  @ManyToOne @JoinColumn private Member member;
+  @ManyToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "member_id")
+  private Member member;
 
   @Column(nullable = false, length = 100)
   private String name;
@@ -31,7 +39,7 @@ public class Branch extends BaseTimeEntity {
   @Column(nullable = false, length = 5)
   private String zipCode;
 
-  @Column(nullable = true, length = 1000)
+  @Column(nullable = true, length = 1000, insertable = false)
   private String businessLicensePath;
 
   @Column(nullable = false, length = 1)
@@ -68,5 +76,9 @@ public class Branch extends BaseTimeEntity {
     this.detailAddress = detailAddress;
     this.zipCode = zipCode;
     this.businessLicensePath = businessLicensePath;
+  }
+
+  public void confirm() {
+    this.state = "Y";
   }
 }

@@ -3,17 +3,37 @@ package com.dreamsecurity.shopface.dto.member;
 import com.dreamsecurity.shopface.domain.Member;
 import lombok.Getter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Getter
 public class MemberAddRequestDto {
+  @NotNull(message = "아이디를 입력해주세요")
   private String id;
+
+  @NotNull(message = "비밀번호를 입력해주세요")
   private String password;
+
+  @NotNull(message = "이름을 입력해주세요")
   private String name;
+
+  @NotNull(message = "주소를 입력해주세요")
   private String address;
+
+  @NotNull(message = "주소를 입력해주세요")
   private String detailAddress;
+
+  @NotNull(message = "우편번호를 입력해주세요")
   private String zipCode;
+
+  @NotNull(message = "이메일을 입력해주세요")
   private String email;
+
+  @NotNull(message = "전화번호를 입력해주세요")
   private String phone;
+
   private String state;
+
   private String type;
 
   public MemberAddRequestDto(String id, String password, String name,

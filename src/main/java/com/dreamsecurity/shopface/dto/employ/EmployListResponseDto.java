@@ -5,21 +5,18 @@ import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @AllArgsConstructor
-public class EmployEditRequestDto {
+@Getter
+public class EmployListResponseDto {
+  private long no;
+  private String name;
+  private String state;
   private long salary;
-  private long roleNo;
-  private long departmentNo;
-
-  public void setRoleNo(long no) {
-    this.roleNo = no;
-  }
-
-  public void setDepartmentNo(long no) {
-    this.departmentNo = no;
-  }
+  private LocalDateTime employDate;
+  private String roleName;
+  private String departmentName;
 }

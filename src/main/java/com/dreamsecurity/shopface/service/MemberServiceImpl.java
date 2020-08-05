@@ -7,6 +7,7 @@ import com.dreamsecurity.shopface.dto.member.MemberListResponseDto;
 import com.dreamsecurity.shopface.dto.member.MemberResponseDto;
 import com.dreamsecurity.shopface.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,13 +22,19 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public String addMember(MemberAddRequestDto requestDto) {
+        // TODO 비밀번호 암호화
         return memberRepository.save(requestDto.toEntity()).getId();
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<MemberListResponseDto> getMemberList() {
-        return memberRepository.findAll().stream()
+        // TODO JWT Scope 설정을 통한 권한 확인
+        
+        // TODO Util Class 만들 것 - ASC, DESC
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+
+        return memberRepository.findAll(sort).stream()
                 .map(MemberListResponseDto::new).collect(Collectors.toList());
     }
 
@@ -60,5 +67,22 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
 
         memberRepository.delete(entity);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean checkDuplicateId(String id) {
+        return memberRepository.findById(id).isPresent();
+    }
+
+    @Transactional
+    @Override
+    public String confirmMember(String id) {
+        Member entity = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
+
+        entity.confirm();
+
+        return entity.getId();
     }
 }

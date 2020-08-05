@@ -1,0 +1,64 @@
+= Shopface Rest API DOC
+:doctype: book
+:source-highlighter: highlightjs
+:icons: font
+:toc: left
+:toclevels: 3
+:sectlinks:
+
+[[Member]]
+== Member
+|===
+| ADD | POST https://iamchan.net/member
+| LIST | GET https://iamchan.net/member
+| DETAIL | GET https://iamchan.net/member/{id}
+| EDIT | PUT https://iamchan.net/member/{id}
+| REMOVE | DELETE https://iamchan.net/member/{id}
+|===
+
+[[Branch]]
+== Branch
+|===
+| ADD | POST https://iamchan.net/branch
+| LIST | GET https://iamchan.net/branch/member/{no}
+| DETAIL | GET https://iamchan.net/branch/{no}
+| EDIT | PUT https://iamchan.net/branch/{no}
+| REMOVE | DELETE https://iamchan.net/branch/{no}
+|===
+
+[[Employ]]
+== Employ
+|===
+| ADD | POST https://iamchan.net/employ
+| LIST | GET https://iamchan.net/employ/branch/{no}
+| DETAIL | GET https://iamchan.net/employ/{no}
+| EDIT | PUT https://iamchan.net/employ/{no}
+| REMOVE | DELETE https://iamchan.net/employ/{no}
+|===
+
+[[Role]]
+== Role
+|===
+| ADD | POST https://iamchan.net/role
+| LIST | GET https://iamchan.net/role/branch/{no}
+| EDIT | PUT https://iamchan.net/role/{no}
+| REMOVE | DELETE https://iamchan.net/role/{no}
+|===
+
+[[Occupation]]
+== Occupation
+|===
+| ADD | POST https://iamchan.net/occupation
+| LIST | GET https://iamchan.net/occupation/branch/{no}
+| EDIT | PUT https://iamchan.net/occupation/{no}
+| REMOVE | DELETE https://iamchan.net/occupation/{no}
+|===
+
+[[Department]]
+== Department
+|===
+| ADD | POST https://iamchan.net/department
+| LIST | GET https://iamchan.net/department/branch/{no}
+| EDIT | PUT https://iamchan.net/department/{no}
+| REMOVE | DELETE https://iamchan.net/department/{no}
+|===

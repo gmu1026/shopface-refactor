@@ -14,7 +14,7 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long no;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn
     private Branch branch;
 

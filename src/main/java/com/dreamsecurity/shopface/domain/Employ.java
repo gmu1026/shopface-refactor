@@ -3,10 +3,13 @@ package com.dreamsecurity.shopface.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
+@ToString
 @Getter
 @NoArgsConstructor
 @Entity
@@ -20,11 +23,11 @@ public class Employ {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long no;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn
     private Branch branch;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn
     private Member member;
 
@@ -39,17 +42,17 @@ public class Employ {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = true)
+    @Column(nullable = true, insertable = false)
     private long salary;
 
-    @Column(nullable = true, length = 6)
+    @Column(nullable = true, length = 6, insertable = false)
     private String certCode;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date employDate;
+    @Column
+    private LocalDateTime employDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date closeDate;
+    @Column
+    private LocalDateTime closeDate;
 
     @Column(nullable = false, length = 1)
     private String state;

@@ -34,7 +34,7 @@ public class EmployApiController {
 
   @DeleteMapping(value = "/employ/{no}")
   public ResponseEntity removeEmploy(@PathVariable("no") long no) {
-    employService.removeAlarm(no);
+    employService.removeEmploy(no);
 
     return ResponseEntity.ok().body(true);
   }
