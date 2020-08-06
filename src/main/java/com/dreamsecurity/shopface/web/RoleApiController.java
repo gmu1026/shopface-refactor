@@ -2,6 +2,7 @@ package com.dreamsecurity.shopface.web;
 
 import com.dreamsecurity.shopface.dto.role.RoleAddRequestDto;
 import com.dreamsecurity.shopface.dto.role.RoleEditRequestDto;
+import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,9 @@ public class RoleApiController {
   }
 
   @PostMapping(value = "/role")
-  public ResponseEntity addRole(@RequestBody RoleAddRequestDto requestDto) {
-    return ResponseEntity.ok().body(roleService.addRole(requestDto));
+  public ApiResponseDto addRole(@RequestBody RoleAddRequestDto requestDto) {
+//    return ResponseEntity.ok().body(roleService.addRole(requestDto));
+    return ApiResponseDto.createOK(roleService.addRole(requestDto));
   }
 
   @PutMapping(value = "/role/{no}")

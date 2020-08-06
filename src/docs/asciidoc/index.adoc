@@ -1,64 +1,30 @@
-= Shopface Rest API DOC
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+= API Document
 :doctype: book
-:source-highlighter: highlightjs
 :icons: font
+:source-highlighter: highlightjs
 :toc: left
 :toclevels: 3
 :sectlinks:
+:docinfo: shared-head
 
-[[Member]]
-== Member
-|===
-| ADD | POST https://iamchan.net/member
-| LIST | GET https://iamchan.net/member
-| DETAIL | GET https://iamchan.net/member/{id}
-| EDIT | PUT https://iamchan.net/member/{id}
-| REMOVE | DELETE https://iamchan.net/member/{id}
-|===
+[[introduction]]
+== 소개
 
-[[Branch]]
-== Branch
-|===
-| ADD | POST https://iamchan.net/branch
-| LIST | GET https://iamchan.net/branch/member/{no}
-| DETAIL | GET https://iamchan.net/branch/{no}
-| EDIT | PUT https://iamchan.net/branch/{no}
-| REMOVE | DELETE https://iamchan.net/branch/{no}
-|===
+Shopface API
 
-[[Employ]]
-== Employ
-|===
-| ADD | POST https://iamchan.net/employ
-| LIST | GET https://iamchan.net/employ/branch/{no}
-| DETAIL | GET https://iamchan.net/employ/{no}
-| EDIT | PUT https://iamchan.net/employ/{no}
-| REMOVE | DELETE https://iamchan.net/employ/{no}
-|===
+==== Request
 
-[[Role]]
-== Role
-|===
-| ADD | POST https://iamchan.net/role
-| LIST | GET https://iamchan.net/role/branch/{no}
-| EDIT | PUT https://iamchan.net/role/{no}
-| REMOVE | DELETE https://iamchan.net/role/{no}
-|===
+include::{snippets}/Role-Add/request-fields.adoc[]
 
-[[Occupation]]
-== Occupation
-|===
-| ADD | POST https://iamchan.net/occupation
-| LIST | GET https://iamchan.net/occupation/branch/{no}
-| EDIT | PUT https://iamchan.net/occupation/{no}
-| REMOVE | DELETE https://iamchan.net/occupation/{no}
-|===
+===== Request HTTP Example
 
-[[Department]]
-== Department
-|===
-| ADD | POST https://iamchan.net/department
-| LIST | GET https://iamchan.net/department/branch/{no}
-| EDIT | PUT https://iamchan.net/department/{no}
-| REMOVE | DELETE https://iamchan.net/department/{no}
-|===
+include::{snippets}/Role-Add/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Role-Add/http-response.adoc[]
+
+&#160;

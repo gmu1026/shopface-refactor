@@ -15,26 +15,35 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
+import static com.dreamsecurity.shopface.ApiDocumentUtils.getDocumentRequest;
+import static com.dreamsecurity.shopface.ApiDocumentUtils.getDocumentResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = "iamchan.net")
 public class RoleApiControllerTest {
     @Rule
     public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
@@ -101,10 +110,28 @@ public class RoleApiControllerTest {
 
         String content = objectMapper.writeValueAsString(requestDto);
         //when
-        mockMvc.perform(post("/role").content(content).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(document("Role-Add"));
+        ResultActions result = mockMvc.perform(post("/role")
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON));
+
         //then
+        result
+                .andExpect(status().isOk())
+                .andDo(document("Role-Add",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("역할 명"),
+                                fieldWithPath("branchNo").type(JsonFieldType.NUMBER).description("지점 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                                fieldWithPath("data").type(JsonFieldType.NUMBER).description("ID")
+                        )
+                    )
+                );
+
         List<Role> results = roleRepository.findAll();
         assertThat(results.get(0).getName()).isEqualTo(requestDto.getName());
         assertThat(results.get(0).getBranch().getNo()).isEqualTo(requestDto.getBranchNo());
