@@ -33,9 +33,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(readOnly = true)
     @Override
     public List<RoleListResponseDto> getRoleList(long no) {
-        return roleRepository.findAllByBranchNo(no).stream()
-                .map(RoleListResponseDto::new)
-                .collect(Collectors.toList());
+        return roleRepository.findAllByBranchNo(no);
     }
 
     @Transactional

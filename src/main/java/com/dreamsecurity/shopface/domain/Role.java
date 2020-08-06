@@ -17,7 +17,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long no;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn
     private Branch branch;
 

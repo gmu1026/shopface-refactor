@@ -2,12 +2,12 @@ package com.dreamsecurity.shopface.web;
 
 import com.dreamsecurity.shopface.domain.Branch;
 import com.dreamsecurity.shopface.domain.Member;
-import com.dreamsecurity.shopface.domain.Role;
-import com.dreamsecurity.shopface.dto.role.RoleAddRequestDto;
-import com.dreamsecurity.shopface.dto.role.RoleEditRequestDto;
+import com.dreamsecurity.shopface.domain.Occupation;
+import com.dreamsecurity.shopface.dto.occupation.OccupationAddRequestDto;
+import com.dreamsecurity.shopface.dto.occupation.OccupationEditRequestDto;
 import com.dreamsecurity.shopface.repository.BranchRepository;
 import com.dreamsecurity.shopface.repository.MemberRepository;
-import com.dreamsecurity.shopface.repository.RoleRepository;
+import com.dreamsecurity.shopface.repository.OccupationRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
@@ -27,6 +27,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class RoleApiControllerTest {
+public class OccupationApiControllerTest {
     @Rule
     public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
@@ -47,14 +48,13 @@ public class RoleApiControllerTest {
     WebApplicationContext context;
 
     @Autowired
-    RoleRepository roleRepository;
+    OccupationRepository occupationRepository;
 
     @Autowired
     BranchRepository branchRepository;
 
     @Autowired
     MemberRepository memberRepository;
-
 
     @Before
     public void setUp() throws Exception {
@@ -87,86 +87,85 @@ public class RoleApiControllerTest {
 
     @After
     public void tearDown() throws Exception {
-        roleRepository.deleteAll();
+        occupationRepository.deleteAll();
         branchRepository.deleteAll();
         memberRepository.deleteAll();
     }
 
     @Test
-    public void 역할등록_테스트() throws Exception {
+    public void 업무등록_테스트() throws Exception {
         //given
         Branch branch = branchRepository.findAll().get(0);
 
-        RoleAddRequestDto requestDto = new RoleAddRequestDto("개발", branch.getNo());
-
-        String content = objectMapper.writeValueAsString(requestDto);
+        String content = objectMapper.writeValueAsString(
+                new OccupationAddRequestDto("업무", branch.getNo()));
         //when
-        mockMvc.perform(post("/role").content(content).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/occupation")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("Role-Add"));
+                .andDo(document("Occupation-Add"));
         //then
-        List<Role> results = roleRepository.findAll();
-        assertThat(results.get(0).getName()).isEqualTo(requestDto.getName());
-        assertThat(results.get(0).getBranch().getNo()).isEqualTo(requestDto.getBranchNo());
+        List<Occupation> results = occupationRepository.findAll();
+        assertThat(results.get(0).getName()).isEqualTo("업무");
     }
 
     @Test
-    public void 역할목록조회_테스트() throws Exception {
+    public void 업무목록조회_테스트() throws Exception {
         //given
         Branch branch = branchRepository.findAll().get(0);
-
         for (int i = 0; i < 3; i++) {
-            Role role = Role.builder().name("역할" + i).branch(branch).build();
-            roleRepository.save(role);
+            Occupation occupation = Occupation.builder().name("업무" + i).branch(branch).build();
+            occupationRepository.save(occupation);
         }
         //when
-        mockMvc.perform(get("/branch/" + branch.getNo() + "/role"))
+        mockMvc.perform(get("/branch/" + branch.getNo() + "/occupation"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name", is("역할0")))
-                .andExpect(jsonPath("$[1].name", is("역할1")))
-                .andExpect(jsonPath("$[2].name", is("역할2")))
-                .andDo(document("Role-List"));
+                .andExpect(jsonPath("$[0].name", is("업무0")))
+                .andExpect(jsonPath("$[1].name", is("업무1")))
+                .andExpect(jsonPath("$[2].name", is("업무2")))
+                .andDo(document("Occupation-List"));
         //then
     }
 
     @Test
-    public void 역할수정_테스트() throws Exception {
+    public void 업무수정_테스트() throws Exception {
         //given
         Branch branch = branchRepository.findAll().get(0);
-        Role role = Role.builder()
-                .name("역할")
+        Occupation occupation = Occupation.builder()
+                .name("업무")
                 .branch(branch)
                 .build();
+        occupationRepository.save(occupation);
 
-        roleRepository.save(role);
-
-        String content = objectMapper.writeValueAsString(new RoleEditRequestDto("역할수정"));
+        String content = objectMapper.writeValueAsString(new OccupationEditRequestDto("업무수정"));
         //when
-        mockMvc.perform(put("/role/" + role.getNo())
-                .content(content).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(put("/occupation/" + occupation.getNo())
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("Role-Edit"));
+                .andDo(document("Occupation-Edit"));
         //then
-        List<Role> results = roleRepository.findAll();
-        assertThat(results.get(0).getName()).isEqualTo("역할수정");
+        List<Occupation> results = occupationRepository.findAll();
+        assertThat(results.get(0).getName()).isEqualTo("업무수정");
     }
 
     @Test
-    public void 역할삭제_테스트() throws Exception {
+    public void 업무삭제_테스트() throws Exception {
         //given
         Branch branch = branchRepository.findAll().get(0);
-        Role role = Role.builder()
-                .name("역할")
+        Occupation occupation = Occupation.builder()
+                .name("업무")
                 .branch(branch)
                 .build();
 
-        roleRepository.save(role);
+        occupationRepository.save(occupation);
         //when
-        mockMvc.perform(delete("/role/" + role.getNo()))
+        mockMvc.perform(delete("/occupation/" + occupation.getNo()))
                 .andExpect(status().isOk())
-                .andDo(document("Role-Remove"));
+                .andDo(document("Occupation-Remove"));
         //then
-        List<Role> results = roleRepository.findAll();
+        List<Occupation> results = occupationRepository.findAll();
         assertThat(results.size()).isEqualTo(0);
     }
 }

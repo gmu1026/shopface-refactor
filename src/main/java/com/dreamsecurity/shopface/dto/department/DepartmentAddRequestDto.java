@@ -12,6 +12,11 @@ public class DepartmentAddRequestDto {
   private String name;
   private Branch branch;
 
+  public DepartmentAddRequestDto(String name, long branchNo) {
+    this.name = name;
+    this.branchNo = branchNo;
+  }
+
   public DepartmentAddRequestDto(Department entity) {
     this.name = entity.getName();
     this.branch = entity.getBranch();

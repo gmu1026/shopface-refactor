@@ -1,7 +1,6 @@
 package com.dreamsecurity.shopface.web;
 
 import com.dreamsecurity.shopface.dto.alarm.AlarmAddRequestDto;
-import com.dreamsecurity.shopface.dto.alarm.AlarmEditRequestDto;
 import com.dreamsecurity.shopface.service.AlarmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +18,13 @@ public class AlarmApiController {
 
   @PostMapping(value = "/alarm")
   public ResponseEntity addAlarm(@RequestBody AlarmAddRequestDto requestDto) {
+    // TODO 필요없다고 생각 로직에 의해서 등록이 되는 것이지 외부 요청에 의해 등록되는 것이 아님 API는 외부와 노출될 수 밖에 없음
     return ResponseEntity.ok().body(alarmService.addAlarm(requestDto));
   }
 
   @PutMapping(value = "/alarm/{no}")
-  public ResponseEntity editAlarm(
-      @PathVariable long no, @RequestBody AlarmEditRequestDto requestDto) {
-    return ResponseEntity.ok().body(alarmService.editAlarm(no, requestDto));
+  public ResponseEntity readAlarm(@PathVariable long no) {
+    return ResponseEntity.ok().body(alarmService.readAlarm(no));
   }
 
   @DeleteMapping(value = "/alarm/{no}")

@@ -8,6 +8,11 @@ public class DepartmentListResponseDto {
   private long no;
   private String name;
 
+  public DepartmentListResponseDto(long no, String name) {
+    this.no = no;
+    this.name = name;
+  }
+
   public DepartmentListResponseDto(Department entity) {
     this.no = entity.getNo();
     this.name = entity.getName();

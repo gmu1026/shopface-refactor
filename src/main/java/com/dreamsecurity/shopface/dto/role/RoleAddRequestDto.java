@@ -24,6 +24,11 @@ public class RoleAddRequestDto {
             .build();
   }
 
+  public RoleAddRequestDto(String name, long branchNo) {
+    this.name = name;
+    this.branchNo = branchNo;
+  }
+
   public void setBranch(Branch branch) {
     this.branch = branch;
   }
