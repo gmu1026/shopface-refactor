@@ -53,7 +53,7 @@ test {
 }
 
 asciidoctor {
-//    inputs.dir snippetsDir
+    inputs.dir snippetsDir
     dependsOn test
 }
 
