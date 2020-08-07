@@ -6,6 +6,8 @@ import com.dreamsecurity.shopface.dto.alarm.AlarmAddRequestDto;
 import com.dreamsecurity.shopface.dto.alarm.AlarmListResponseDto;
 import com.dreamsecurity.shopface.repository.AlarmRepository;
 import com.dreamsecurity.shopface.repository.MemberRepository;
+import com.dreamsecurity.shopface.response.ApiException;
+import com.dreamsecurity.shopface.response.ApiResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.stereotype.Service;
@@ -62,7 +64,7 @@ public class AlarmServiceImpl implements AlarmService {
     public List<AlarmListResponseDto> getAlarmLists(String memberId) {
     return memberRepository
         .findById(memberId)
-        .orElseThrow(() -> new IllegalIdentifierException("해당 회원이 없습니다"))
+        .orElseThrow(() -> new ApiException(ApiResponseCode.NOT_FOUND, "해당 회원이 없습니다"))
         .getAlarms()
         .stream()
         .map(AlarmListResponseDto::new)
