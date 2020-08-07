@@ -1,10 +1,15 @@
 package com.dreamsecurity.shopface.web;
 
+import com.dreamsecurity.shopface.domain.Alarm;
 import com.dreamsecurity.shopface.dto.alarm.AlarmAddRequestDto;
+import com.dreamsecurity.shopface.dto.alarm.AlarmListResponseDto;
+import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.AlarmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -32,5 +37,10 @@ public class AlarmApiController {
     alarmService.removeAlarm(no);
 
     return ResponseEntity.ok().body(true);
+  }
+
+  @GetMapping(value = "/member/{id}/alarms")
+  public ApiResponseDto<List<AlarmListResponseDto>> getAlarmLists(@PathVariable("id") String memberId) {
+    return ApiResponseDto.createOK(alarmService.getAlarmLists(memberId));
   }
 }

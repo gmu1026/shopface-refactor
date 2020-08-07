@@ -1,7 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.3.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'org.asciidoctor.convert' version '1.5.10'
+    id 'org.asciidoctor.convert' version '1.5.3'
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
     id 'java'
 }
@@ -49,7 +49,6 @@ ext {
 
 test {
     outputs.dir snippetsDir
-    useJUnitPlatform()
 }
 
 asciidoctor {

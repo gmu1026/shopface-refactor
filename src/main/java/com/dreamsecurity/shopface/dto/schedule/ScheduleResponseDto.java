@@ -5,13 +5,14 @@ import com.dreamsecurity.shopface.domain.Member;
 import com.dreamsecurity.shopface.domain.Schedule;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
 public class ScheduleResponseDto {
   private long no;
-  private Date workStartTime;
-  private Date workEndTime;
+  private LocalDateTime workStartTime;
+  private LocalDateTime workEndTime;
   private String color;
   private Member member;
   private Branch branch;

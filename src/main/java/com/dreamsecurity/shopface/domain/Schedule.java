@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -25,11 +26,11 @@ public class Schedule {
 
   @ManyToOne @JoinColumn private Branch branch;
 
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date workStartTime;
+  @Column
+  private LocalDateTime workStartTime;
 
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date workEndTime;
+  @Column
+  private LocalDateTime workEndTime;
 
   @OneToOne
   @JoinColumn
@@ -45,8 +46,8 @@ public class Schedule {
   public Schedule(
       Member member,
       Branch branch,
-      Date workStartTime,
-      Date workEndTime,
+      LocalDateTime workStartTime,
+      LocalDateTime workEndTime,
       Occupation occupation,
       String color,
       String state) {
@@ -61,8 +62,8 @@ public class Schedule {
 
   public void update(
       Member member,
-      Date workStartTime,
-      Date workEndTime,
+      LocalDateTime workStartTime,
+      LocalDateTime workEndTime,
       Occupation occupation,
       String color) {
     this.member = member;

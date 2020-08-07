@@ -6,12 +6,13 @@ import com.dreamsecurity.shopface.domain.Occupation;
 import com.dreamsecurity.shopface.domain.Schedule;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
 public class ScheduleAddRequestDto {
-  private Date workStartTime;
-  private Date workEndTime;
+  private LocalDateTime workStartTime;
+  private LocalDateTime workEndTime;
   private String color;
   private Member member;
   private Branch branch;

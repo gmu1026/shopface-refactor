@@ -1,5 +1,7 @@
 package com.dreamsecurity.shopface.domain;
 
+import com.dreamsecurity.shopface.response.ApiException;
+import com.dreamsecurity.shopface.response.ApiResponseCode;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Builder;
@@ -8,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -48,6 +52,18 @@ public class Branch extends BaseTimeEntity {
   @Column(nullable = false, length = 1)
   private String state;
 
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "branch")
+  private List<Role> roles = new ArrayList<Role>();
+
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "branch")
+  private List<Department> departments = new ArrayList<Department>();
+
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "branch")
+  private List<Occupation> occupations = new ArrayList<Occupation>();
+
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "branch")
+  private List<Employ> employs = new ArrayList<Employ>();
+
   @Builder
   public Branch(
       String name,
@@ -82,6 +98,10 @@ public class Branch extends BaseTimeEntity {
   }
 
   public void confirm() {
-    this.state = "Y";
+    if (!this.state.equals("Y")) {
+      this.state = "Y";
+    } else {
+      throw new ApiException(ApiResponseCode.BAD_REQUEST, "이미 확인된 지점입니다");
+    }
   }
 }

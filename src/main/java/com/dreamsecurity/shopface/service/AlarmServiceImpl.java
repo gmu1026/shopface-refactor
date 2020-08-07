@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -36,6 +37,7 @@ public class AlarmServiceImpl implements AlarmService {
         return alarmRepository.findAllByMemberIdAsc(memberId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Long readAlarm(long no) {
         Alarm alarm = alarmRepository.findById(no)
@@ -46,11 +48,24 @@ public class AlarmServiceImpl implements AlarmService {
         return no;
     }
 
+    @Transactional
     @Override
     public void removeAlarm(long no) {
         Alarm alarm = alarmRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("해당 알림이 존재하지 않습니다."));
 
         alarmRepository.delete(alarm);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<AlarmListResponseDto> getAlarmLists(String memberId) {
+    return memberRepository
+        .findById(memberId)
+        .orElseThrow(() -> new IllegalIdentifierException("해당 회원이 없습니다"))
+        .getAlarms()
+        .stream()
+        .map(AlarmListResponseDto::new)
+        .collect(Collectors.toList());
     }
 }

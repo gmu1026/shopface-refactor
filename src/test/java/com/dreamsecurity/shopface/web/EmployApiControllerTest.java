@@ -32,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Transactional
 public class EmployApiControllerTest {
     @Rule
     public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
@@ -83,6 +82,9 @@ public class EmployApiControllerTest {
                 .type("E")
                 .build();
 
+        memberRepository.save(businessman);
+        memberRepository.save(employee);
+
         Branch branch = Branch.builder()
                 .name("테스트")
                 .phone("01012341234")
@@ -93,12 +95,11 @@ public class EmployApiControllerTest {
                 .state("W")
                 .build();
 
+        branchRepository.save(branch);
+
         Role role = Role.builder().name("대리").branch(branch).build();
         Department department = Department.builder().name("인사").branch(branch).build();
 
-        branchRepository.save(branch);
-        memberRepository.save(businessman);
-        memberRepository.save(employee);
         roleRepository.save(role);
         departmentRepository.save(department);
     }
@@ -140,7 +141,6 @@ public class EmployApiControllerTest {
         assertThat(results.get(0).getDepartment().getName()).isEqualTo(department.getName());
     }
 
-    @Transactional
     @Test
     public void 고용_목록조회_테스트() throws Exception {
         //given
@@ -171,7 +171,6 @@ public class EmployApiControllerTest {
         //then
     }
 
-    @Transactional
     @Test
     public void 고용_조회_테스트() throws Exception {
         //given
@@ -195,7 +194,6 @@ public class EmployApiControllerTest {
         //then
     }
 
-    @Transactional
     @Test
     public void 고용_수정_테스트() throws Exception {
         //given
@@ -234,7 +232,6 @@ public class EmployApiControllerTest {
         assertThat(results.get(0).getDepartment().getName()).isEqualTo(editDepartment.getName());
     }
 
-    @Transactional
     @Test
     public void 고용_삭제_테스트() throws Exception {
         //given

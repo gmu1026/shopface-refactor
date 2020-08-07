@@ -10,6 +10,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 public class Alarm extends BaseTimeEntity {
+  @PrePersist
+  public void setDefaultCheckState() {
+    this.checkState = this.checkState == null ? "N" : this.checkState;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long no;

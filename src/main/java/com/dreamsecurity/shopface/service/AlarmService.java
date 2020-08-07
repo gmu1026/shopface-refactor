@@ -1,5 +1,6 @@
 package com.dreamsecurity.shopface.service;
 
+import com.dreamsecurity.shopface.domain.Alarm;
 import com.dreamsecurity.shopface.dto.alarm.AlarmAddRequestDto;
 import com.dreamsecurity.shopface.dto.alarm.AlarmListResponseDto;
 
@@ -10,4 +11,5 @@ public interface AlarmService {
     List<AlarmListResponseDto> getAlarmList(String memberId);
     Long readAlarm(long no);
     void removeAlarm(long no);
+    List<AlarmListResponseDto> getAlarmLists(String memberId);
 }

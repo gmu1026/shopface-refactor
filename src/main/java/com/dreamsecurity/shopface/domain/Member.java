@@ -58,13 +58,14 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = true, length = 5, insertable = false)
     private String zipCode;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "member_id")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "member")
     private List<Branch> branches;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "member")
     private List<Alarm> alarms;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "member")
+    private List<Employ> employs;
 
     @Builder
     public Member(String id, String password, String name,
