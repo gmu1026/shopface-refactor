@@ -1,7 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.3.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'org.asciidoctor.convert' version '1.5.9.2'
+    id 'org.asciidoctor.convert' version '1.5.10'
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
     id 'java'
 }
@@ -20,10 +20,6 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    set('snippetsDir', file("build/generated-snippets"))
-}
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
@@ -35,7 +31,7 @@ dependencies {
     runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
-    compile group: 'org.springframework.restdocs', name: 'spring-restdocs-asciidoctor', version: '2.0.4.RELEASE'
+    asciidoctor group: 'org.springframework.restdocs', name: 'spring-restdocs-asciidoctor', version: '2.0.4.RELEASE'
     testCompile group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc', version: '2.0.4.RELEASE'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -47,22 +43,19 @@ dependencies {
     implementation 'com.querydsl:querydsl-jpa'
 }
 
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
 }
 
 asciidoctor {
-    inputs.dir snippetsDir
+    attributes "snippets": snippetsDir
     dependsOn test
 }
-
-//task copyDocument(type: Copy) {
-//    dependsOn asciidoctor
-//
-//    from file("build/asciidoc/html5/")
-//    into file("src/main/resources/static/docs")
-//}
 
 bootJar {
     dependsOn asciidoctor
@@ -70,10 +63,6 @@ bootJar {
         into 'static/docs'
     }
 }
-
-//build {
-//    dependsOn copyDocument
-//}
 
 def querydslDir = "$buildDir/generated/querydsl"
 querydsl {
