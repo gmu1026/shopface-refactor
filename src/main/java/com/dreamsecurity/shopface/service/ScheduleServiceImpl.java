@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,35 @@ public class ScheduleServiceImpl implements  ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final EmployRepository employRepository;
     private final OccupationRepository occupationRepository;
+
+    private boolean checkSchedule(LocalDateTime oldStartDate,LocalDateTime oldEndDate, LocalDateTime newStartDate, LocalDateTime newEndDate) {
+        boolean result = false;
+
+        if ((newStartDate == oldStartDate)
+                || (newEndDate == oldEndDate)) {
+            result = false;
+            new IllegalArgumentException("동시간대에 다른 스케줄이 존재합니다.");
+        } else if (newEndDate.isBefore(oldStartDate)) {
+            if (newStartDate.isBefore(oldEndDate)) {
+                result = true;
+            } else {
+                result = false;
+                new IllegalArgumentException("다른스케줄이 존재하여 등록할 수 없습니다.");
+            }
+        } else if (newEndDate.isAfter(oldStartDate)) {
+            if (newStartDate.isAfter(oldEndDate)) {
+                result = true;
+            } else {
+                result = false;
+                new IllegalArgumentException("등록하려는 시간대에 다른스케줄이 존재하여 등록할 수 없습니다.");
+            }
+        } else {
+            result = false;
+            new IllegalArgumentException("등록하려는 시간대에 다른스케줄이 존재하여 등록할 수 없습니다.");
+        }
+
+        return result;
+    }
 
     @Transactional
     @Override
@@ -37,23 +67,13 @@ public class ScheduleServiceImpl implements  ScheduleService {
                         requestDto.getMember().getId(),
                         requestDto.getBranch().getNo());
                 for (ScheduleListResponseDto old : oldSchedules) {
-                    if ((requestDto.getWorkStartTime() == old.getWorkStartTime())
-                            || (requestDto.getWorkEndTime() == old.getWorkEndTime())) {
-                        new IllegalArgumentException("동시간대에 다른 스케줄이 존재합니다.");
-                    } else if (requestDto.getWorkEndTime().isBefore(old.getWorkStartTime())) {
-                        if (requestDto.getWorkStartTime().isBefore(old.getWorkEndTime())) {
-                            continue;
-                        } else {
-                            new IllegalArgumentException("다른스케줄이 존재하여 등록할 수 없습니다.");
+                    try {
+                        boolean isChecked = checkSchedule(old.getWorkStartTime(), old.getWorkEndTime(), requestDto.getWorkStartTime(), requestDto.getWorkEndTime());
+                        if (!isChecked) {
+                            new IllegalArgumentException("잘못된 스케줄입니다.");
                         }
-                    } else if (requestDto.getWorkEndTime().isAfter(old.getWorkStartTime())) {
-                        if (requestDto.getWorkStartTime().isAfter(old.getWorkEndTime())) {
-                            continue;
-                        } else {
-                            new IllegalArgumentException("등록하려는 시간대에 다른스케줄이 존재하여 등록할 수 없습니다.");
-                        }
-                    } else {
-                        new IllegalArgumentException("등록하려는 시간대에 다른스케줄이 존재하여 등록할 수 없습니다.");
+                    } catch (IllegalArgumentException e) {
+                        throw e;
                     }
                 }
                 // 업무 번호 검삭
