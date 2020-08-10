@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface ScheduleRepository extends JpaRepository<Schedule, Long>, ScheduleREpositoryCustom {
+public interface ScheduleRepository extends JpaRepository<Schedule, Long>, ScheduleRepositoryCustom {
 }
