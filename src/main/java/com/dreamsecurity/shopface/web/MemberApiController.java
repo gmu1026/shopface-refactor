@@ -2,6 +2,7 @@ package com.dreamsecurity.shopface.web;
 
 import com.dreamsecurity.shopface.dto.member.MemberAddRequestDto;
 import com.dreamsecurity.shopface.dto.member.MemberEditRequestDto;
+import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,30 +17,30 @@ public class MemberApiController {
   private final MemberService memberService;
 
   @GetMapping(value = "/member")
-  public ResponseEntity getMemberList() {
-    return ResponseEntity.ok().body(memberService.getMemberList());
+  public ApiResponseDto getMemberList() {
+    return ApiResponseDto.createOK(memberService.getMemberList());
   }
 
   @GetMapping(value = "/member/{id}")
-  public ResponseEntity getMember(@PathVariable("id") @NotBlank String id) {
-    return ResponseEntity.ok().body(memberService.getMember(id));
+  public ApiResponseDto getMember(@PathVariable("id") @NotBlank String id) {
+    return ApiResponseDto.createOK(memberService.getMember(id));
   }
 
   @PostMapping(value = "/member")
-  public ResponseEntity addMember(@RequestBody @Valid MemberAddRequestDto requestDto) {
-    return ResponseEntity.ok().body(memberService.addMember(requestDto));
+  public ApiResponseDto addMember(@RequestBody @Valid MemberAddRequestDto requestDto) {
+    return ApiResponseDto.createOK(memberService.addMember(requestDto));
   }
 
   @PutMapping(value = "/member/{id}")
-  public ResponseEntity editMember(
+  public ApiResponseDto editMember(
       @PathVariable("id") @NotBlank String id, @RequestBody @Valid MemberEditRequestDto requestDto) {
-    return ResponseEntity.ok().body(memberService.editMember(id, requestDto));
+    return ApiResponseDto.createOK(memberService.editMember(id, requestDto));
   }
 
   @DeleteMapping(value = "/member/{id}")
-  public ResponseEntity removeMember(@PathVariable("id") @NotBlank String id) {
+  public ApiResponseDto removeMember(@PathVariable("id") @NotBlank String id) {
     memberService.removeMember(id);
 
-    return ResponseEntity.ok().body(true);
+    return ApiResponseDto.createOK(true);
   }
 }

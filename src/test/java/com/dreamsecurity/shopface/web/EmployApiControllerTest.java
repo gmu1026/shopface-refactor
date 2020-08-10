@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -158,15 +159,13 @@ public class EmployApiControllerTest {
                     .build();
 
             employRepository.save(employ);
-            results.add(new EmployListResponseDto(employ.getNo(), employ.getName(),
-                    employ.getState(), employ.getSalary(), employ.getEmployDate(),
-                    role.getName(), department.getName()));
         }
-        String content = objectMapper.writeValueAsString(results);
         //when
         mockMvc.perform(get("/branch/" + branch.getNo() + "/employ"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(content))
+                .andExpect(jsonPath("$[0].name", is("홍길동0")))
+                .andExpect(jsonPath("$[0].roleName", is("대리")))
+                .andExpect(jsonPath("$[0].departmentName", is("인사")))
                 .andDo(document("Employ-list"));
         //then
     }

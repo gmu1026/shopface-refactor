@@ -2,6 +2,7 @@ package com.dreamsecurity.shopface.web;
 
 import com.dreamsecurity.shopface.dto.department.DepartmentAddRequestDto;
 import com.dreamsecurity.shopface.dto.department.DepartmentEditRequestDto;
+import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,24 +14,24 @@ public class DepartmentApiController {
   private final DepartmentService departmentService;
 
   @GetMapping(value = "/branch/{no}/department")
-  public ResponseEntity getDepartmentList(@PathVariable("no") long no) {
-    return ResponseEntity.ok().body(departmentService.getDepartmentList(no));
+  public ApiResponseDto getDepartmentList(@PathVariable("no") long no) {
+    return ApiResponseDto.createOK(departmentService.getDepartmentList(no));
   }
 
   @PostMapping(value = "/department")
-  public ResponseEntity addDepartment(@RequestBody DepartmentAddRequestDto requestDto) {
-    return ResponseEntity.ok().body(departmentService.addDepartment(requestDto));
+  public ApiResponseDto addDepartment(@RequestBody DepartmentAddRequestDto requestDto) {
+    return ApiResponseDto.createOK(departmentService.addDepartment(requestDto));
   }
 
   @PutMapping(value = "/department/{no}")
-  public ResponseEntity editDepartment(@PathVariable("no") long no, @RequestBody DepartmentEditRequestDto requestDto) {
-    return ResponseEntity.ok().body(departmentService.editDepartment(no, requestDto));
+  public ApiResponseDto editDepartment(@PathVariable("no") long no, @RequestBody DepartmentEditRequestDto requestDto) {
+    return ApiResponseDto.createOK(departmentService.editDepartment(no, requestDto));
   }
 
   @DeleteMapping(value = "/department/{no}")
-  public ResponseEntity removeDepartment(@PathVariable("no") long no) {
+  public ApiResponseDto removeDepartment(@PathVariable("no") long no) {
     departmentService.removeDepartment(no);
 
-    return ResponseEntity.ok().body(true);
+    return ApiResponseDto.createOK(true);
   }
 }

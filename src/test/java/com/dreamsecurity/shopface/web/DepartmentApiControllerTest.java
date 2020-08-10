@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -119,13 +120,13 @@ public class DepartmentApiControllerTest {
             departmentRepository.save(department);
         }
         //when
-        mockMvc.perform(get("/branch/" + branch.getNo() + "/department"))
-                .andExpect(status().isOk())
+        ResultActions result = mockMvc.perform(get("/branch/" + branch.getNo() + "/department"));
+        //then
+        result.andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name", is("부서0")))
                 .andExpect(jsonPath("$[1].name", is("부서1")))
                 .andExpect(jsonPath("$[2].name", is("부서2")))
                 .andDo(document("Department-List"));
-        //then
     }
 
     @Test

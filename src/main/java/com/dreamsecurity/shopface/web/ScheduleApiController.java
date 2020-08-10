@@ -2,6 +2,7 @@ package com.dreamsecurity.shopface.web;
 
 import com.dreamsecurity.shopface.dto.schedule.ScheduleAddRequestDto;
 import com.dreamsecurity.shopface.dto.schedule.ScheduleEditRequestDto;
+import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,30 +14,30 @@ public class ScheduleApiController {
   private final ScheduleService scheduleService;
 
   @GetMapping(value = "/branch/{no}/schedule")
-  public ResponseEntity getScheduleList(@PathVariable("no") long no) {
-    return ResponseEntity.ok().body(scheduleService.getScheduleList(no));
+  public ApiResponseDto getScheduleList(@PathVariable("no") long no) {
+    return ApiResponseDto.createOK(scheduleService.getScheduleList(no));
   }
 
   @GetMapping(value = "/schedule/{no}")
-  public ResponseEntity getSchedule(@PathVariable("no") long no) {
-    return ResponseEntity.ok().body(scheduleService.getSchedule(no));
+  public ApiResponseDto getSchedule(@PathVariable("no") long no) {
+    return ApiResponseDto.createOK(scheduleService.getSchedule(no));
   }
 
   @PostMapping(value = "/schedule")
-  public ResponseEntity addSchedule(@RequestBody ScheduleAddRequestDto requestDto) {
-    return ResponseEntity.ok().body(scheduleService.addSchedule(requestDto));
+  public ApiResponseDto addSchedule(@RequestBody ScheduleAddRequestDto requestDto) {
+    return ApiResponseDto.createOK(scheduleService.addSchedule(requestDto));
   }
 
   @PutMapping(value = "/schedule/{no}")
-  public ResponseEntity editSchedule(
+  public ApiResponseDto editSchedule(
       @PathVariable("no") long no, @RequestBody ScheduleEditRequestDto requestDto) {
-    return ResponseEntity.ok().body(scheduleService.editSchedule(no, requestDto));
+    return ApiResponseDto.createOK(scheduleService.editSchedule(no, requestDto));
   }
 
   @DeleteMapping(value = "/schedule/{no}")
-  public ResponseEntity removeSchedule(@PathVariable("no") long no) {
+  public ApiResponseDto removeSchedule(@PathVariable("no") long no) {
     scheduleService.removeSchedule(no);
 
-    return ResponseEntity.ok().body(true);
+    return ApiResponseDto.createOK(true);
   }
 }

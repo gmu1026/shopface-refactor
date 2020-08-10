@@ -31,11 +31,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -115,11 +115,7 @@ public class BranchApiControllerTest {
     @Test
     public void 지점_목록_테스트() throws Exception {
         //given
-        LocalDateTime now = LocalDateTime.now();
-
         Member businessman = memberRepository.findAll().get(0);
-        List<Branch> samples = new ArrayList<>();
-        List<BranchListResponseDto> resultLists = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             Branch branch = Branch.builder()
                     .name("테스트" + i)
@@ -129,23 +125,16 @@ public class BranchApiControllerTest {
                     .zipCode("11111")
                     .member(businessman)
                     .build();
-
-            samples.add(branch);
+            branchRepository.save(branch);
         }
-
-        branchRepository.saveAll(samples);
-        resultLists = branchRepository.findAllByMemberId(businessman.getId());
-
-        String content = objectMapper.writeValueAsString(resultLists);
         //when
         mockMvc.perform(get("/member/" + businessman.getId() + "/branch"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name", is("테스트0")))
+                .andExpect(jsonPath("$[1].name", is("테스트1")))
+                .andExpect(jsonPath("$[2].name", is("테스트2")))
                 .andDo(document("Branch-list"));
         //then
-        List<BranchListResponseDto> results = branchRepository.findAllByMemberId(businessman.getId());
-
-        assertThat(results.get(0).getRegisterDate()).isAfter(now);
-        assertThat(results.get(0).getName()).isEqualTo(samples.get(0).getName());
     }
 
     @Test

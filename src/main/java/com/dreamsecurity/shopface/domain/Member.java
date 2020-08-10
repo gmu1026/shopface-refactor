@@ -79,19 +79,19 @@ public class Member extends BaseTimeEntity {
         this.email = email;
         this.bankName = bankName;
         this.accountNum = accountNum;
-        this.address = address;
+//        this.address = address;
         this.state = state;
         this.type = type;
-        this.detailAddress = detailAddress;
-        this.zipCode = zipCode;
+//        this.detailAddress = detailAddress;
+//        this.zipCode = zipCode;
     }
 
     public void update(String password, String address, String detailAddress,
                        String zipCode, String email, String bankName, String accountNum) {
         this.password = password;
-        this.address = address;
-        this.detailAddress = detailAddress;
-        this.zipCode = zipCode;
+//        this.address = address;
+//        this.detailAddress = detailAddress;
+//        this.zipCode = zipCode;
         this.email = email;
         this.bankName = bankName;
         this.accountNum = accountNum;

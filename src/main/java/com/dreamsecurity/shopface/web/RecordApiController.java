@@ -2,6 +2,7 @@ package com.dreamsecurity.shopface.web;
 
 import com.dreamsecurity.shopface.dto.record.RecordAddRequestDto;
 import com.dreamsecurity.shopface.dto.record.RecordEditRequestDto;
+import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.RecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,25 +14,25 @@ public class RecordApiController {
   private final RecordService recordService;
 
   @GetMapping(value = "/member/{id}/record")
-  public ResponseEntity getRecordList(@PathVariable("id") String memberId) {
-    return ResponseEntity.ok().body(recordService.getRecordList(memberId));
+  public ApiResponseDto getRecordList(@PathVariable("id") String memberId) {
+    return ApiResponseDto.createOK(recordService.getRecordList(memberId));
   }
 
   @PostMapping(value = "/record")
-  public ResponseEntity addRecord(@RequestBody RecordAddRequestDto requestDto) {
-    return ResponseEntity.ok().body(recordService.addRecord(requestDto));
+  public ApiResponseDto addRecord(@RequestBody RecordAddRequestDto requestDto) {
+    return ApiResponseDto.createOK(recordService.addRecord(requestDto));
   }
 
   @PutMapping(value = "/record/{no}")
-  public ResponseEntity editRecord(
+  public ApiResponseDto editRecord(
       @PathVariable("no") long no, @RequestBody RecordEditRequestDto requestDto) {
-    return ResponseEntity.ok().body(recordService.editRecord(no, requestDto));
+    return ApiResponseDto.createOK(recordService.editRecord(no, requestDto));
   }
 
   @DeleteMapping(value = "/record/{no}")
-  public ResponseEntity removeRecord(@PathVariable("no") long no) {
+  public ApiResponseDto removeRecord(@PathVariable("no") long no) {
     recordService.removeRecord(no);
 
-    return ResponseEntity.ok().body(true);
+    return ApiResponseDto.createOK(true);
   }
 }

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -58,10 +59,8 @@ public class MemberApiControllerTest {
     }
 
     @Test
-    public void 멤버목록_가져오기_테스트() throws Exception {
+    public void 멤버목록조회_테스트() throws Exception {
         //given
-        List<Member> samples = new ArrayList<Member>();
-        List<MemberListResponseDto> listResults = new ArrayList<MemberListResponseDto>();
         for (int i = 0; i < 3; i++) {
             Member member = Member.builder()
                     .id("test" + i)
@@ -71,18 +70,14 @@ public class MemberApiControllerTest {
                     .state("A")
                     .type("E")
                     .build();
-
-            listResults.add(new MemberListResponseDto(member));
-            samples.add(member);
+            memberRepository.save(member);
         }
-        String contents = objectMapper.writeValueAsString(listResults);
-
-        memberRepository.saveAll(samples);
-
         //when
         mockMvc.perform(get("/member"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(contents))
+                .andExpect(jsonPath("$[0].id", is("test0")))
+                .andExpect(jsonPath("$[1].id", is("test1")))
+                .andExpect(jsonPath("$[2].id", is("test2")))
                 .andDo(document("Member-list"));
         //then
     }

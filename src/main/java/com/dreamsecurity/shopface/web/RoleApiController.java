@@ -14,8 +14,9 @@ public class RoleApiController {
   private final RoleService roleService;
 
   @GetMapping(value = "/branch/{no}/role")
-  public ResponseEntity getRoleList(@PathVariable("no") long no) {
-    return ResponseEntity.ok().body(roleService.getRoleList(no));
+  public ApiResponseDto getRoleList(@PathVariable("no") long no) {
+//    return ResponseEntity.ok().body(roleService.getRoleList(no));
+    return ApiResponseDto.createOK(roleService.getRoleList(no));
   }
 
   @PostMapping(value = "/role")
@@ -26,15 +27,15 @@ public class RoleApiController {
   }
 
   @PutMapping(value = "/role/{no}")
-  public ResponseEntity editRole(
+  public ApiResponseDto editRole(
       @PathVariable("no") long no, @RequestBody RoleEditRequestDto requestDto) {
-    return ResponseEntity.ok().body(roleService.editRole(no, requestDto));
+    return ApiResponseDto.createOK(roleService.editRole(no, requestDto));
   }
 
   @DeleteMapping(value = "/role/{no}")
-  public ResponseEntity removeRole(@PathVariable("no") long no) {
+  public ApiResponseDto removeRole(@PathVariable("no") long no) {
     roleService.removeRole(no);
 
-    return ResponseEntity.ok().body(true);
+    return ApiResponseDto.createOK(true);
   }
 }
