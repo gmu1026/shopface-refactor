@@ -7,7 +7,5 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-    @Query("select s from Schedule s where branch.no = :no")
-    List<Schedule> findAllBranchNo(long no);
+public interface ScheduleRepository extends JpaRepository<Schedule, Long>, ScheduleREpositoryCustom {
 }

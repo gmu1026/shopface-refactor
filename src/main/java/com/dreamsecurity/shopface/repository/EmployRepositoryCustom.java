@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface EmployRepositoryCustom {
     List<EmployListResponseDto> findAllByBranchNo(long no);
+    List<EmployListResponseDto>findByMemberIdAndBranchNo(String memberId, long branchNo);
 }

@@ -15,6 +15,7 @@ public class ScheduleEditRequestDto {
   private String color;
   private Member member;
   private Occupation occupation;
+  private String state;
 
   public ScheduleEditRequestDto(Schedule entity) {
     this.workStartTime = entity.getWorkStartTime();
@@ -22,5 +23,6 @@ public class ScheduleEditRequestDto {
     this.color = entity.getColor();
     this.member = entity.getMember();
     this.occupation = entity.getOccupation();
+    this.state = entity.getState();
   }
 }
