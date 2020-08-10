@@ -56,19 +56,18 @@ public class ScheduleServiceImpl implements  ScheduleService {
         return result;
     }
 
-    private long isOccupationNoChecked(ScheduleAddRequestDto requestDto) {
+    private boolean isOccupationNoChecked(ScheduleAddRequestDto requestDto) {
         if (occupationRepository.findByNoAndBranchNo(requestDto.getOccupation().getNo(), requestDto.getBranch().getNo()) != null){
             for (ScheduleColor color : ScheduleColor.values()) {
                 if (color.getColorCode().equals(requestDto.getColor())) {
-                    return scheduleRepository.save(requestDto.toEntity()).getNo();
+                    return true;
                 }
             }
-
             new IllegalArgumentException("등록할 수 없는 색상입니다.");
-            return 0;
+            return false;
         }else {
             new IllegalArgumentException("업무 명이 잘못되었습니다.");
-            return 0;
+            return false;
         }
     }
 
@@ -105,9 +104,8 @@ public class ScheduleServiceImpl implements  ScheduleService {
                     }
                 }
                 // 업무 번호 검색
-                long isOccupationNoCheckedResult = isOccupationNoChecked(requestDto);
-                if (isOccupationNoCheckedResult > 0 ) {
-                    return isOccupationNoCheckedResult;
+                if (isOccupationNoChecked(requestDto)) {
+                    return scheduleRepository.save(requestDto.toEntity()).getNo();
                 }
             }
             new IllegalArgumentException("등록할 수 없는 스케줄입니다.");
