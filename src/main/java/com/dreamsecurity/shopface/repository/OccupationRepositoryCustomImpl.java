@@ -31,7 +31,7 @@ public class OccupationRepositoryCustomImpl implements OccupationRepositoryCusto
                 .select(Projections.constructor(OccupationResponseDto.class,
                         occupation.no, occupation.branch.no, occupation.name))
                 .from(occupation)
-                .where()
+                .where(occupation.no.eq(no).and(occupation.branch.no.eq(branchNo)))
                 .fetchOne();
     }
 }
