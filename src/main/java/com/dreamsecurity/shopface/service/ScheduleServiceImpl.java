@@ -56,7 +56,8 @@ public class ScheduleServiceImpl implements  ScheduleService {
         return result;
     }
 
-    private boolean isOccupationNoChecked(ScheduleAddRequestDto requestDto) {
+    @Transactional(readOnly = true)
+    public boolean isOccupationNoChecked(ScheduleAddRequestDto requestDto) {
         if (occupationRepository.findByNoAndBranchNo(requestDto.getOccupation().getNo(), requestDto.getBranch().getNo()) != null){
             for (ScheduleColor color : ScheduleColor.values()) {
                 if (color.getColorCode().equals(requestDto.getColor())) {
@@ -71,7 +72,8 @@ public class ScheduleServiceImpl implements  ScheduleService {
         }
     }
 
-    private boolean CheckEmploy (ScheduleAddRequestDto requestDto) {
+    @Transactional(readOnly = true)
+    public boolean CheckEmploy (ScheduleAddRequestDto requestDto) {
         boolean result = false;
 
         List<EmployListResponseDto> entity = employRepository.findByMemberIdAndBranchNo(requestDto.getMember().getId(), requestDto.getBranch().getNo());
