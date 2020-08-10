@@ -56,12 +56,40 @@ public class ScheduleServiceImpl implements  ScheduleService {
         return result;
     }
 
+    private long isOccupationNoChecked(ScheduleAddRequestDto requestDto) {
+        if (occupationRepository.findByNoAndBranchNo(requestDto.getOccupation().getNo(), requestDto.getBranch().getNo()) != null){
+            for (ScheduleColor color : ScheduleColor.values()) {
+                if (color.getColorCode().equals(requestDto.getColor())) {
+                    return scheduleRepository.save(requestDto.toEntity()).getNo();
+                }
+            }
+
+            new IllegalArgumentException("등록할 수 없는 색상입니다.");
+            return 0;
+        }else {
+            new IllegalArgumentException("업무 명이 잘못되었습니다.");
+            return 0;
+        }
+    }
+
+    private boolean CheckEmploy (ScheduleAddRequestDto requestDto) {
+        boolean result = false;
+
+        List<EmployListResponseDto> entity = employRepository.findByMemberIdAndBranchNo(requestDto.getMember().getId(), requestDto.getBranch().getNo());
+        if(!entity.isEmpty()) {
+            result = true;
+        } else {
+            result = false;
+        }
+
+        return result;
+    }
+
     @Transactional
     @Override
     public Long addSchedule(ScheduleAddRequestDto requestDto) {
         if (requestDto.getWorkStartTime().isBefore(requestDto.getWorkEndTime())) {
-            List<EmployListResponseDto> entity = employRepository.findByMemberIdAndBranchNo(requestDto.getMember().getId(), requestDto.getBranch().getNo());
-            if (!entity.isEmpty()) {
+            if (CheckEmploy(requestDto)) {
                 // 스케줄 중복 검사
                 List<ScheduleListResponseDto> oldSchedules = scheduleRepository.findAllByTodayAndMemberIdAndBranchNo(requestDto.getWorkStartTime(),
                         requestDto.getMember().getId(),
@@ -76,17 +104,10 @@ public class ScheduleServiceImpl implements  ScheduleService {
                         throw e;
                     }
                 }
-                // 업무 번호 검삭
-                if (occupationRepository.findByNoAndBranchNo(requestDto.getOccupation().getNo(), requestDto.getBranch().getNo()) != null){
-                    for (ScheduleColor color : ScheduleColor.values()) {
-                        if (color.getColorCode().equals(requestDto.getColor())) {
-                            return scheduleRepository.save(requestDto.toEntity()).getNo();
-                        }
-                    }
-
-                    new IllegalArgumentException("등록할 수 없는 색상입니다.");
-                }else {
-                    new IllegalArgumentException("업무 명이 잘못되었습니다.");
+                // 업무 번호 검색
+                long isOccupationNoCheckedResult = isOccupationNoChecked(requestDto);
+                if (isOccupationNoCheckedResult > 0 ) {
+                    return isOccupationNoCheckedResult;
                 }
             }
             new IllegalArgumentException("등록할 수 없는 스케줄입니다.");
