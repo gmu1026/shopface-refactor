@@ -41,6 +41,7 @@ dependencies {
     compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.832'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.3.2.RELEASE'
     implementation 'com.querydsl:querydsl-jpa'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.3.2.RELEASE'
 }
 
 ext {

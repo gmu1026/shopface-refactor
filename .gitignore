@@ -35,3 +35,5 @@ out/
 
 /src/main/resources/application-aws.yml
 /src/main/resources/application-db.yml
+/src/main/resources/application-mail.yml
+

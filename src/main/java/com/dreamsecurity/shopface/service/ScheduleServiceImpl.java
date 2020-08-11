@@ -1,18 +1,20 @@
 package com.dreamsecurity.shopface.service;
 
 import com.dreamsecurity.shopface.domain.Branch;
+import com.dreamsecurity.shopface.domain.Member;
+import com.dreamsecurity.shopface.domain.Occupation;
 import com.dreamsecurity.shopface.domain.Schedule;
 import com.dreamsecurity.shopface.dto.employ.EmployListResponseDto;
+import com.dreamsecurity.shopface.dto.occupation.OccupationResponseDto;
 import com.dreamsecurity.shopface.dto.schedule.ScheduleAddRequestDto;
 import com.dreamsecurity.shopface.dto.schedule.ScheduleEditRequestDto;
 import com.dreamsecurity.shopface.dto.schedule.ScheduleListResponseDto;
 import com.dreamsecurity.shopface.dto.schedule.ScheduleResponseDto;
 import com.dreamsecurity.shopface.enums.ScheduleColor;
 import com.dreamsecurity.shopface.enums.ScheduleState;
-import com.dreamsecurity.shopface.repository.EmployRepository;
-import com.dreamsecurity.shopface.repository.OccupationRepository;
-import com.dreamsecurity.shopface.repository.ScheduleRepository;
+import com.dreamsecurity.shopface.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +23,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class ScheduleServiceImpl implements  ScheduleService {
     private final ScheduleRepository scheduleRepository;
+    private final MemberRepository memberRepository;
+    private final BranchRepository branchRepository;
     private final EmployRepository employRepository;
     private final OccupationRepository occupationRepository;
 
@@ -57,10 +62,14 @@ public class ScheduleServiceImpl implements  ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isOccupationNoChecked(ScheduleAddRequestDto requestDto) {
-        if (occupationRepository.findByNoAndBranchNo(requestDto.getOccupation().getNo(), requestDto.getBranch().getNo()) != null){
+    public boolean isOccupationNoChecked(Occupation occupation, Branch branch, String requestColor) {
+        OccupationResponseDto existOccupation = occupationRepository.findByNoAndBranchNo(occupation.getNo(), branch.getNo());
+
+        log.info(existOccupation.getName());
+        if (existOccupation != null) {
             for (ScheduleColor color : ScheduleColor.values()) {
-                if (color.getColorCode().equals(requestDto.getColor())) {
+                log.info(color.getColorCode());
+                if (color.getColorCode().equals(requestColor)) {
                     return true;
                 }
             }
@@ -73,10 +82,11 @@ public class ScheduleServiceImpl implements  ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public boolean CheckEmploy (ScheduleAddRequestDto requestDto) {
+    public boolean CheckEmploy (Member member, Branch branch) {
         boolean result = false;
 
-        List<EmployListResponseDto> entity = employRepository.findByMemberIdAndBranchNo(requestDto.getMember().getId(), requestDto.getBranch().getNo());
+        List<EmployListResponseDto> entity = employRepository.findByMemberIdAndBranchNo(
+                member.getId(), branch.getNo());
         if(!entity.isEmpty()) {
             result = true;
         } else {
@@ -89,39 +99,28 @@ public class ScheduleServiceImpl implements  ScheduleService {
     @Transactional
     @Override
     public Long addSchedule(ScheduleAddRequestDto requestDto) {
+        Member member = memberRepository.findById(requestDto.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다"));
+
+        Branch branch = branchRepository.findById(requestDto.getBranchNo())
+                .orElseThrow(() -> new IllegalArgumentException("해당 지점이 없습니다"));
+
+        Occupation occupation = occupationRepository.findById(requestDto.getOccupationNo())
+                .orElseThrow(() -> new IllegalArgumentException("해당 업무가 없습니다"));
+
         if (requestDto.getWorkStartTime().isBefore(requestDto.getWorkEndTime())) {
-            if (CheckEmploy(requestDto)) {
-                // 스케줄 중복 검사
-                List<ScheduleListResponseDto> oldSchedules = scheduleRepository.findAllByTodayAndMemberIdAndBranchNo(requestDto.getWorkStartTime(),
-                        requestDto.getMember().getId(),
-                        requestDto.getBranch().getNo());
-                for (ScheduleListResponseDto old : oldSchedules) {
-                    try {
-                        boolean isChecked = checkSchedule(old.getWorkStartTime(), old.getWorkEndTime(), requestDto.getWorkStartTime(), requestDto.getWorkEndTime());
-                        if (!isChecked) {
-                            new IllegalArgumentException("잘못된 스케줄입니다.");
-                        }
-                    } catch (IllegalArgumentException e) {
-                        throw e;
-                    }
-                }
-                // 업무 번호 검색
-                if (isOccupationNoChecked(requestDto)) {
-                    return scheduleRepository.save(requestDto.toEntity()).getNo();
-                }
-            }
-            new IllegalArgumentException("등록할 수 없는 스케줄입니다.");
+            // TODO Schedule Add logic
+        } else {
+            new IllegalArgumentException("근무 시간이 올바르지 않습니다");
         }
-        new IllegalArgumentException("종료시간이 시작시간보다 빠른 시각입니다.");
-        return (long)0;
+
+        return null;
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<ScheduleListResponseDto> getScheduleList(long no) {
-        return scheduleRepository.findAllBranchNo(no).stream()
-                .map(ScheduleListResponseDto::new)
-                .collect(Collectors.toList());
+        return scheduleRepository.findAllBranchNo(no);
     }
 
     @Transactional(readOnly = true)
