@@ -14,10 +14,11 @@ import java.time.LocalDateTime;
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Employ {
-    @PrePersist
-    public void setDefaultState() {
-        this.state = this.state == null ? "B" : this.state;
-    }
+//    @PrePersist
+//    public void setDefaultState() {
+//        this.state = this.state == null ? "I" : this.state;
+//    }
+    //I = Invite
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,7 +46,10 @@ public class Employ {
     @Column(nullable = true, insertable = false)
     private Long salary;
 
-    @Column(nullable = true, length = 6, insertable = false)
+    @Column(nullable = false, length = 100)
+    private String email;
+
+    @Column(nullable = true, length = 6)
     private String certCode;
 
     @Column
@@ -58,10 +62,11 @@ public class Employ {
     private String state;
 
     @Builder
-    public Employ(String name, long salary, String state, Role role, Department department, Branch branch) {
+    public Employ(String name, long salary, String state, String email, Role role, Department department, Branch branch) {
         this.name = name;
         this.salary = salary;
         this.state = state;
+        this.email = email;
         this.role = role;
         this.department = department;
         this.branch = branch;
@@ -71,5 +76,16 @@ public class Employ {
         this.salary = salary;
         this.role = role;
         this.department = department;
+    }
+
+    public void joinMember(Member member) {
+        this.member = member;
+        this.state = "E";
+        this.certCode = null;
+    }
+
+    public void inviteMember(String certCode) {
+        this.certCode = certCode;
+        this.state = "I";
     }
 }

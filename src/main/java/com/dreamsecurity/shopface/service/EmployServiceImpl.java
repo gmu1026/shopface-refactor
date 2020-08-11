@@ -1,33 +1,32 @@
 package com.dreamsecurity.shopface.service;
 
-import com.dreamsecurity.shopface.domain.Branch;
-import com.dreamsecurity.shopface.domain.Department;
-import com.dreamsecurity.shopface.domain.Employ;
-import com.dreamsecurity.shopface.domain.Role;
-import com.dreamsecurity.shopface.dto.employ.EmployAddRequestDto;
-import com.dreamsecurity.shopface.dto.employ.EmployEditRequestDto;
-import com.dreamsecurity.shopface.dto.employ.EmployListResponseDto;
-import com.dreamsecurity.shopface.dto.employ.EmployResponseDto;
-import com.dreamsecurity.shopface.repository.BranchRepository;
-import com.dreamsecurity.shopface.repository.DepartmentRepository;
-import com.dreamsecurity.shopface.repository.EmployRepository;
-import com.dreamsecurity.shopface.repository.RoleRepository;
+import com.dreamsecurity.shopface.domain.*;
+import com.dreamsecurity.shopface.dto.employ.*;
+import com.dreamsecurity.shopface.repository.*;
+import com.dreamsecurity.shopface.response.ApiException;
+import com.dreamsecurity.shopface.response.ApiResponseCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Random;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
 public class EmployServiceImpl implements EmployService {
+    private final MemberRepository memberRepository;
     private final EmployRepository employRepository;
     private final BranchRepository branchRepository;
     private final RoleRepository roleRepository;
     private final DepartmentRepository departmentRepository;
+    private final JavaMailSender mailSender;
 
     @Transactional
     @Override
@@ -50,7 +49,12 @@ public class EmployServiceImpl implements EmployService {
         }
         requestDto.setBranch(branch);
 
-        return employRepository.save(requestDto.toEntity()).getNo();
+        String certCode = createCode();
+        Employ employ = requestDto.toEntity();
+        employ.inviteMember(certCode);
+        sendInviteMail(requestDto, certCode);
+
+        return employRepository.save(employ).getNo();
     }
 
     @Transactional(readOnly = true)
@@ -90,5 +94,79 @@ public class EmployServiceImpl implements EmployService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 고용 정보가 없습니다."));
 
         employRepository.delete(entity);
+    }
+
+    @Override
+    public boolean sendInviteMail(EmployAddRequestDto requestDto, String certCode) {
+        boolean isSuccess = false;
+        try{
+            mailSender.send(createInviteMessage(requestDto.getEmail(),
+                    requestDto.getName(), requestDto.getBranch().getName(), certCode));
+
+            isSuccess = true;
+        } catch (MailException e) {
+            new ApiException(ApiResponseCode.SERVER_ERROR, "다시 시도해주세요");
+        }
+        return isSuccess;
+    }
+
+    @Override
+    public SimpleMailMessage createInviteMessage(String email, String name, String branchName, String certCode) {
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        StringBuilder content = new StringBuilder();
+        content.append(branchName + "으로부터 근무자 합류 초대를 하였습니다.\n");
+        content.append("초대코드를 입력해주세요.\n");
+        content.append(certCode);
+
+        message.setTo(email);
+        message.setText(content.toString());
+        message.setSubject(branchName + "지점 초대 메일");
+
+        return message;
+    }
+
+    @Override
+    public String createCode() {
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 6;
+        Random random = new Random();
+
+        String code = random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        return code;
+    }
+
+    @Transactional
+    @Override
+    public boolean joiningEmployee(EmployAcceptRequestDto requestDto) {
+        Member member = memberRepository.findById(requestDto.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다"));
+
+        Employ employ = employRepository.findByCertCode(requestDto.getCertCode());
+
+        boolean isSuccess = false;
+        if (checkCode(employ.getCertCode(), requestDto.getCertCode())) {
+            employ.joinMember(member);
+            isSuccess = true;
+        } else {
+            new ApiException(ApiResponseCode.BAD_REQUEST, "코드가 일치하지 않습니다");
+        }
+
+        return isSuccess;
+    }
+
+    @Override
+    public boolean checkCode(String requestCertCode, String existCertCode) {
+        boolean isSuccess = false;
+        if (requestCertCode.equals(existCertCode)) {
+            isSuccess = true;
+        }
+        return isSuccess;
     }
 }

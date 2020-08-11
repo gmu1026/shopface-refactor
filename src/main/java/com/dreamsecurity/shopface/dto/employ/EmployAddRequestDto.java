@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EmployAddRequestDto {
   private String name;
+  private String email;
   private Branch branch;
   private Role role;
   private Department department;
@@ -29,6 +30,7 @@ public class EmployAddRequestDto {
     return Employ.builder()
             .name(this.name)
             .branch(this.branch)
+            .email(this.email)
             .role(this.role)
             .department(this.department)
             .build();

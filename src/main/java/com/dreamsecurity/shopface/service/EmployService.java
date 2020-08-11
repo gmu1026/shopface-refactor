@@ -1,9 +1,8 @@
 package com.dreamsecurity.shopface.service;
 
-import com.dreamsecurity.shopface.dto.employ.EmployAddRequestDto;
-import com.dreamsecurity.shopface.dto.employ.EmployEditRequestDto;
-import com.dreamsecurity.shopface.dto.employ.EmployListResponseDto;
-import com.dreamsecurity.shopface.dto.employ.EmployResponseDto;
+import com.dreamsecurity.shopface.domain.Employ;
+import com.dreamsecurity.shopface.dto.employ.*;
+import org.springframework.mail.SimpleMailMessage;
 
 import java.util.List;
 
@@ -13,4 +12,9 @@ public interface EmployService {
     EmployResponseDto getEmploy(long no);
     Long editEmploy(long no, EmployEditRequestDto requestDto);
     void removeEmploy(long no);
+    boolean sendInviteMail(EmployAddRequestDto requestDto, String certCode);
+    String createCode();
+    SimpleMailMessage createInviteMessage(String email, String name, String branchName, String certCode);
+    boolean joiningEmployee(EmployAcceptRequestDto requestDto);
+    boolean checkCode(String requestCertCode, String existCertCode);
 }

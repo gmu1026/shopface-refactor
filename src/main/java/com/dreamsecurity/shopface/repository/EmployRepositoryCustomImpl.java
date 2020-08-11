@@ -60,4 +60,9 @@ public class EmployRepositoryCustomImpl implements EmployRepositoryCustom {
                 .where(employ.branch.no.eq(branchNo).and(employ.role.no.eq(roleNo)))
                 .fetch();
     }
+
+    @Override
+    public Employ findByCertCode(String certCode) {
+        return jpaQueryFactory.selectFrom(employ).where(employ.certCode.eq(certCode)).fetchOne();
+    }
 }

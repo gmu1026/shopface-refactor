@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: aws, db
+    include: aws, db, mail
   mvc:
     log-request-details: true
 

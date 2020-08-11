@@ -1,5 +1,6 @@
 package com.dreamsecurity.shopface.web;
 
+import com.dreamsecurity.shopface.dto.employ.EmployAcceptRequestDto;
 import com.dreamsecurity.shopface.dto.employ.EmployAddRequestDto;
 import com.dreamsecurity.shopface.dto.employ.EmployEditRequestDto;
 import com.dreamsecurity.shopface.response.ApiResponseDto;
@@ -36,6 +37,13 @@ public class EmployApiController {
   @DeleteMapping(value = "/employ/{no}")
   public ApiResponseDto removeEmploy(@PathVariable("no") long no) {
     employService.removeEmploy(no);
+
+    return ApiResponseDto.createOK(true);
+  }
+
+  @PatchMapping(value = "/employ")
+  public ApiResponseDto joiningMember(@RequestBody EmployAcceptRequestDto requestDto) {
+    employService.joiningEmployee(requestDto);
 
     return ApiResponseDto.createOK(true);
   }

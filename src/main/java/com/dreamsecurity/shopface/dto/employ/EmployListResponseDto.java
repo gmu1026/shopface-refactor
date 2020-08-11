@@ -19,6 +19,8 @@ public class EmployListResponseDto {
   private String name;
   private String state;
   private Long salary;
+  private String email;
+  private String phone;
   private LocalDateTime employDate;
   private String roleName;
   private String departmentName;
@@ -43,5 +45,16 @@ public class EmployListResponseDto {
     this.state = employ.getState();
     this.salary = employ.getSalary();
     this.employDate = employ.getEmployDate();
+  }
+
+  public EmployListResponseDto(Long no, String name, String state, Long salary,
+                               LocalDateTime employDate, String roleName, String departmentName) {
+    this.no = no;
+    this.name = name;
+    this.state = state;
+    this.salary = salary;
+    this.employDate = employDate;
+    this.roleName = roleName;
+    this.departmentName = departmentName;
   }
 }

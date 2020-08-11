@@ -10,4 +10,5 @@ public interface EmployRepositoryCustom {
     List<EmployListResponseDto>findByMemberIdAndBranchNo(String memberId, long branchNo);
     List<Employ> findAllByBranchNoAndDepartmentNo(long branchNo, long departmentNo);
     List<Employ> findAllByBranchNoAndRoleNo(long branchNo, long roleNo);
+    Employ findByCertCode(String certCode);
 }
