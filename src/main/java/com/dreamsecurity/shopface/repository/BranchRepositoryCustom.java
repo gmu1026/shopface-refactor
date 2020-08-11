@@ -1,5 +1,6 @@
 package com.dreamsecurity.shopface.repository;
 
+import com.dreamsecurity.shopface.domain.Branch;
 import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.dto.branch.BranchListResponseDto;
 
