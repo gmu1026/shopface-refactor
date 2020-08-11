@@ -28,8 +28,9 @@ public class OccupationServiceImpl implements OccupationService{
     @Transactional
     @Override
     public Long addOccupation(OccupationAddRequestDto requestDto) {
-        branchRepository.findById(requestDto.getBranch().getNo())
+        branchRepository.findById(requestDto.getBranchNo())
                 .orElseThrow(() -> new IllegalArgumentException("사업장이 존재하지 않습니다."));
+
         return occupationRepository.save(requestDto.toEntity()).getNo();
     }
 

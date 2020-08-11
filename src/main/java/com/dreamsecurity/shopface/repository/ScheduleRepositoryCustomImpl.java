@@ -61,9 +61,9 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     }
 
     @Override
-    public List<Schedule> findAllBranchNo(long no) {
+    public List<ScheduleListResponseDto> findAllBranchNo(long no) {
         return jpaQueryFactory
-                .select(Projections.constructor(Schedule.class,
+                .select(Projections.constructor(ScheduleListResponseDto.class,
                         schedule.no, schedule.workStartTime , schedule.workEndTime, schedule.color,
                         schedule.state, schedule.member.id, schedule.branch.no))
                 .from(schedule)
