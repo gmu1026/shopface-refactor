@@ -33,6 +33,8 @@ public class MemberAddRequestDto {
 
   private String type;
 
+  private String certCode;
+
   public MemberAddRequestDto(String id, String password, String name,
                              String phone, String state, String type) {
     this.id = id;
@@ -69,5 +71,9 @@ public class MemberAddRequestDto {
             .type(this.type)
             .state(this.state)
             .build();
+  }
+
+  public void setType(String type) {
+    this.type = type;
   }
 }
