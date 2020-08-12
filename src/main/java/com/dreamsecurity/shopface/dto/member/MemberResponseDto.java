@@ -13,6 +13,7 @@ public class MemberResponseDto {
   private String email;
   private String bankName;
   private String accountNum;
+  private String type;
 
   public MemberResponseDto(Member entity) {
     this.id = entity.getId();
@@ -23,5 +24,6 @@ public class MemberResponseDto {
     this.email = entity.getEmail();
     this.bankName = entity.getBankName();
     this.accountNum = entity.getAccountNum();
+    this.type = entity.getType();
   }
 }
