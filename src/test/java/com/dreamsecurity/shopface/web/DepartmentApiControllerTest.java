@@ -123,9 +123,9 @@ public class DepartmentApiControllerTest {
         ResultActions result = mockMvc.perform(get("/branch/" + branch.getNo() + "/department"));
         //then
         result.andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name", is("부서0")))
-                .andExpect(jsonPath("$[1].name", is("부서1")))
-                .andExpect(jsonPath("$[2].name", is("부서2")))
+                .andExpect(jsonPath("$.data[0].name", is("부서0")))
+                .andExpect(jsonPath("$.data[1].name", is("부서1")))
+                .andExpect(jsonPath("$.data[2].name", is("부서2")))
                 .andDo(document("Department-List"));
     }
 

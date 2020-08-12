@@ -121,9 +121,9 @@ public class OccupationApiControllerTest {
         //when
         mockMvc.perform(get("/branch/" + branch.getNo() + "/occupation"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name", is("업무0")))
-                .andExpect(jsonPath("$[1].name", is("업무1")))
-                .andExpect(jsonPath("$[2].name", is("업무2")))
+                .andExpect(jsonPath("$.data[0].name", is("업무0")))
+                .andExpect(jsonPath("$.data[1].name", is("업무1")))
+                .andExpect(jsonPath("$.data[2].name", is("업무2")))
                 .andDo(document("Occupation-List"));
         //then
     }

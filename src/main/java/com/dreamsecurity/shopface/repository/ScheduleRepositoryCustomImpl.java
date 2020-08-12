@@ -74,10 +74,7 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     @Override
     public List<Schedule> findAllByBranchNoAndOccupationNo(long branchNo, long occupationNo) {
         return jpaQueryFactory
-                .select(Projections.constructor(Schedule.class,
-                        schedule.no, schedule.workStartTime , schedule.workEndTime, schedule.color,
-                        schedule.state, schedule.member.id, schedule.branch.no))
-                .from(schedule)
+                .selectFrom(schedule)
                 .where(schedule.branch.no.eq(branchNo).and(schedule.occupation.no.eq(occupationNo)))
                 .fetch();
     }

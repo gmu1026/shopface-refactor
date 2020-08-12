@@ -25,6 +25,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -75,9 +76,9 @@ public class MemberApiControllerTest {
         //when
         mockMvc.perform(get("/member"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is("test0")))
-                .andExpect(jsonPath("$[1].id", is("test1")))
-                .andExpect(jsonPath("$[2].id", is("test2")))
+                .andExpect(jsonPath("$.data[0].id", is("test0")))
+                .andExpect(jsonPath("$.data[1].id", is("test1")))
+                .andExpect(jsonPath("$.data[2].id", is("test2")))
                 .andDo(document("Member-list"));
         //then
     }
@@ -160,8 +161,8 @@ public class MemberApiControllerTest {
         //when
         mockMvc.perform(get("/member/" + target.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(target.getId()))
-                .andExpect(jsonPath("$.name").value(target.getName()))
+                .andExpect(jsonPath("$.data.id").value(target.getId()))
+                .andExpect(jsonPath("$.data.name").value(target.getName()))
                 .andDo(document("Member-get"));
         //then
     }

@@ -1,9 +1,4 @@
 spring:
-  profiles:
-    active: test
----
-spring:
-  profiles: test
   datasource:
     driver-class-name: org.h2.Driver
     username: sa
@@ -19,6 +14,18 @@ spring:
   h2:
     console:
       enabled: true
+  mail:
+    host: smtp.gmail.com
+    username: test
+    password: test
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
 
 cloud:
   aws:

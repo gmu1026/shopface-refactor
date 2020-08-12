@@ -130,9 +130,9 @@ public class BranchApiControllerTest {
         //when
         mockMvc.perform(get("/member/" + businessman.getId() + "/branch"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name", is("테스트0")))
-                .andExpect(jsonPath("$[1].name", is("테스트1")))
-                .andExpect(jsonPath("$[2].name", is("테스트2")))
+                .andExpect(jsonPath("$.data[0].name", is("테스트0")))
+                .andExpect(jsonPath("$.data[1].name", is("테스트1")))
+                .andExpect(jsonPath("$.data[2].name", is("테스트2")))
                 .andDo(document("Branch-list"));
         //then
     }
@@ -160,7 +160,7 @@ public class BranchApiControllerTest {
         //when
         mockMvc.perform(get("/branch/" + branch.getNo()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(content))
+                .andExpect(jsonPath("$.data.name", is("테스트")))
                 .andDo(document("Branch-detail"));
         //then
     }

@@ -42,10 +42,7 @@ public class EmployRepositoryCustomImpl implements EmployRepositoryCustom {
     @Override
     public List<Employ> findAllByBranchNoAndDepartmentNo(long branchNo, long departmentNo) {
         return jpaQueryFactory
-                .select(Projections.constructor(Employ.class,
-                        employ.no, employ.name , employ.state, employ.salary,
-                        employ.employDate, employ.role.name, employ.department.name))
-                .from(employ)
+                .selectFrom(employ)
                 .where(employ.branch.no.eq(branchNo).and(employ.department.no.eq(departmentNo)))
                 .fetch();
     }
@@ -53,10 +50,7 @@ public class EmployRepositoryCustomImpl implements EmployRepositoryCustom {
     @Override
     public List<Employ> findAllByBranchNoAndRoleNo(long branchNo, long roleNo) {
         return jpaQueryFactory
-                .select(Projections.constructor(Employ.class,
-                        employ.no, employ.name , employ.state, employ.salary,
-                        employ.employDate, employ.role.name, employ.department.name))
-                .from(employ)
+                .selectFrom(employ)
                 .where(employ.branch.no.eq(branchNo).and(employ.role.no.eq(roleNo)))
                 .fetch();
     }

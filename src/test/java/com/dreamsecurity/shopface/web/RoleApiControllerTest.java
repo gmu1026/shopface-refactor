@@ -149,9 +149,9 @@ public class RoleApiControllerTest {
         //when
         mockMvc.perform(get("/branch/" + branch.getNo() + "/role"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name", is("역할0")))
-                .andExpect(jsonPath("$[1].name", is("역할1")))
-                .andExpect(jsonPath("$[2].name", is("역할2")))
+                .andExpect(jsonPath("$.data[0].name", is("역할0")))
+                .andExpect(jsonPath("$.data[1].name", is("역할1")))
+                .andExpect(jsonPath("$.data[2].name", is("역할2")))
                 .andDo(document("Role-List"));
         //then
     }
