@@ -23,8 +23,11 @@ public class EmployRepositoryCustomImpl implements EmployRepositoryCustom {
     public Optional<Employ> findMemberAndEmployById(long no) {
         return Optional.ofNullable(
                 jpaQueryFactory
-                        .selectFrom(employ).leftJoin(employ.member, member).fetchJoin().fetchOne());
-
+                        .selectFrom(employ)
+                        .leftJoin(employ.member, member)
+                        .fetchJoin()
+                        .where(employ.no.eq(no))
+                        .fetchOne());
     }
 
     @Override
