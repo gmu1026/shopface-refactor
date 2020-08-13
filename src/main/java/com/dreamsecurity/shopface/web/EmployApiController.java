@@ -41,10 +41,17 @@ public class EmployApiController {
     return ApiResponseDto.createOK(true);
   }
 
-  @PatchMapping(value = "/employ")
-  public ApiResponseDto joiningMember(@RequestBody EmployAcceptRequestDto requestDto) {
-    employService.joiningEmployee(requestDto);
+  @GetMapping(value = "/employ/check")
+  public ApiResponseDto checkCertCode(@RequestParam("certcode") String certCode) {
+    if (employService.checkCode(certCode)) {
+      return ApiResponseDto.createOK(true);
+    } else {
+      return ApiResponseDto.createOK(false);
+    }
+  }
 
-    return ApiResponseDto.createOK(true);
+  @PatchMapping(value = "/employ")
+  public ApiResponseDto joiningEmployee(@RequestBody EmployAcceptRequestDto requestDto) {
+    return ApiResponseDto.createOK(employService.joiningEmployee(requestDto));
   }
 }

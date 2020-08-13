@@ -40,8 +40,13 @@ public class EmployListResponseDto {
       this.departmentName = department.getName();
     }
 
+    if (employ.getMember() != null) {
+      this.phone = employ.getMember().getPhone();
+    }
+
     this.no = employ.getNo();
     this.name = employ.getName();
+    this.email = employ.getEmail();
     this.state = employ.getState();
     this.salary = employ.getSalary();
     this.employDate = employ.getEmployDate();

@@ -78,4 +78,17 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
                 .where(schedule.branch.no.eq(branchNo).and(schedule.occupation.no.eq(occupationNo)))
                 .fetch();
     }
+
+    @Override
+    public Boolean existSchedule(LocalDateTime startTime, LocalDateTime endTime, String memberId) {
+        Integer result =  jpaQueryFactory
+                .selectOne()
+                .from(schedule).where(schedule.member.id.eq(memberId))
+                .where(schedule.member.id.eq(memberId))
+                .where(schedule.workStartTime.between(startTime, endTime)
+                        .or(schedule.workEndTime.between(startTime, endTime)))
+                .fetchFirst();
+
+        return result == null;
+    }
 }

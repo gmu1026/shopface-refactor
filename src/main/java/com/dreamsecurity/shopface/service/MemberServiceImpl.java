@@ -25,17 +25,18 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final EmployRepository employRepository;
 
+    @Transactional
     @Override
     public String addMember(MemberAddRequestDto requestDto) {
         // TODO 비밀번호 암호화
         if (requestDto.getCertCode() != null) {
-            addEmployee(requestDto);
-            joinEmployee(requestDto.getCertCode(), requestDto.getId());
+            requestDto.setType("E");
+            Member employee = requestDto.toEntity();
+            return memberRepository.save(employee).getId();
         } else {
-            addBusinessman(requestDto);
+            requestDto.setType("B");
+            return memberRepository.save(requestDto.toEntity()).getId();
         }
-
-        return "Success";
     }
 
     @Transactional(readOnly = true)
@@ -96,23 +97,6 @@ public class MemberServiceImpl implements MemberService {
         entity.confirm();
 
         return entity.getId();
-    }
-
-    @Transactional
-    @Override
-    public String addBusinessman(MemberAddRequestDto requestDto) {
-        requestDto.setType("B");
-
-        return memberRepository.save(requestDto.toEntity()).getId();
-    }
-
-    @Transactional
-    @Override
-    public String addEmployee(MemberAddRequestDto requestDto) {
-        requestDto.setType("E");
-        Member employee = requestDto.toEntity();
-
-        return memberRepository.save(employee).getId();
     }
 
     @Transactional

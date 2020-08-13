@@ -82,6 +82,7 @@ public class Employ {
         this.member = member;
         this.state = "E";
         this.certCode = null;
+        this.employDate = LocalDateTime.now();
     }
 
     public void inviteMember(String certCode) {

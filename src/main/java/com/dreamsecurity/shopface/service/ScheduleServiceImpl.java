@@ -13,6 +13,8 @@ import com.dreamsecurity.shopface.dto.schedule.ScheduleResponseDto;
 import com.dreamsecurity.shopface.enums.ScheduleColor;
 import com.dreamsecurity.shopface.enums.ScheduleState;
 import com.dreamsecurity.shopface.repository.*;
+import com.dreamsecurity.shopface.response.ApiException;
+import com.dreamsecurity.shopface.response.ApiResponseCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,30 +34,37 @@ public class ScheduleServiceImpl implements  ScheduleService {
     private final EmployRepository employRepository;
     private final OccupationRepository occupationRepository;
 
-    private boolean checkSchedule(LocalDateTime oldStartDate,LocalDateTime oldEndDate, LocalDateTime newStartDate, LocalDateTime newEndDate) {
+    private boolean checkSchedule(List<ScheduleListResponseDto> existSchedules,
+                                  LocalDateTime newStartDate, LocalDateTime newEndDate) {
         boolean result = false;
 
-        if ((newStartDate == oldStartDate)
-                || (newEndDate == oldEndDate)) {
-            result = false;
-            new IllegalArgumentException("동시간대에 다른 스케줄이 존재합니다.");
-        } else if (newEndDate.isBefore(oldStartDate)) {
-            if (newStartDate.isBefore(oldEndDate)) {
-                result = true;
+        for (ScheduleListResponseDto schedule : existSchedules) {
+            LocalDateTime oldStartDate = schedule.getWorkStartTime();
+            LocalDateTime oldEndDate = schedule.getWorkEndTime();
+
+            if ((newStartDate == oldStartDate)
+                    || (newEndDate == oldEndDate)) {
+                result = false;
+                throw new IllegalArgumentException("동시간대에 다른 스케줄이 존재합니다.");
+            } else if (newEndDate.isBefore(oldStartDate)) {
+                if (newStartDate.isBefore(oldEndDate)) {
+                    result = true;
+                } else {
+                    result = false;
+                    throw new IllegalArgumentException("다른스케줄이 존재하여 등록할 수 없습니다.");
+                }
+            } else if (newEndDate.isAfter(oldStartDate)) {
+                if (newStartDate.isAfter(oldEndDate)) {
+                    result = true;
+                } else {
+                    result = false;
+                    throw new IllegalArgumentException("등록하려는 시간대에 다른스케줄이 존재하여 등록할 수 없습니다.");
+                }
             } else {
                 result = false;
-                new IllegalArgumentException("다른스케줄이 존재하여 등록할 수 없습니다.");
+                throw new IllegalArgumentException("등록하려는 시간대에 다른스케줄이 존재하여 등록할 수 없습니다.");
             }
-        } else if (newEndDate.isAfter(oldStartDate)) {
-            if (newStartDate.isAfter(oldEndDate)) {
-                result = true;
-            } else {
-                result = false;
-                new IllegalArgumentException("등록하려는 시간대에 다른스케줄이 존재하여 등록할 수 없습니다.");
-            }
-        } else {
-            result = false;
-            new IllegalArgumentException("등록하려는 시간대에 다른스케줄이 존재하여 등록할 수 없습니다.");
+
         }
 
         return result;
@@ -82,7 +91,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public boolean CheckEmploy (Member member, Branch branch) {
+    public boolean checkEmploy (Member member, Branch branch) {
         boolean result = false;
 
         List<EmployListResponseDto> entity = employRepository.findByMemberIdAndBranchNo(
@@ -99,6 +108,8 @@ public class ScheduleServiceImpl implements  ScheduleService {
     @Transactional
     @Override
     public Long addSchedule(ScheduleAddRequestDto requestDto) {
+        Long result = 0L;
+
         Member member = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다"));
 
@@ -108,13 +119,17 @@ public class ScheduleServiceImpl implements  ScheduleService {
         Occupation occupation = occupationRepository.findById(requestDto.getOccupationNo())
                 .orElseThrow(() -> new IllegalArgumentException("해당 업무가 없습니다"));
 
-        if (requestDto.getWorkStartTime().isBefore(requestDto.getWorkEndTime())) {
-            // TODO Schedule Add logic
-        } else {
-            new IllegalArgumentException("근무 시간이 올바르지 않습니다");
-        }
+       if (scheduleRepository.existSchedule(requestDto.getWorkStartTime(),
+               requestDto.getWorkEndTime(), requestDto.getMemberId())) {
+           requestDto.setMember(member);
+           requestDto.setBranch(branch);
+           requestDto.setOccupation(occupation);
+           result = scheduleRepository.save(requestDto.toEntity()).getNo();
+       } else {
+           throw new ApiException(ApiResponseCode.BAD_REQUEST, "요청한 시간에 스케줄이 이미 존재합니다");
+       }
 
-        return null;
+        return result;
     }
 
     @Transactional(readOnly = true)

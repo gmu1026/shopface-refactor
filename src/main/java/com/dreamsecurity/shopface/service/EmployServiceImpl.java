@@ -116,6 +116,7 @@ public class EmployServiceImpl implements EmployService {
 
         StringBuilder content = new StringBuilder();
         content.append(branchName + "으로부터 근무자 합류 초대를 하였습니다.\n");
+        content.append("https://cproduction.net/authcode\n");
         content.append("초대코드를 입력해주세요.\n");
         content.append(certCode);
 
@@ -151,7 +152,7 @@ public class EmployServiceImpl implements EmployService {
         Employ employ = employRepository.findByCertCode(requestDto.getCertCode());
 
         boolean isSuccess = false;
-        if (checkCode(employ.getCertCode(), requestDto.getCertCode())) {
+        if (checkCode(requestDto.getCertCode())) {
             employ.joinMember(member);
             isSuccess = true;
         } else {
@@ -161,12 +162,16 @@ public class EmployServiceImpl implements EmployService {
         return isSuccess;
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public boolean checkCode(String requestCertCode, String existCertCode) {
-        boolean isSuccess = false;
-        if (requestCertCode.equals(existCertCode)) {
-            isSuccess = true;
+    public boolean checkCode(String requestCertCode) {
+        boolean isChecked = false;
+
+        // TODO exist로 바꿀 것
+        if (employRepository.findByCertCode(requestCertCode) != null) {
+            isChecked = true;
         }
-        return isSuccess;
+
+        return isChecked;
     }
 }

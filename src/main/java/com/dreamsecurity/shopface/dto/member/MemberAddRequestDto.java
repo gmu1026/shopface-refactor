@@ -2,6 +2,7 @@ package com.dreamsecurity.shopface.dto.member;
 
 import com.dreamsecurity.shopface.domain.Member;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

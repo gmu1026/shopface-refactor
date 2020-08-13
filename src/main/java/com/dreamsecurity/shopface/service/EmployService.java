@@ -16,5 +16,5 @@ public interface EmployService {
     String createCode();
     SimpleMailMessage createInviteMessage(String email, String name, String branchName, String certCode);
     boolean joiningEmployee(EmployAcceptRequestDto requestDto);
-    boolean checkCode(String requestCertCode, String existCertCode);
+    boolean checkCode(String requestCertCode);
 }
