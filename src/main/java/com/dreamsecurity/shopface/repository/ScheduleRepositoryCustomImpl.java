@@ -28,7 +28,7 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
         return jpaQueryFactory
                 .select(Projections.constructor(ScheduleListResponseDto.class,
                         schedule.no, schedule.workStartTime , schedule.workEndTime, schedule.color,
-                        schedule.state, schedule.member.id, schedule.branch.no))
+                        schedule.state, schedule.branch.name))
                 .from(schedule)
                 .where(schedule.member.id.eq(id))
                 .fetch();
@@ -65,7 +65,7 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
         return jpaQueryFactory
                 .select(Projections.constructor(ScheduleListResponseDto.class,
                         schedule.no, schedule.workStartTime , schedule.workEndTime, schedule.color,
-                        schedule.state, schedule.member.id, schedule.branch.no))
+                        schedule.state, schedule.member.name))
                 .from(schedule)
                 .where(schedule.branch.no.eq(no))
                 .fetch();

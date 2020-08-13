@@ -17,8 +17,9 @@ public class ScheduleListResponseDto {
   private LocalDateTime workEndTime;
   private String color;
   private String state;
-  private String memberId;
-  private Long branchNo;
+//  private String memberId;
+//  private Long branchNo;
+  private String name;
 
   public ScheduleListResponseDto(Schedule entity) {
     this.no = entity.getNo();
@@ -26,7 +27,6 @@ public class ScheduleListResponseDto {
     this.workEndTime = entity.getWorkEndTime();
     this.color = entity.getColor();
     this.state = entity.getState();
-    this.memberId = entity.getMember().getId();
-    this.branchNo = entity.getBranch().getNo();
+//    this.memberId = entity.getMember().getId();
   }
 }

@@ -18,6 +18,11 @@ public class ScheduleApiController {
     return ApiResponseDto.createOK(scheduleService.getScheduleList(no));
   }
 
+  @GetMapping(value = "/member/{id}/schedule")
+  private ApiResponseDto getScheduleList(@PathVariable("id") String id) {
+    return ApiResponseDto.createOK(scheduleService.getScheduleList(id));
+  }
+
   @GetMapping(value = "/schedule/{no}")
   public ApiResponseDto getSchedule(@PathVariable("no") long no) {
     return ApiResponseDto.createOK(scheduleService.getSchedule(no));

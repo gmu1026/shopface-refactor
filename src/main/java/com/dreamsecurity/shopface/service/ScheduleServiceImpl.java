@@ -34,42 +34,6 @@ public class ScheduleServiceImpl implements  ScheduleService {
     private final EmployRepository employRepository;
     private final OccupationRepository occupationRepository;
 
-    private boolean checkSchedule(List<ScheduleListResponseDto> existSchedules,
-                                  LocalDateTime newStartDate, LocalDateTime newEndDate) {
-        boolean result = false;
-
-        for (ScheduleListResponseDto schedule : existSchedules) {
-            LocalDateTime oldStartDate = schedule.getWorkStartTime();
-            LocalDateTime oldEndDate = schedule.getWorkEndTime();
-
-            if ((newStartDate == oldStartDate)
-                    || (newEndDate == oldEndDate)) {
-                result = false;
-                throw new IllegalArgumentException("동시간대에 다른 스케줄이 존재합니다.");
-            } else if (newEndDate.isBefore(oldStartDate)) {
-                if (newStartDate.isBefore(oldEndDate)) {
-                    result = true;
-                } else {
-                    result = false;
-                    throw new IllegalArgumentException("다른스케줄이 존재하여 등록할 수 없습니다.");
-                }
-            } else if (newEndDate.isAfter(oldStartDate)) {
-                if (newStartDate.isAfter(oldEndDate)) {
-                    result = true;
-                } else {
-                    result = false;
-                    throw new IllegalArgumentException("등록하려는 시간대에 다른스케줄이 존재하여 등록할 수 없습니다.");
-                }
-            } else {
-                result = false;
-                throw new IllegalArgumentException("등록하려는 시간대에 다른스케줄이 존재하여 등록할 수 없습니다.");
-            }
-
-        }
-
-        return result;
-    }
-
     @Transactional(readOnly = true)
     public boolean isOccupationNoChecked(Occupation occupation, Branch branch, String requestColor) {
         OccupationResponseDto existOccupation = occupationRepository.findByNoAndBranchNo(occupation.getNo(), branch.getNo());
@@ -136,6 +100,12 @@ public class ScheduleServiceImpl implements  ScheduleService {
     @Override
     public List<ScheduleListResponseDto> getScheduleList(long no) {
         return scheduleRepository.findAllBranchNo(no);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ScheduleListResponseDto> getScheduleList(String id) {
+        return scheduleRepository.findAllByMemberId(id);
     }
 
     @Transactional(readOnly = true)

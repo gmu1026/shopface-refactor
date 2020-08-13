@@ -14,17 +14,15 @@ public class ScheduleResponseDto {
   private LocalDateTime workStartTime;
   private LocalDateTime workEndTime;
   private String color;
-  private Member member;
-  private Branch branch;
   private String state;
+  private String memberId;
+  private Long occupationNo;
 
   public ScheduleResponseDto(Schedule entity) {
     this.no = entity.getNo();
     this.workStartTime = entity.getWorkStartTime();
     this.workEndTime = entity.getWorkEndTime();
     this.color = entity.getColor();
-    this.member = entity.getMember();
-    this.branch = entity.getBranch();
     this.state = entity.getState();
   }
 }
