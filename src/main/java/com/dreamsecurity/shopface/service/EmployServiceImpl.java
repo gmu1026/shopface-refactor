@@ -66,10 +66,9 @@ public class EmployServiceImpl implements EmployService {
     @Transactional(readOnly = true)
     @Override
     public EmployResponseDto getEmploy(long no) {
-        Employ entity = employRepository.findById(no)
-                .orElseThrow(() -> new IllegalArgumentException("해당 고용 정보가 없습니다."));
+        Employ employ = employRepository.findMemberAndEmployById(no).orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다"));
 
-        return new EmployResponseDto(entity);
+        return new EmployResponseDto(employ);
     }
 
     @Transactional
@@ -116,7 +115,7 @@ public class EmployServiceImpl implements EmployService {
 
         StringBuilder content = new StringBuilder();
         content.append(branchName + "으로부터 근무자 합류 초대를 하였습니다.\n");
-        content.append("https://cproduction.net/authcode\n");
+        content.append("https://cproduction.net/certcode\n");
         content.append("초대코드를 입력해주세요.\n");
         content.append(certCode);
 
