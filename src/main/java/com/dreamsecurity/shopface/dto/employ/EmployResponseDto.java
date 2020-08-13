@@ -52,9 +52,11 @@ public class EmployResponseDto {
 //    this.department = entity.getDepartment();
 //    this.roleNo = entity.getRole().getNo();
 //    this.departmentNo = entity.getDepartment().getNo();
-    this.email = entity.getMember().getEmail();
-    this.phone = entity.getMember().getPhone();
-    this.bankName = entity.getMember().getBankName();
-    this.accountNum = entity.getMember().getAccountNum();
+    if (entity.getMember() != null) {
+      this.email = entity.getMember().getEmail();
+      this.phone = entity.getMember().getPhone();
+      this.bankName = entity.getMember().getBankName();
+      this.accountNum = entity.getMember().getAccountNum();
+    }
   }
 }
