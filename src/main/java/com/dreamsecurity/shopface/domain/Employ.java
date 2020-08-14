@@ -95,4 +95,8 @@ public class Employ {
         this.certCode = certCode;
         this.state = "I";
     }
+
+    public void disabledEmployee() {
+        this.state = "D";
+    }
 }

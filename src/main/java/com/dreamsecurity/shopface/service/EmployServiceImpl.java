@@ -88,7 +88,6 @@ public class EmployServiceImpl implements EmployService {
             department = departmentRepository.findById(requestDto.getDepartmentNo())
                     .orElseThrow(() -> new IllegalIdentifierException("해당 부서가 없습니다"));
         }
-
         entity.update(requestDto.getSalary(), role, department);
 
         return no;
@@ -180,5 +179,20 @@ public class EmployServiceImpl implements EmployService {
         }
 
         return isChecked;
+    }
+
+    @Transactional
+    @Override
+    public boolean disableEmployee(long no) {
+        boolean isSuccess = false;
+
+        Employ employ = employRepository.findById(no)
+                .orElseThrow(() -> new ApiException(
+                        ApiResponseCode.NOT_FOUND, "해당 고용 정보가 없습니다"));
+
+        employ.disabledEmployee();
+        isSuccess = true;
+
+        return isSuccess;
     }
 }
