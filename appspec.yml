@@ -10,7 +10,7 @@ permissions:
     pattern: "**"
     owner: ec2-user
     group: ec2-user
-  - object: /execute-deploy.sh
+  - object: execute-deploy.sh
     owner: ec2-user
     group: ec2-user
     mode: 775
