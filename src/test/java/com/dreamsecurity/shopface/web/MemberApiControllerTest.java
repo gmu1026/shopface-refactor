@@ -1,10 +1,12 @@
 package com.dreamsecurity.shopface.web;
 
+import com.dreamsecurity.shopface.domain.Branch;
 import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.domain.Member;
 import com.dreamsecurity.shopface.dto.member.MemberAddRequestDto;
 import com.dreamsecurity.shopface.dto.member.MemberEditRequestDto;
 import com.dreamsecurity.shopface.dto.member.MemberListResponseDto;
+import com.dreamsecurity.shopface.repository.BranchRepository;
 import com.dreamsecurity.shopface.repository.EmployRepository;
 import com.dreamsecurity.shopface.repository.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,6 +52,9 @@ public class MemberApiControllerTest {
     MemberRepository memberRepository;
 
     @Autowired
+    BranchRepository branchRepository;
+
+    @Autowired
     EmployRepository employRepository;
 
     @Before
@@ -61,6 +66,8 @@ public class MemberApiControllerTest {
 
     @After
     public void tearDown() {
+        employRepository.deleteAll();
+        branchRepository.deleteAll();
         memberRepository.deleteAll();
     }
 
@@ -121,10 +128,37 @@ public class MemberApiControllerTest {
     @Test
     public void 근무자등록_테스트() throws Exception {
         //given
+        Member member = Member.builder()
+                .id("test_businessman")
+                .password("1234")
+                .phone("01000001111")
+                .email("test@test.com")
+                .address("서울")
+                .detailAddress("잠실")
+                .zipCode("12344")
+                .name("사업자")
+                .type("B")
+                .build();
+
+        memberRepository.save(member);
+
+        Branch branch = Branch.builder()
+                .name("테스트")
+                .member(member)
+                .address("서울")
+                .detailAddress("강남")
+                .zipCode("12121")
+                .phone("01014785236")
+                .build();
+
+        branchRepository.save(branch);
+
         Employ employ = Employ.builder()
                 .name("근무자")
                 .email("test@test.com")
                 .certCode("asdqwe")
+                .branch(branch)
+                .state("I")
                 .build();
 
         employRepository.save(employ);
@@ -154,8 +188,8 @@ public class MemberApiControllerTest {
 
         //then
         List<Member> memberList = memberRepository.findAll();
-        assertThat(memberList.get(0).getId()).isEqualTo(employee.getId());
-        assertThat(memberList.get(0).getName()).isEqualTo(employee.getName());
+        assertThat(memberList.get(1).getId()).isEqualTo(employee.getId());
+        assertThat(memberList.get(1).getName()).isEqualTo(employee.getName());
     }
 
     @Test
