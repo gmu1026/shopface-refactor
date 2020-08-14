@@ -35,7 +35,7 @@ deploy:
     access_key_id: "$AWS_ACCESS_KEY"
     secret_access_key: "$AWS_SECRET_KEY"
     bucket: shopface-refactor-deploy
-    key: shopface-refactor.zip
+    key: deploy/shopface-refactor.zip
     bundle_type: zip
     application: shopface-refactor
     deployment_group: shopface-refactor-deploy-group
