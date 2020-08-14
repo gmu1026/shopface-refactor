@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -70,22 +71,18 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public Long editBranch(long no, BranchEditRequestDto requestDto)
             throws IOException {
-        log.info(requestDto.getAddress());
-        log.info(requestDto.getDetailAddress());
-        log.info(requestDto.getZipCode());
-        log.info(requestDto.getName());
-
         Branch entity = branchRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("해당 지점이 없습니다."));
 
         String businessLicensePath = "";
         if (requestDto.getBusinessLicenseImage() != null) {
+            String fileName = UUID.randomUUID().toString() + "-" + requestDto.getBusinessLicenseImage().getOriginalFilename();
             amazonS3.putObject(new PutObjectRequest(
-                    this.bucket, requestDto.getBusinessLicenseImage().getOriginalFilename(),
+                    this.bucket, fileName,
                     requestDto.getBusinessLicenseImage().getInputStream(), null));
 
             businessLicensePath = amazonS3.getUrl(
-                    this.bucket, requestDto.getBusinessLicenseImage().getOriginalFilename()).toString();
+                    this.bucket, fileName).toString();
         }
 
         entity.update(requestDto.getName(), requestDto.getAddress(),
