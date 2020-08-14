@@ -29,11 +29,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public String addMember(MemberAddRequestDto requestDto) {
         // TODO 비밀번호 암호화
-        if (requestDto.getCertCode() != null) {
+        if (employRepository.findByCertCode(requestDto.getCertCode()) != null) {
             requestDto.setType("E");
             Member employee = requestDto.toEntity();
             return memberRepository.save(employee).getId();
-        } else {
+        }
+        else {
             requestDto.setType("B");
             return memberRepository.save(requestDto.toEntity()).getId();
         }
