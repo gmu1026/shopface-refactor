@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -35,7 +36,7 @@ public class BranchApiController {
 
   @PutMapping(value = "/branch/{no}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ApiResponseDto editBranch(
-          @PathVariable("no") long no, @ModelAttribute BranchEditRequestDto requestDto) throws IOException {
+          @PathVariable("no") long no, BranchEditRequestDto requestDto) throws IOException {
     return ApiResponseDto.createOK(branchService.editBranch(no, requestDto));
   }
 

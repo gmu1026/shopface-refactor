@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -69,6 +70,11 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public Long editBranch(long no, BranchEditRequestDto requestDto)
             throws IOException {
+        log.info(requestDto.getAddress());
+        log.info(requestDto.getDetailAddress());
+        log.info(requestDto.getZipCode());
+        log.info(requestDto.getName());
+
         Branch entity = branchRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("해당 지점이 없습니다."));
 
