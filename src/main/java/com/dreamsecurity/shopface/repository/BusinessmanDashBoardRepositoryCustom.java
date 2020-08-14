@@ -6,5 +6,7 @@ import com.dreamsecurity.shopface.dto.dashboard.businessmanDashBoard.Businessman
 import java.util.List;
 
 public interface BusinessmanDashBoardRepositoryCustom {
-    List<BusinessmanDashBoardListResponseDto> getBusinessmanDashBoardList(BusinessmanDashBoardListRequestDto requestDto);
+    List<BusinessmanDashBoardListResponseDto> getBusinessmanDashBoardListScheduled(BusinessmanDashBoardListRequestDto requestDto);
+    List<BusinessmanDashBoardListResponseDto> getBusinessmanDashBoardListWorking(BusinessmanDashBoardListRequestDto requestDto);
+    List<BusinessmanDashBoardListResponseDto> getBusinessmanDashBoardListWorkDone(BusinessmanDashBoardListRequestDto requestDto);
 }

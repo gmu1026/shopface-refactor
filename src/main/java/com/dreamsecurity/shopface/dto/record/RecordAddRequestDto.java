@@ -15,6 +15,7 @@ public class RecordAddRequestDto {
   private String memberId;
   private String memberName;
   private String memberPhone;
+  private String occupationName;
   private String note;
   private Date workingTime;
   private Date quittingTime;
@@ -32,6 +33,7 @@ public class RecordAddRequestDto {
     this.memberId = entity.getMemberId();
     this.memberName = entity.getMemberName();
     this.memberPhone = entity.getMemberPhone();
+    this.occupationName = entity.getOccupationName();
     this.note = entity.getNote();
     this.workingTime = entity.getWorkingTime();
     this.quittingTime = entity.getQuittingTime();
@@ -45,6 +47,7 @@ public class RecordAddRequestDto {
     return Record.builder()
             .businessmanName(this.businessmanName)
             .businessmanPhone(this.businessmanPhone)
+            .occupationName(this.occupationName)
             .branchNo(this.branchNo)
             .branchName(this.branchName)
             .branchPhone(this.branchPhone)

@@ -1,5 +1,6 @@
 package com.dreamsecurity.shopface.web;
 
+import com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard.EmployeeDashBoardListRequestDto;
 import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.EmployeeDashBoardService;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +14,13 @@ public class EmployeeDashBoardApiController {
     private final EmployeeDashBoardService employeeDashBoardService;
 
     // 근무자용 대시보드 목록 조회
-    @GetMapping(value = "/employee/{id}")
-    public ApiResponseDto getEmployeeDashBoardList(@PathVariable("id") String id) {
-        return ApiResponseDto.createOK(null);
+    @GetMapping(value = "/employee/{id}/{status}")
+    public ApiResponseDto getEmployeeDashBoardList(@PathVariable("id") String id, @PathVariable("status") String status) {
+        return ApiResponseDto.createOK(employeeDashBoardService.getEmployeeDashBoardList(EmployeeDashBoardListRequestDto
+                .builder()
+                .memberId(id)
+                .state(status)
+                .build())
+        );
     }
 }

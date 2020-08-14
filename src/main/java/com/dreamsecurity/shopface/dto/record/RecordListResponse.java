@@ -16,6 +16,7 @@ public class RecordListResponse {
     private String memberId;
     private String memberName;
     private String memberPhone;
+    private String occupationName;
     private String note;
     private Date workingTime;
     private Date quittingTime;
@@ -34,6 +35,7 @@ public class RecordListResponse {
         this.memberId = entity.getMemberId();
         this.memberName = entity.getMemberName();
         this.memberPhone = entity.getMemberPhone();
+        this.occupationName = entity.getOccupationName();
         this.note = entity.getNote();
         this.workingTime = entity.getWorkingTime();
         this.quittingTime = entity.getQuittingTime();
