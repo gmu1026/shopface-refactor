@@ -6,6 +6,7 @@ import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.BranchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,9 +33,9 @@ public class BranchApiController {
     return ApiResponseDto.createOK(branchService.addBranch(requestDto));
   }
 
-  @PutMapping(value = "/branch/{no}")
+  @PutMapping(value = "/branch/{no}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ApiResponseDto editBranch(
-          @PathVariable("no") long no, @RequestBody BranchEditRequestDto requestDto) throws IOException {
+          @PathVariable("no") long no, @ModelAttribute BranchEditRequestDto requestDto) throws IOException {
     return ApiResponseDto.createOK(branchService.editBranch(no, requestDto));
   }
 
