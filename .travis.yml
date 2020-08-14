@@ -11,7 +11,7 @@ cache:
     - '$HOME/.gradle'
 before_install:
   - chmod +x gradlew
-script: './gradlew clean build --debug'
+script: './gradlew clean build'
 before_deploy:
   - mkdir -p before-deploy
   - cp appspec.yml before-deploy/
