@@ -76,10 +76,18 @@ public class EmployServiceImpl implements EmployService {
     public Long editEmploy(long no, EmployEditRequestDto requestDto) {
         Employ entity = employRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("해당 고용 정보가 없습니다."));
-        Role role = roleRepository.findById(requestDto.getRoleNo())
-                .orElseThrow(() -> new IllegalIdentifierException("해당 역할이 없습니다"));
-        Department department = departmentRepository.findById(requestDto.getDepartmentNo())
-                .orElseThrow(() -> new IllegalIdentifierException("해당 부서가 없습니다"));
+
+        Role role = null;
+        if (requestDto.getRoleNo() > 0) {
+            role = roleRepository.findById(requestDto.getRoleNo())
+                    .orElseThrow(() -> new IllegalIdentifierException("해당 역할이 없습니다"));
+        }
+
+        Department department = null;
+        if (requestDto.getDepartmentNo() > 0) {
+            department = departmentRepository.findById(requestDto.getDepartmentNo())
+                    .orElseThrow(() -> new IllegalIdentifierException("해당 부서가 없습니다"));
+        }
 
         entity.update(requestDto.getSalary(), role, department);
 
