@@ -31,11 +31,13 @@ deploy:
     acl: private
     local_dir: deploy
     wait-until-deployed: true
+    on:
+      all_branches: true
   - provider: codedeploy
     access_key_id: "$AWS_ACCESS_KEY"
     secret_access_key: "$AWS_SECRET_KEY"
     bucket: shopface-refactor-deploy
-    key: deploy/shopface-refactor.zip
+    key: shopface-refactor.zip
     bundle_type: zip
     application: shopface-refactor
     deployment_group: shopface-refactor-deploy-group
