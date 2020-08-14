@@ -98,5 +98,6 @@ public class Employ {
 
     public void disabledEmployee() {
         this.state = "D";
+        this.member = null;
     }
 }

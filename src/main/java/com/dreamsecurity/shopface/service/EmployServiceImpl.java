@@ -66,7 +66,8 @@ public class EmployServiceImpl implements EmployService {
     @Transactional(readOnly = true)
     @Override
     public EmployResponseDto getEmploy(long no) {
-        Employ employ = employRepository.findMemberAndEmployById(no).orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다"));
+        Employ employ = employRepository.findMemberAndEmployById(no)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다"));
 
         return new EmployResponseDto(employ);
     }
@@ -102,8 +103,7 @@ public class EmployServiceImpl implements EmployService {
         employRepository.delete(entity);
     }
 
-    @Override
-    public boolean sendInviteMail(EmployAddRequestDto requestDto, String certCode) {
+    private boolean sendInviteMail(EmployAddRequestDto requestDto, String certCode) {
         boolean isSuccess = false;
         try{
             mailSender.send(createInviteMessage(requestDto.getEmail(),
@@ -116,8 +116,7 @@ public class EmployServiceImpl implements EmployService {
         return isSuccess;
     }
 
-    @Override
-    public SimpleMailMessage createInviteMessage(String email, String name, String branchName, String certCode) {
+    private SimpleMailMessage createInviteMessage(String email, String name, String branchName, String certCode) {
         SimpleMailMessage message = new SimpleMailMessage();
 
         StringBuilder content = new StringBuilder();
@@ -133,8 +132,7 @@ public class EmployServiceImpl implements EmployService {
         return message;
     }
 
-    @Override
-    public String createCode() {
+    private String createCode() {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 6;
@@ -191,6 +189,23 @@ public class EmployServiceImpl implements EmployService {
                         ApiResponseCode.NOT_FOUND, "해당 고용 정보가 없습니다"));
 
         employ.disabledEmployee();
+        isSuccess = true;
+
+        return isSuccess;
+    }
+
+    @Transactional
+    @Override
+    public boolean reInviteEmployee(long no) {
+        boolean isSuccess = false;
+
+        Employ employ = employRepository.findById(no)
+                .orElseThrow(() -> new ApiException(ApiResponseCode.NOT_FOUND,
+                        "해당 고용 정보가 없습니다"));
+
+        String certCode = createCode();
+        sendInviteMail(new EmployAddRequestDto(employ), certCode);
+        employ.inviteMember(certCode);
         isSuccess = true;
 
         return isSuccess;

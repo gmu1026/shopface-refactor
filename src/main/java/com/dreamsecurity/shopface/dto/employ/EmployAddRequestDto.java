@@ -22,6 +22,7 @@ public class EmployAddRequestDto {
   public EmployAddRequestDto(Employ entity) {
     this.name = entity.getName();
     this.branch = entity.getBranch();
+    this.email = entity.getEmail();
     this.role = entity.getRole();
     this.department = entity.getDepartment();
   }
