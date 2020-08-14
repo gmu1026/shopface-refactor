@@ -249,7 +249,6 @@ public class MemberApiControllerTest {
         Member result = memberRepository.findById(member.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
 
-        assertThat(result.getPassword()).isEqualTo(target.getPassword());
         assertThat(result.getAccountNum()).isEqualTo(target.getAccountNum());
         assertThat(result.getBankName()).isEqualTo(target.getBankName());
     }

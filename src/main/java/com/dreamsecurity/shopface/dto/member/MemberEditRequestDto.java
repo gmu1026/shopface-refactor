@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 @Getter
 @NoArgsConstructor
 public class MemberEditRequestDto {
-  @NotNull(message = "비밀번호를 입력해주세요")
   private String password;
 
   @NotNull(message = "주소를 입력해주세요")

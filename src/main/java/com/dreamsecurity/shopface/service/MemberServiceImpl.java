@@ -72,7 +72,7 @@ public class MemberServiceImpl implements MemberService {
         Member entity = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
 
-        entity.update(requestDto.getPassword(), requestDto.getAddress(),
+        entity.update(requestDto.getAddress(),
                 requestDto.getDetailAddress(), requestDto.getZipCode(),
                 requestDto.getEmail(), requestDto.getBankName(), requestDto.getAccountNum());
 
