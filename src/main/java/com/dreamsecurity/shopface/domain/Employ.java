@@ -63,7 +63,7 @@ public class Employ {
     private String state;
 
     @Builder
-    public Employ(String name, long salary, String state, String email, Role role, Department department, Branch branch) {
+    public Employ(String name, long salary, String state, String email, Role role, Department department, Branch branch, String certCode) {
         this.name = name;
         this.salary = salary;
         this.state = state;
@@ -71,6 +71,7 @@ public class Employ {
         this.role = role;
         this.department = department;
         this.branch = branch;
+        this.certCode = certCode;
     }
 
     public void update(long salary, Role role, Department department) {

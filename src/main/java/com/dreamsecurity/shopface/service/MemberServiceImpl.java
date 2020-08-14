@@ -8,6 +8,8 @@ import com.dreamsecurity.shopface.dto.member.MemberListResponseDto;
 import com.dreamsecurity.shopface.dto.member.MemberResponseDto;
 import com.dreamsecurity.shopface.repository.EmployRepository;
 import com.dreamsecurity.shopface.repository.MemberRepository;
+import com.dreamsecurity.shopface.response.ApiException;
+import com.dreamsecurity.shopface.response.ApiResponseCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -29,15 +31,18 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public String addMember(MemberAddRequestDto requestDto) {
         // TODO 비밀번호 암호화
-        if (employRepository.findByCertCode(requestDto.getCertCode()) != null) {
-            requestDto.setType("E");
-            Member employee = requestDto.toEntity();
-            return memberRepository.save(employee).getId();
+        if (requestDto.getCertCode() != null) {
+            if (employRepository.findByCertCode(requestDto.getCertCode()) != null) {
+                requestDto.setType("E");
+                Member employee = requestDto.toEntity();
+                return memberRepository.save(employee).getId();
+            }
         }
         else {
             requestDto.setType("B");
             return memberRepository.save(requestDto.toEntity()).getId();
         }
+        throw new ApiException(ApiResponseCode.BAD_REQUEST, "회원가입 실패");
     }
 
     @Transactional(readOnly = true)

@@ -74,6 +74,10 @@ public class MemberAddRequestDto {
             .build();
   }
 
+  public void setCertCode(String certCode) {
+    this.certCode = certCode;
+  }
+
   public void setType(String type) {
     this.type = type;
   }

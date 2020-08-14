@@ -1,9 +1,11 @@
 package com.dreamsecurity.shopface.web;
 
+import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.domain.Member;
 import com.dreamsecurity.shopface.dto.member.MemberAddRequestDto;
 import com.dreamsecurity.shopface.dto.member.MemberEditRequestDto;
 import com.dreamsecurity.shopface.dto.member.MemberListResponseDto;
+import com.dreamsecurity.shopface.repository.EmployRepository;
 import com.dreamsecurity.shopface.repository.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
@@ -32,7 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class MemberApiControllerTest {
     @Rule
     public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
@@ -46,6 +48,9 @@ public class MemberApiControllerTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    EmployRepository employRepository;
 
     @Before
     public void setUp() {
@@ -95,7 +100,6 @@ public class MemberApiControllerTest {
                 .detailAddress("강남")
                 .zipCode("12345")
                 .email("test@test.com")
-                .type("B")
                 .build();
 
         String content = objectMapper.writeValueAsString(new MemberAddRequestDto(businessman));
@@ -117,6 +121,14 @@ public class MemberApiControllerTest {
     @Test
     public void 근무자등록_테스트() throws Exception {
         //given
+        Employ employ = Employ.builder()
+                .name("근무자")
+                .email("test@test.com")
+                .certCode("asdqwe")
+                .build();
+
+        employRepository.save(employ);
+
         Member employee = Member.builder()
                             .id("test_employee")
                             .password("1234")
@@ -126,10 +138,11 @@ public class MemberApiControllerTest {
                             .detailAddress("강남")
                             .zipCode("12345")
                             .email("test@test.com")
-                            .type("E")
                             .build();
 
-        String content = objectMapper.writeValueAsString(new MemberAddRequestDto(employee));
+        MemberAddRequestDto requestDto = new MemberAddRequestDto(employee);
+        requestDto.setCertCode(employ.getCertCode());
+        String content = objectMapper.writeValueAsString(requestDto);
         //when
         mockMvc.perform(
                 post("/member")
