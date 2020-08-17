@@ -39,6 +39,9 @@ public class Record {
     @Column(nullable = false, length = 100)
     private String memberPhone;
 
+    @Column(nullable = false, length = 100)
+    private String occupationName;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date workStartTime;
 
@@ -65,13 +68,14 @@ public class Record {
 
     @Builder
     public Record(String businessmanName, String businessmanPhone,
-                  String memberId, String memberName, String memberPhone,
+                  String memberId, String memberName, String memberPhone, String occupationName,
                   long branchNo, String branchName, String branchPhone,
                   Date workStartTime, Date workEndTime, Date workingTime,
                   Date quittingTime, long salaryPlan, long salaryPay,
                   long evaluation, String note) {
         this.businessmanName = businessmanName;
         this.businessmanPhone = businessmanPhone;
+        this.occupationName = occupationName;
         this.branchNo = branchNo;
         this.branchName = branchName;
         this.branchPhone = branchPhone;
