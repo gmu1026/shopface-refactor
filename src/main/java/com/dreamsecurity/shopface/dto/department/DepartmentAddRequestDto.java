@@ -2,6 +2,7 @@ package com.dreamsecurity.shopface.dto.department;
 
 import com.dreamsecurity.shopface.domain.Branch;
 import com.dreamsecurity.shopface.domain.Department;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 public class DepartmentAddRequestDto {
   private long branchNo;
   private String name;
+
+  @JsonIgnore
   private Branch branch;
 
   public DepartmentAddRequestDto(String name, long branchNo) {

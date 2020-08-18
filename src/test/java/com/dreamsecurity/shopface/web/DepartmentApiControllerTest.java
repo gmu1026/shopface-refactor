@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -26,12 +27,18 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
+import static com.dreamsecurity.shopface.ApiDocumentUtils.getDocumentRequest;
+import static com.dreamsecurity.shopface.ApiDocumentUtils.getDocumentResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -101,11 +108,24 @@ public class DepartmentApiControllerTest {
         String content = objectMapper.writeValueAsString(
                 new DepartmentAddRequestDto("부서", branch.getNo()));
         //when
-        mockMvc.perform(post("/department")
+        ResultActions result = mockMvc.perform(post("/department")
                 .content(content)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(document("Department-Add"));
+                .contentType(MediaType.APPLICATION_JSON));
+        result
+            .andExpect(status().isOk())
+            .andDo(document("Department-Add",
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    requestFields(
+                            fieldWithPath("name").type(JsonFieldType.STRING).description("부서 명"),
+                            fieldWithPath("branchNo").type(JsonFieldType.NUMBER).description("지점 번호")
+                    ),
+                    responseFields(
+                            fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                            fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                            fieldWithPath("data").type(JsonFieldType.NUMBER).description("ID")
+                    )
+            ));
         //then
         List<Department> results = departmentRepository.findAll();
         assertThat(results.get(0).getName()).isEqualTo("부서");
@@ -120,13 +140,24 @@ public class DepartmentApiControllerTest {
             departmentRepository.save(department);
         }
         //when
-        ResultActions result = mockMvc.perform(get("/branch/" + branch.getNo() + "/department"));
+        ResultActions result = mockMvc.perform(get("/branch/{no}/department", branch.getNo()));
         //then
         result.andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].name", is("부서0")))
                 .andExpect(jsonPath("$.data[1].name", is("부서1")))
                 .andExpect(jsonPath("$.data[2].name", is("부서2")))
-                .andDo(document("Department-List"));
+                .andDo(document("Department-List",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("no").description("지점 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                                subsectionWithPath("data.[]").type(JsonFieldType.ARRAY).description("데이터")
+                        )
+                ));
     }
 
     @Test
@@ -141,11 +172,25 @@ public class DepartmentApiControllerTest {
 
         String content = objectMapper.writeValueAsString(new DepartmentEditRequestDto("부서수정"));
         //when
-        mockMvc.perform(put("/department/" + department.getNo())
+        ResultActions result = mockMvc.perform(put("/department/{no}", department.getNo())
                 .content(content)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(document("Department-Edit"));
+                .contentType(MediaType.APPLICATION_JSON));
+        result
+            .andExpect(status().isOk())
+            .andDo(document("Department-Edit",
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    pathParameters(
+                            parameterWithName("no").description("부서 번호")
+                    ),
+                    requestFields(
+                            fieldWithPath("name").type(JsonFieldType.STRING).description("부서 명")
+                    ),
+                    responseFields(
+                            fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                            fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                            fieldWithPath("data").type(JsonFieldType.NUMBER).description("ID")
+                    )));
         //then
         List<Department> results = departmentRepository.findAll();
         assertThat(results.get(0).getName()).isEqualTo("부서수정");
@@ -161,9 +206,20 @@ public class DepartmentApiControllerTest {
                 .build();
         departmentRepository.save(department);
         //when
-        mockMvc.perform(delete("/department/" + department.getNo()))
-                .andExpect(status().isOk())
-                .andDo(document("Department-Remove"));
+        ResultActions result = mockMvc.perform(delete("/department/{no}", department.getNo()));
+        result
+            .andExpect(status().isOk())
+            .andDo(document("Department-Remove",
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    pathParameters(
+                            parameterWithName("no").description("부서 번호")
+                    ),
+                    responseFields(
+                            fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                            fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                            fieldWithPath("data").type(JsonFieldType.BOOLEAN).description("데이터")
+                    )));
         //then
         List<Department> results = departmentRepository.findAll();
         assertThat(results.size()).isEqualTo(0);
