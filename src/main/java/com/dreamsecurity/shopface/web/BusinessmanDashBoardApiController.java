@@ -20,7 +20,7 @@ public class BusinessmanDashBoardApiController {
     @GetMapping(value = "/businessman/{id}/branch/{no}/{status}")
     public ApiResponseDto getBusinessmanDashBoardList(@PathVariable("id") String id, @PathVariable("no") Long branchNo, @PathVariable("status") String status) {
         BusinessmanDashBoardListRequestDto requestDto = BusinessmanDashBoardListRequestDto.builder()
-                .memberId(id)
+                .businessmanId(id)
                 .branchNo(branchNo)
                 .scheduleStatus(status).build();
 

@@ -22,14 +22,13 @@ public class EmployeeDashBoardListResponseDto {
     private double actualSalary;
     private String division;
 
-
-    EmployeeDashBoardListResponseDto (String branchName,
-                                      String occupationName,
-                                      Long employSalsry,
-                                      LocalDateTime workStartTime,
-                                      LocalDateTime workEndTime,
-                                      LocalDateTime workingTime,
-                                      LocalDateTime quittingTime) {
+    public EmployeeDashBoardListResponseDto (String branchName,
+                                              String occupationName,
+                                              Long employSalsry,
+                                              LocalDateTime workStartTime,
+                                              LocalDateTime workEndTime,
+                                              LocalDateTime workingTime,
+                                              LocalDateTime quittingTime) {
         this.branchName = branchName;
         this.occupationName = occupationName;
         this.employSalsry = employSalsry;
@@ -37,6 +36,18 @@ public class EmployeeDashBoardListResponseDto {
         this.workEndTime = workEndTime;
         this.workingTime = workingTime;
         this.quittingTime = quittingTime;
+    }
+
+    public EmployeeDashBoardListResponseDto (String branchName,
+                                             String occupationName,
+                                             Long employSalsry,
+                                             LocalDateTime workStartTime,
+                                             LocalDateTime workEndTime) {
+        this.branchName = branchName;
+        this.occupationName = occupationName;
+        this.employSalsry = employSalsry;
+        this.workStartTime = workStartTime;
+        this.workEndTime = workEndTime;
     }
 
     public void setHoursPlan(double hoursPlan) {

@@ -28,7 +28,6 @@ public class EmployeeDashBoardRepositoryCustomImpl implements EmployeeDashBoardR
                         EmployeeDashBoardListResponseDto.class,
                         branch.name, occupation.name, employ.salary,
                         schedule.workStartTime, schedule.workEndTime,
-                        record.workingTime, record.quittingTime,
                         schedule.state
                 ))
                 .from(schedule)
@@ -38,8 +37,8 @@ public class EmployeeDashBoardRepositoryCustomImpl implements EmployeeDashBoardR
                         .and(occupation.no.eq(schedule.occupation.no)))
                 .leftJoin(branch).on(branch.no.eq(schedule.branch.no))
                 .where(schedule.member.id.eq(memberId)
-                        .and(schedule.state.eq("R").or(schedule.state.eq("L"))
-                        .and(schedule.workStartTime.after(now))))
+                        .and((schedule.state.eq("R").or(schedule.state.eq("L"))))
+                        .and(schedule.workStartTime.after(now)))
                 .fetch();
     }
 
@@ -50,7 +49,7 @@ public class EmployeeDashBoardRepositoryCustomImpl implements EmployeeDashBoardR
                 .select(Projections.constructor(
                         EmployeeDashBoardListResponseDto.class,
                         branch.name, occupation.name, employ.salary,
-                        schedule.workStartTime, schedule.workEndTime,
+                        record.workStartTime, record.workEndTime,
                         record.workingTime, record.quittingTime,
                         schedule.state
                 ))

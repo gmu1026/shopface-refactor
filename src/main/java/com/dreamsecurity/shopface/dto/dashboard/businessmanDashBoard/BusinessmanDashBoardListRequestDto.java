@@ -7,14 +7,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class BusinessmanDashBoardListRequestDto {
-    private String memberId;
+    private String businessmanId;
     private Long branchNo;
     private String scheduleStatus;
 
     @Builder
-    BusinessmanDashBoardListRequestDto (String memberId, Long branchNo, String scheduleStatus) {
+    BusinessmanDashBoardListRequestDto (String businessmanId, Long branchNo, String scheduleStatus) {
         this.branchNo = branchNo;
-        this.memberId = memberId;
+        this.businessmanId = businessmanId;
         this.scheduleStatus = scheduleStatus;
     }
 }
