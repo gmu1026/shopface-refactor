@@ -46,4 +46,9 @@ public class BranchApiController {
 
     return ApiResponseDto.createOK(true);
   }
+
+  @PatchMapping(value = "/branch/{no}")
+  public ApiResponseDto confirmBranch(@PathVariable("no") long no) {
+    return ApiResponseDto.createOK(branchService.confirmBranch(no));
+  }
 }
