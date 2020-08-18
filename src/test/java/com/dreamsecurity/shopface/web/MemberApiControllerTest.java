@@ -5,7 +5,6 @@ import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.domain.Member;
 import com.dreamsecurity.shopface.dto.member.MemberAddRequestDto;
 import com.dreamsecurity.shopface.dto.member.MemberEditRequestDto;
-import com.dreamsecurity.shopface.dto.member.MemberListResponseDto;
 import com.dreamsecurity.shopface.repository.BranchRepository;
 import com.dreamsecurity.shopface.repository.EmployRepository;
 import com.dreamsecurity.shopface.repository.MemberRepository;
@@ -19,21 +18,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static com.dreamsecurity.shopface.ApiDocumentUtils.getDocumentRequest;
+import static com.dreamsecurity.shopface.ApiDocumentUtils.getDocumentResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -86,13 +91,23 @@ public class MemberApiControllerTest {
             memberRepository.save(member);
         }
         //when
-        mockMvc.perform(get("/member"))
+        ResultActions result = mockMvc.perform(get("/member"));
+        //then
+        result
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].id", is("test0")))
                 .andExpect(jsonPath("$.data[1].id", is("test1")))
                 .andExpect(jsonPath("$.data[2].id", is("test2")))
-                .andDo(document("Member-list"));
-        //then
+                .andDo(document("Member-list",
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    responseFields(
+                            fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                            fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                            subsectionWithPath("data.[]").type(JsonFieldType.ARRAY).description("데이터")
+                    )
+                )
+        );
     }
 
     @Test
@@ -109,20 +124,37 @@ public class MemberApiControllerTest {
                 .email("test@test.com")
                 .build();
 
-        String content = objectMapper.writeValueAsString(new MemberAddRequestDto(businessman));
+        MemberAddRequestDto requestDto = new MemberAddRequestDto(businessman);
+
+        String content = objectMapper.writeValueAsString(requestDto);
 
     // when
-    mockMvc
-        .perform(
-            post("/member")
+    ResultActions result = mockMvc.perform(post("/member")
                 .content(content)
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk())
-        .andDo(document("Member-add-businessman"));
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
         //then
+    result
+        .andExpect(status().isOk())
+        .andDo(document("Member-add-businessman",
+                getDocumentRequest(),
+                getDocumentResponse(),
+                requestFields(
+                        fieldWithPath("id").type(JsonFieldType.STRING).description("아이디"),
+                        fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호"),
+                        fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
+                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                        fieldWithPath("phone").type(JsonFieldType.STRING).description("전화번호"),
+                        fieldWithPath("certCode").type(JsonFieldType.STRING).ignored()
+                ),
+                responseFields(
+                        fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                        fieldWithPath("data").type(JsonFieldType.STRING).description("ID")
+                )));
         List<Member> memberList = memberRepository.findAll();
         assertThat(memberList.get(0).getId()).isEqualTo(businessman.getId());
         assertThat(memberList.get(0).getName()).isEqualTo(businessman.getName());
+        assertThat(memberList.get(0).getType()).isEqualTo("B");
     }
 
     @Test
@@ -178,19 +210,35 @@ public class MemberApiControllerTest {
         requestDto.setCertCode(employ.getCertCode());
         String content = objectMapper.writeValueAsString(requestDto);
         //when
-        mockMvc.perform(
-                post("/member")
+        ResultActions result = mockMvc.perform(post("/member")
                         .content(content)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        )
-        .andExpect(status().isOk())
-        .andDo(document("Member-add-employee"));
-
+                        .contentType(MediaType.APPLICATION_JSON_VALUE));
         //then
+        result
+            .andExpect(status().isOk())
+            .andDo(document("Member-add-employee",
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    requestFields(
+                            fieldWithPath("id").type(JsonFieldType.STRING).description("아이디"),
+                            fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호"),
+                            fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
+                            fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                            fieldWithPath("phone").type(JsonFieldType.STRING).description("전화번호"),
+                            fieldWithPath("certCode").type(JsonFieldType.STRING).description("초대코드")
+                    ),
+                    responseFields(
+                            fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                            fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                            fieldWithPath("data").type(JsonFieldType.STRING).description("ID")
+                    )
+            ));
+
         List<Member> memberList = memberRepository.findAll();
         assertThat(memberList.get(1).getId()).isEqualTo(employee.getId());
         assertThat(memberList.get(1).getName()).isEqualTo(employee.getName());
     }
+
 
     @Test
     public void 멤버조회_테스트() throws Exception {
@@ -206,12 +254,24 @@ public class MemberApiControllerTest {
 
         memberRepository.save(target);
         //when
-        mockMvc.perform(get("/member/" + target.getId()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.id").value(target.getId()))
-                .andExpect(jsonPath("$.data.name").value(target.getName()))
-                .andDo(document("Member-get"));
+        ResultActions result = mockMvc.perform(get("/member/{id}", target.getId()));
         //then
+        result
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.id").value(target.getId()))
+            .andExpect(jsonPath("$.data.name").value(target.getName()))
+            .andDo(document("Member-detail",
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    pathParameters(
+                            parameterWithName("id").description("아이디")
+                    ),
+                    responseFields(
+                            fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                            fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                            subsectionWithPath("data").type(JsonFieldType.OBJECT).description("데이터")
+                    )
+            ));
     }
 
 
@@ -241,16 +301,36 @@ public class MemberApiControllerTest {
 
         String content = objectMapper.writeValueAsString(new MemberEditRequestDto(target));
         //when
-        mockMvc.perform(put("/member/" + member.getId())
-                    .content(content).contentType(MediaType.APPLICATION_JSON_VALUE))
+        ResultActions result = mockMvc.perform(put("/member/{id}", member.getId())
+                    .content(content).contentType(MediaType.APPLICATION_JSON_VALUE));
+        result
                 .andExpect(status().isOk())
-                .andDo(document("Member-edit"));
+                .andDo(document("Member-edit",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("아이디")
+                        ),
+                        requestFields(
+                                fieldWithPath("password").type(JsonFieldType.STRING).ignored(),
+                                fieldWithPath("address").type(JsonFieldType.STRING).description("주소"),
+                                fieldWithPath("detailAddress").type(JsonFieldType.STRING).description("상세 주소"),
+                                fieldWithPath("zipCode").type(JsonFieldType.STRING).description("우편 번호"),
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                                fieldWithPath("bankName").type(JsonFieldType.STRING).description("은행 명").optional(),
+                                fieldWithPath("accountNum").type(JsonFieldType.STRING).description("계좌 번호").optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                                fieldWithPath("data").type(JsonFieldType.STRING).description("ID")
+                        )));
         //then
-        Member result = memberRepository.findById(member.getId())
+        Member memberResult = memberRepository.findById(member.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다."));
 
-        assertThat(result.getAccountNum()).isEqualTo(target.getAccountNum());
-        assertThat(result.getBankName()).isEqualTo(target.getBankName());
+        assertThat(memberResult.getAccountNum()).isEqualTo(target.getAccountNum());
+        assertThat(memberResult.getBankName()).isEqualTo(target.getBankName());
     }
 
     @Test
@@ -267,9 +347,21 @@ public class MemberApiControllerTest {
 
         memberRepository.save(member);
         //when
-        mockMvc.perform(delete("/member/" + member.getId()))
-                .andExpect(status().isOk())
-                .andDo(document("Member-remove"));
+        ResultActions result = mockMvc.perform(delete("/member/{id}", member.getId()));
         //then
+        result
+                .andExpect(status().isOk())
+                .andDo(document("Member-remove",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                                fieldWithPath("data").type(JsonFieldType.BOOLEAN).description("데이터")
+                        )
+                ));
     }
 }
