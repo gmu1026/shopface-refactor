@@ -17,9 +17,11 @@ public class ScheduleListResponseDto {
   private LocalDateTime workEndTime;
   private String color;
   private String state;
+  private Long employNo;
 //  private String memberId;
 //  private Long branchNo;
-  private String name;
+  private String employeeName;
+  private String occupationName;
 
   public ScheduleListResponseDto(Schedule entity) {
     this.no = entity.getNo();
