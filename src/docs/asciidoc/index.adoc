@@ -15,7 +15,264 @@ endif::[]
 
 Shopface API
 
-==== Request
+== Member API
+
+==== ADD API - Businesssman
+
+===== Request Field Example
+
+include::{snippets}/Member-add-businessman/request-fields.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Member-add-businessman/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Member-add-businessman/http-response.adoc[]
+
+&#160;
+
+==== ADD API - Employee
+
+===== Request Field Example
+
+include::{snippets}/Member-add-employee/request-fields.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Member-add-employee/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Member-add-employee/http-response.adoc[]
+
+&#160;
+
+==== LIST API
+
+===== Request HTTP Example
+
+include::{snippets}/Member-List/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Member-List/http-response.adoc[]
+
+&#160;
+
+==== DETAIL API
+
+===== Path Parameter Example
+
+include::{snippets}/Member-detail/path-parameters.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Member-detail/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Member-detail/http-response.adoc[]
+
+==== EDIT API
+
+===== Path Parameter Example
+include::{snippets}/Member-Edit/path-parameters.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/Member-Edit/request-fields.adoc[]
+
+
+include::{snippets}/Member-Edit/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Member-Edit/http-response.adoc[]
+
+&#160;
+
+==== REMOVE API
+
+===== Path Parameter Example
+
+include::{snippets}/Member-Remove/path-parameters.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Member-Remove/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Member-Remove/http-response.adoc[]
+
+== Branch API
+
+==== ADD API
+
+===== Request Field Example
+
+include::{snippets}/Branch-add/request-fields.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Branch-add/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Branch-add/http-response.adoc[]
+
+&#160;
+
+==== LIST API
+
+===== Path Parameter Example
+
+include::{snippets}/Branch-list/path-parameters.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Branch-list/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Branch-list/http-response.adoc[]
+
+&#160;
+
+==== DETAIL API
+
+===== Path Parameter Example
+
+include::{snippets}/Branch-detail/path-parameters.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Branch-detail/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Branch-detail/http-response.adoc[]
+
+==== EDIT API
+
+===== Path Parameter Example
+
+include::{snippets}/Branch-edit/path-parameters.adoc[]
+
+===== Request Parameter Example
+
+include::{snippets}/Branch-edit/request-parameters.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Branch-edit/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Branch-edit/http-response.adoc[]
+
+==== REMOVE API
+
+===== Path Parameter Example
+
+include::{snippets}/Branch-remove/path-parameters.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Branch-remove/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Branch-remove/http-response.adoc[]
+
+== Employ API
+
+==== ADD API
+
+준비중
+//===== Request Field Example
+//
+//include::{snippets}/Employ-add/request-fields.adoc[]
+//
+//===== Request HTTP Example
+//
+//include::{snippets}/Employ-add/http-request.adoc[]
+//
+//===== Response HTTP Example
+//
+//include::{snippets}/Employ-add/http-response.adoc[]
+&#160;
+
+==== LIST API
+
+===== Path Parameter Example
+
+include::{snippets}/Employ-list/path-parameters.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Employ-list/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Employ-list/http-response.adoc[]
+
+&#160;
+
+==== DETAIL API
+
+===== Path Parameter Example
+
+include::{snippets}/Employ-detail/path-parameters.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Employ-detail/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Employ-detail/http-response.adoc[]
+
+&#160;
+
+==== EDIT API
+
+===== Path Parameter Example
+
+include::{snippets}/Employ-edit/path-parameters.adoc[]
+
+===== Request Field Example
+
+include::{snippets}/Employ-edit/request-fields.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Employ-edit/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Employ-edit/http-response.adoc[]
+
+&#160;
+
+==== REMOVE API
+
+===== Path Parameter Example
+
+include::{snippets}/Employ-remove/path-parameters.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Employ-remove/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Employ-remove/http-response.adoc[]
+
+== Role API
+
+==== ADD API
 
 include::{snippets}/Role-Add/request-fields.adoc[]
 
@@ -28,3 +285,151 @@ include::{snippets}/Role-Add/http-request.adoc[]
 include::{snippets}/Role-Add/http-response.adoc[]
 
 &#160;
+
+==== LIST API
+
+include::{snippets}/Role-List/path-parameters.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Role-Add/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Role-Add/http-response.adoc[]
+
+&#160;
+
+==== EDIT API
+include::{snippets}/Role-Edit/path-parameters.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/Role-Edit/request-fields.adoc[]
+
+include::{snippets}/Role-Edit/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Role-Edit/http-response.adoc[]
+
+&#160;
+
+==== REMOVE API
+
+include::{snippets}/Role-Remove/path-parameters.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Role-Remove/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Role-Remove/http-response.adoc[]
+
+&#160;
+
+== Occupation API
+
+==== ADD API
+
+include::{snippets}/Occupation-Add/request-fields.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Occupation-Add/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Occupation-Add/http-response.adoc[]
+
+&#160;
+
+==== LIST API
+
+include::{snippets}/Occupation-List/path-parameters.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Occupation-List/http-response.adoc[]
+
+&#160;
+
+==== EDIT API
+include::{snippets}/Occupation-Edit/path-parameters.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/Occupation-Edit/request-fields.adoc[]
+
+
+include::{snippets}/Occupation-Edit/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Occupation-Edit/http-response.adoc[]
+
+&#160;
+
+==== REMOVE API
+
+include::{snippets}/Occupation-Remove/path-parameters.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Occupation-Remove/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Occupation-Remove/http-response.adoc[]
+
+== Department API
+
+==== ADD API
+
+include::{snippets}/Department-Add/request-fields.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Department-Add/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Department-Add/http-response.adoc[]
+
+&#160;
+
+==== LIST API
+
+include::{snippets}/Department-List/path-parameters.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Department-List/http-response.adoc[]
+
+&#160;
+
+==== EDIT API
+include::{snippets}/Department-Edit/path-parameters.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/Department-Edit/request-fields.adoc[]
+
+
+include::{snippets}/Department-Edit/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Department-Edit/http-response.adoc[]
+
+&#160;
+
+==== REMOVE API
+
+include::{snippets}/Department-Remove/path-parameters.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Department-Remove/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Department-Remove/http-response.adoc[]
