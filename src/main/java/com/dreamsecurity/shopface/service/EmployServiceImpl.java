@@ -26,6 +26,7 @@ public class EmployServiceImpl implements EmployService {
     private final BranchRepository branchRepository;
     private final RoleRepository roleRepository;
     private final DepartmentRepository departmentRepository;
+    private final AlarmRepository alarmRepository;
     private final JavaMailSender mailSender;
 
     @Transactional
@@ -158,6 +159,14 @@ public class EmployServiceImpl implements EmployService {
         boolean isSuccess = false;
         if (checkCode(requestDto.getCertCode())) {
             employ.joinMember(member);
+
+            Alarm alarm = Alarm.builder()
+                    .member(employ.getBranch().getMember())
+                    .contents(employ.getBranch().getName() + " 지점에 근무자 " + member.getName() + "이(가) 합류하였습니다.")
+                    .type("JOIN_EMPLOYEE")
+                    .build();
+            alarmRepository.save(alarm);
+
             isSuccess = true;
         } else {
             new ApiException(ApiResponseCode.BAD_REQUEST, "코드가 일치하지 않습니다");

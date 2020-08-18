@@ -75,7 +75,10 @@ public class Employ {
     }
 
     public void update(long salary, Role role, Department department) {
-        this.salary = salary;
+        if (salary > 0) {
+            this.salary = salary;
+        }
+
         if (role != null) {
             this.role = role;
         }

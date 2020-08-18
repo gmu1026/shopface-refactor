@@ -1,7 +1,6 @@
 package com.dreamsecurity.shopface.web;
 
 import com.dreamsecurity.shopface.domain.*;
-import com.dreamsecurity.shopface.dto.employ.EmployAddRequestDto;
 import com.dreamsecurity.shopface.dto.employ.EmployEditRequestDto;
 import com.dreamsecurity.shopface.dto.employ.EmployListResponseDto;
 import com.dreamsecurity.shopface.repository.*;
@@ -15,21 +14,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.dreamsecurity.shopface.ApiDocumentUtils.getDocumentRequest;
+import static com.dreamsecurity.shopface.ApiDocumentUtils.getDocumentResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -151,7 +157,6 @@ public class EmployApiControllerTest {
         Role role = roleRepository.findAll().get(0);
         Department department = departmentRepository.findAll().get(0);
 
-        List<EmployListResponseDto> results = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             Employ employ = Employ.builder()
                     .name("홍길동" + i)
@@ -165,13 +170,25 @@ public class EmployApiControllerTest {
             employRepository.save(employ);
         }
         //when
-        mockMvc.perform(get("/branch/" + branch.getNo() + "/employ"))
+        ResultActions result = mockMvc.perform(get("/branch/{no}/employ", branch.getNo()));
+        //then
+        result
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].name", is("홍길동0")))
                 .andExpect(jsonPath("$.data[0].roleName", is("대리")))
                 .andExpect(jsonPath("$.data[0].departmentName", is("인사")))
-                .andDo(document("Employ-list"));
-        //then
+                .andDo(document("Employ-list",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("no").description("지점 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                                subsectionWithPath("data.[]").type(JsonFieldType.ARRAY).description("데이터")
+                        )
+                ));
     }
 
     @Test
@@ -192,11 +209,23 @@ public class EmployApiControllerTest {
 
         employRepository.save(employ);
         //when
-        mockMvc.perform(get("/employ/" + employ.getNo()))
+        ResultActions result = mockMvc.perform(get("/employ/{no}", employ.getNo()));
+        //then
+        result
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.name").value(employ.getName()))
-                .andDo(document("Employ-detail"));
-        //then
+                .andDo(document("Employ-detail",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("no").description("지점 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                                subsectionWithPath("data").type(JsonFieldType.OBJECT).description("데이터")
+                        )
+                ));
     }
 
     @Test
@@ -227,16 +256,33 @@ public class EmployApiControllerTest {
 
         String content = objectMapper.writeValueAsString(requestDto);
         //when
-        mockMvc.perform(put("/employ/" + employ.getNo())
-                    .content(content)
-                    .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(document("Employ-edit"));
+        ResultActions result = mockMvc.perform(put("/employ/{no}", employ.getNo())
+                    .content(content).contentType(MediaType.APPLICATION_JSON));
         //then
         List<Employ> results = employRepository.findAll();
         assertThat(results.get(0).getSalary()).isEqualTo(requestDto.getSalary());
         assertThat(results.get(0).getRole().getName()).isEqualTo(editRole.getName());
         assertThat(results.get(0).getDepartment().getName()).isEqualTo(editDepartment.getName());
+
+        result
+                .andExpect(status().isOk())
+                .andDo(document("Employ-edit",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("no").description("고용 번호")
+                        ),
+                        requestFields(
+                                fieldWithPath("salary").type(JsonFieldType.NUMBER).description("시급").optional(),
+                                fieldWithPath("roleNo").type(JsonFieldType.NUMBER).description("역할 번호").optional(),
+                                fieldWithPath("departmentNo").type(JsonFieldType.NUMBER).description("부서 번호").optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                                fieldWithPath("data").type(JsonFieldType.NUMBER).description("ID")
+                        )
+                ));
     }
 
     @Test
@@ -257,9 +303,21 @@ public class EmployApiControllerTest {
 
         employRepository.save(employ);
         //when
-        mockMvc.perform(delete("/employ/" + employ.getNo()))
-                .andExpect(status().isOk())
-                .andDo(document("Employ-remove"));
+        ResultActions result = mockMvc.perform(delete("/employ/{no}", employ.getNo()));
         //then
+        result
+                .andExpect(status().isOk())
+                .andDo(document("Employ-remove",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("no").description("고용 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                                fieldWithPath("data").type(JsonFieldType.BOOLEAN).description("데이터")
+                        )
+                ));
     }
 }
