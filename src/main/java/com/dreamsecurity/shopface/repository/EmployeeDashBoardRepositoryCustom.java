@@ -6,5 +6,6 @@ import com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard.EmployeeDashBo
 import java.util.List;
 
 public interface EmployeeDashBoardRepositoryCustom {
-    List<EmployeeDashBoardListResponseDto> getEmployeeDashBoardList(EmployeeDashBoardListRequestDto requestDto);
+    List<EmployeeDashBoardListResponseDto> getEmployeeDashBoardListScheduled(String memberId);
+    List<EmployeeDashBoardListResponseDto> getEmployeeDashBoardListWorkDone(String memberId);
 }

@@ -3,8 +3,10 @@ package com.dreamsecurity.shopface.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -42,17 +44,17 @@ public class Record {
     @Column(nullable = false, length = 100)
     private String occupationName;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date workStartTime;
+    @Column(nullable = false)
+    private LocalDateTime workStartTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date workEndTime;
+    @Column(nullable = false)
+    private LocalDateTime workEndTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date workingTime;
+    @Column(nullable = false)
+    private LocalDateTime workingTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date quittingTime;
+    @Column(nullable = true)
+    private LocalDateTime quittingTime;
 
     @Column(nullable = true)
     private Long salaryPlan;
@@ -70,11 +72,14 @@ public class Record {
     public Record(String businessmanName, String businessmanPhone,
                   String memberId, String memberName, String memberPhone, String occupationName,
                   long branchNo, String branchName, String branchPhone,
-                  Date workStartTime, Date workEndTime, Date workingTime,
-                  Date quittingTime, long salaryPlan, long salaryPay,
+                  LocalDateTime workStartTime, LocalDateTime workEndTime, LocalDateTime workingTime,
+                  LocalDateTime quittingTime, long salaryPlan, long salaryPay,
                   long evaluation, String note) {
         this.businessmanName = businessmanName;
         this.businessmanPhone = businessmanPhone;
+        this.memberId = memberId;
+        this.memberName = memberName;
+        this.memberPhone = memberPhone;
         this.occupationName = occupationName;
         this.branchNo = branchNo;
         this.branchName = branchName;
@@ -89,7 +94,7 @@ public class Record {
         this.note = note;
     }
 
-    public void update(String note, Date workingTime, Date quittingTime, long salaryPay) {
+    public void update(String note, LocalDateTime workingTime, LocalDateTime quittingTime, long salaryPay) {
         this.note = note;
         this.workingTime = workingTime;
         this.quittingTime = quittingTime;

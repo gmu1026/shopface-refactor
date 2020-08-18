@@ -3,6 +3,7 @@ package com.dreamsecurity.shopface.dto.record;
 import com.dreamsecurity.shopface.domain.Record;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -18,10 +19,10 @@ public class RecordListResponse {
     private String memberPhone;
     private String occupationName;
     private String note;
-    private Date workingTime;
-    private Date quittingTime;
-    private Date workStartTime;
-    private Date workEndTime;
+    private LocalDateTime workingTime;
+    private LocalDateTime quittingTime;
+    private LocalDateTime workStartTime;
+    private LocalDateTime workEndTime;
     private long salaryPlan;
     private long salaryPay;
 

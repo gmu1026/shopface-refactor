@@ -24,10 +24,9 @@ public class BusinessmanDashBoardRepositoryCustomImpl implements BusinessmanDash
         return queryFactory
                 .select(Projections.constructor(
                         BusinessmanDashBoardListResponseDto.class,
-                        employ.no, employ.name,
+                        employ.no, employ.name, employ.salary,
                         occupation.name,
                         schedule.workStartTime, schedule.workEndTime,
-                        record.workingTime, record.quittingTime,
                         schedule.state
                 ))
                 .from(schedule)
@@ -42,6 +41,7 @@ public class BusinessmanDashBoardRepositoryCustomImpl implements BusinessmanDash
                 .fetch();
     }
 
+
     @Override
     public List<BusinessmanDashBoardListResponseDto> getBusinessmanDashBoardListWorking(BusinessmanDashBoardListRequestDto requestDto) {
         LocalDateTime now = LocalDateTime.now();
@@ -49,7 +49,7 @@ public class BusinessmanDashBoardRepositoryCustomImpl implements BusinessmanDash
         return queryFactory
                 .select(Projections.constructor(
                         BusinessmanDashBoardListResponseDto.class,
-                        employ.no, employ.name,
+                        employ.no, employ.name, employ.salary,
                         occupation.name,
                         schedule.workStartTime, schedule.workEndTime,
                         record.workingTime, record.quittingTime,
@@ -78,9 +78,9 @@ public class BusinessmanDashBoardRepositoryCustomImpl implements BusinessmanDash
         return queryFactory
                 .select(Projections.constructor(
                         BusinessmanDashBoardListResponseDto.class,
-                        employ.no, employ.name,
+                        employ.no, employ.name, employ.salary,
                         record.occupationName,
-                        schedule.workStartTime, schedule.workEndTime,
+                        record.workStartTime, record.workEndTime,
                         record.workingTime, record.quittingTime,
                         schedule.state
                 ))
