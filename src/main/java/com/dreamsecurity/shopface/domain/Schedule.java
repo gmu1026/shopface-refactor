@@ -82,4 +82,9 @@ public class Schedule {
     this.state = "C";
     // C = Complete
   }
+
+  public void absenteeism() {
+    this.state = "A";
+    // A = Absenteeism
+  }
 }

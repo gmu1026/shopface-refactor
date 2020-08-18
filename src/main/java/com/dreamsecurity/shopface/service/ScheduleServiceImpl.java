@@ -1,9 +1,6 @@
 package com.dreamsecurity.shopface.service;
 
-import com.dreamsecurity.shopface.domain.Branch;
-import com.dreamsecurity.shopface.domain.Member;
-import com.dreamsecurity.shopface.domain.Occupation;
-import com.dreamsecurity.shopface.domain.Schedule;
+import com.dreamsecurity.shopface.domain.*;
 import com.dreamsecurity.shopface.dto.employ.EmployListResponseDto;
 import com.dreamsecurity.shopface.dto.occupation.OccupationResponseDto;
 import com.dreamsecurity.shopface.dto.schedule.ScheduleAddRequestDto;
@@ -17,9 +14,11 @@ import com.dreamsecurity.shopface.response.ApiException;
 import com.dreamsecurity.shopface.response.ApiResponseCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +32,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
     private final BranchRepository branchRepository;
     private final EmployRepository employRepository;
     private final OccupationRepository occupationRepository;
+    private final AlarmRepository alarmRepository;
 
     @Transactional(readOnly = true)
     public boolean isOccupationNoChecked(Occupation occupation, Branch branch, String requestColor) {
@@ -83,12 +83,24 @@ public class ScheduleServiceImpl implements  ScheduleService {
         Occupation occupation = occupationRepository.findById(requestDto.getOccupationNo())
                 .orElseThrow(() -> new IllegalArgumentException("해당 업무가 없습니다"));
 
-       if (scheduleRepository.existSchedule(requestDto.getWorkStartTime(),
-               requestDto.getWorkEndTime(), requestDto.getMemberId())) {
+    if (requestDto.getWorkStartTime().toLocalDate().isBefore(LocalDate.now())) {
+        throw new ApiException(ApiResponseCode.BAD_REQUEST, "스케줄을 등록할 수 없는 날짜입니다");
+    }
+      if (scheduleRepository.existSchedule(
+          requestDto.getWorkStartTime(), requestDto.getWorkEndTime(), requestDto.getMemberId())) {
            requestDto.setMember(member);
            requestDto.setBranch(branch);
            requestDto.setOccupation(occupation);
            result = scheduleRepository.save(requestDto.toEntity()).getNo();
+
+           Alarm alarm = Alarm.builder()
+                   .member(member)
+                   .contents(branch.getName() + " 지점에서 스케줄이 등록되었습니다. "
+                           + requestDto.getWorkStartTime() + "부터 " +
+                           requestDto.getWorkEndTime())
+                   .type("ADD_SCHEDULE")
+                   .build();
+           alarmRepository.save(alarm);
        } else {
            throw new ApiException(ApiResponseCode.BAD_REQUEST, "요청한 시간에 스케줄이 이미 존재합니다");
        }
@@ -129,8 +141,18 @@ public class ScheduleServiceImpl implements  ScheduleService {
                     if (color.getColorCode().equals(requestDto.getColor())) {
                         for (ScheduleState state : ScheduleState.values()) {
                             if (state.getState().equals(requestDto.getState())) {
+                                Alarm alarm = Alarm.builder()
+                                        .member(entity.getMember())
+                                        .contents(entity.getBranch().getName() + " 지점에서 스케줄이 수정되었습니다. "
+                                                + entity.getWorkStartTime() + entity.getWorkEndTime() + "에서 변경됨")
+                                        .type("UPDATE_SCHEDULE")
+                                        .build();
+
+                                alarmRepository.save(alarm);
+
                                 entity.update(requestDto.getMember(), requestDto.getWorkStartTime(),
                                         requestDto.getWorkEndTime(), requestDto.getOccupation(), requestDto.getColor());
+
                                 return no;
                             }
                         } new IllegalArgumentException("잘못된 스케줄 상태입니다.");
@@ -151,8 +173,47 @@ public class ScheduleServiceImpl implements  ScheduleService {
                 && !"L".equals(entity.getState())
                 && !"A".equals(entity.getState())) {
             scheduleRepository.delete(entity);
+
+            Alarm alarm = Alarm.builder()
+                    .member(entity.getMember())
+                    .contents(entity.getBranch().getName() + " 지점에서 스케줄이 삭제되었습니다. "
+                            + entity.getWorkStartTime() + "부터 " +
+                            entity.getWorkEndTime() + "까지의 스케줄")
+                    .type("REMOVE_SCHEDULE")
+                    .build();
+            alarmRepository.save(alarm);
         } else {
             new IllegalArgumentException("출근, 지각, 결근 상태인 스케줄은 삭제할 수 없습니다.");
+        }
+    }
+
+    @Scheduled(fixedDelay = 3 * 60 * 1000)
+    @Transactional
+    public void checkAbsenteeismSchedule() {
+        List<Schedule> absenteeismList = scheduleRepository.findAllByToday().stream().filter(
+                s -> s.getWorkEndTime().isBefore(LocalDateTime.now())
+                        && "R".equals(s.getState())).collect(Collectors.toList());
+
+        for (Schedule schedule : absenteeismList) {
+            schedule.absenteeism();
+
+            Alarm employeeAlarm = Alarm.builder()
+                    .member(schedule.getMember())
+                    .contents(schedule.getBranch().getName() + " 지점에서 근무가 비정상 처리되었습니다 "
+                            + schedule.getWorkStartTime() + "부터 " +
+                            schedule.getWorkEndTime() + "까지의 스케줄")
+                    .type("ABSENTEEISM_SCHEDULE")
+                    .build();
+
+            Alarm businessmanAlarm = Alarm.builder()
+                    .member(schedule.getBranch().getMember())
+                    .contents(schedule.getBranch().getName() + " 지점에서 근무가 비정상 처리되었습니다 "
+                            + schedule.getWorkStartTime() + "부터 " +
+                            schedule.getWorkEndTime() + "까지의 스케줄")
+                    .type("ABSENTEEISM_SCHEDULE")
+                    .build();
+            alarmRepository.save(employeeAlarm);
+            alarmRepository.save(businessmanAlarm);
         }
     }
 }

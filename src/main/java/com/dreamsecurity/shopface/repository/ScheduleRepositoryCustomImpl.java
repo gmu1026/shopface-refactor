@@ -5,13 +5,10 @@ import com.dreamsecurity.shopface.dto.schedule.ScheduleListResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.jni.Local;
-import org.hibernate.tool.hbm2ddl.SchemaUpdate;
-import org.joda.time.DateTimeComparator;
-import org.joda.time.LocalDate;
+
+import java.time.LocalDate;
 import java.time.ZoneId;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,6 +28,19 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
                         schedule.state, schedule.branch.name))
                 .from(schedule)
                 .where(schedule.member.id.eq(id))
+                .fetch();
+    }
+
+    @Override
+    public List<Schedule> findAllByToday() {
+        LocalDateTime startTime = LocalDate.now().atTime(0,0, 0);
+        LocalDateTime endTime = LocalDate.now().atTime(23,59, 59);
+
+        System.out.println(startTime + " - " + endTime);
+
+        return jpaQueryFactory
+                .selectFrom(schedule)
+                .where(schedule.workStartTime.between(startTime, endTime))
                 .fetch();
     }
 
