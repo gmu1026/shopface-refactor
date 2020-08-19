@@ -1,12 +1,11 @@
 package com.dreamsecurity.shopface.web;
 
 import com.dreamsecurity.shopface.domain.*;
-import com.dreamsecurity.shopface.dto.dashboard.businessmanDashBoard.BusinessmanDashBoardListRequestDto;
-import com.dreamsecurity.shopface.dto.dashboard.businessmanDashBoard.BusinessmanDashBoardListResponseDto;
 import com.dreamsecurity.shopface.enums.ScheduleColor;
 import com.dreamsecurity.shopface.enums.ScheduleState;
 import com.dreamsecurity.shopface.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.tomcat.jni.Local;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,8 +20,18 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.Assert.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -131,11 +140,12 @@ public class EmployeeDashBoardApiControllerTest {
                 .workStartTime(LocalDateTime.of(2020, 8, 18, 10, 0, 0))
                 .workEndTime(LocalDateTime.of(2020, 8, 18, 12, 0,0 ))
                 .color(ScheduleColor.LIGHTGREEN.getColorCode())
-                .state(ScheduleState.REGISTER.getState())
+                .state(ScheduleState.COMPLETE.getState())
                 .build();
         scheduleRepository.save(schedule);
 
         Record record = Record.builder()
+                .businessmanId(business.getId())
                 .businessmanName(business.getName())
                 .businessmanPhone(business.getPhone())
                 .branchNo(branch.getNo())
@@ -164,29 +174,88 @@ public class EmployeeDashBoardApiControllerTest {
     }
 
     @Test
-    public void dashBoardTest() throws Exception{
-//        Member member = memberRepository.findAll().get(0);
+    public void testEmployeeDashBoardScheduled() throws Exception{
+        Member member = memberRepository.findAll().get(1);
         Branch branch = branchRepository.findAll().get(0);
-        Employ employ = employRepository.findAll().get(0);
-        Schedule schedule = scheduleRepository.findAll().get(0);
-        List<BusinessmanDashBoardListResponseDto> responseDtos = businessmanDashBoardRepository.getBusinessmanDashBoardListWorkDone(BusinessmanDashBoardListRequestDto.builder()
-            .businessmanId("test")
-            .branchNo(branch.getNo())
-            .scheduleStatus("C")
-            .build());
+        Occupation occupation = occupationRepository.findAll().get(0);
 
-        System.out.println("------------------" + employ.getName() + " / " + employ.getSalary() + " / " + employ.getBranch().getName());
-        System.out.println("----------------------------");
-        System.out.println(responseDtos.get(0).toString());
-        System.out.println("----schedule----" + schedule.getNo() + " / " + schedule.getState() + " / " + schedule.getWorkStartTime() + " / " + schedule.getWorkEndTime() + " / " + schedule.getColor() + " / " + schedule.getMember().getId() + " / " + schedule.getBranch().getName());
-        ///////////////// 여기까지는 값 들어갔는지 확인하는 용도
+        List<LocalDateTime> times = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            LocalDateTime startTime = LocalDateTime.of(2020, 8, 20, i, 0,0);
+            times.add(startTime);
 
-//        //when
-//        mockMvc.perform(get("/businessman/" + member.getId() + "/branch/" + branch.getNo() + "/R"))
-//                .andExpect(status().isOk())
-////                .andExpect(jsonPath("$.data[0].memberId", is("emp01")))
-//                .andExpect(jsonPath("$.data[0].employName", is("박알바")))
-//                .andDo(document("BusinessmanDashBoard_Scheduled"));
-//        //then
+            Schedule schedule = Schedule.builder()
+                    .member(member)
+                    .branch(branch)
+                    .occupation(occupation)
+                    .color(ScheduleColor.BLUE.getColorCode())
+                    .workStartTime(startTime)
+                    .workEndTime(LocalDateTime.of(2020,8,20,i+1,0,0))
+                    .state(ScheduleState.REGISTER.getState())
+                    .build();
+            scheduleRepository.save(schedule);
+        }
+
+        mockMvc.perform(get("/employee/" + member.getId() +"/R"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].workStartTime", is("2020-08-20T00:00:00")))
+                .andExpect(jsonPath("$.data[1].workStartTime", is("2020-08-20T01:00:00")))
+                .andExpect(jsonPath("$.data[2].workStartTime", is("2020-08-20T02:00:00")))
+                .andExpect(jsonPath("$.data[3].workStartTime", is("2020-08-20T03:00:00")))
+                .andExpect(jsonPath("$.data[4].workStartTime", is("2020-08-20T04:00:00")))
+                .andDo(document("Employee DashBoard"));
+    }
+
+    @Test
+    public void testEmployeeDashBoardWorkDone() throws Exception{
+        Member business = memberRepository.findAll().get(0);
+        Member member = memberRepository.findAll().get(1);
+        Branch branch = branchRepository.findAll().get(0);
+        Occupation occupation = occupationRepository.findAll().get(0);
+
+        List<LocalDateTime> times = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            LocalDateTime startTime = LocalDateTime.of(2020, 8,19 , i, 0,0);
+            times.add(startTime);
+
+            Schedule schedule = Schedule.builder()
+                    .member(member)
+                    .branch(branch)
+                    .occupation(occupation)
+                    .color(ScheduleColor.BLUE.getColorCode())
+                    .workStartTime(startTime)
+                    .workEndTime(LocalDateTime.of(2020,8,19,i+1,0,0))
+                    .state(ScheduleState.COMPLETE.getState())
+                    .build();
+            scheduleRepository.save(schedule);
+
+            Record record = Record.builder()
+                    .businessmanId(business.getId())
+                    .businessmanName(business.getName())
+                    .businessmanPhone(business.getPhone())
+                    .branchNo(branch.getNo())
+                    .branchName(branch.getName())
+                    .branchPhone(branch.getPhone())
+                    .memberId(member.getId())
+                    .memberName(member.getName())
+                    .memberPhone(member.getPhone())
+                    .occupationName(occupation.getName())
+                    .workStartTime(schedule.getWorkStartTime())
+                    .workEndTime(schedule.getWorkEndTime())
+                    .workingTime(LocalDateTime.of(2020,8,19,i,1,10))
+                    .quittingTime(LocalDateTime.of(2020,8,19,i+1, 0,6))
+                    .build();
+            recordRepository.save(record);
+        }
+
+        mockMvc.perform(get("/employee/" + member.getId() +"/C"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].workingTime", is("2020-08-18T09:58:20")))
+//                .andExpect(jsonPath("$.data[1].workingTime", is("2020-08-19T00:01:10")))
+//                .andExpect(jsonPath("$.data[2].workingTime", is("2020-08-19T01:01:10")))
+//                .andExpect(jsonPath("$.data[3].workingTime", is("2020-08-19T02:01:10")))
+//                .andExpect(jsonPath("$.data[4].workingTime", is("2020-08-19T03:01:10")))
+                .andDo(document("Employee DashBoard"));
+
     }
 }
