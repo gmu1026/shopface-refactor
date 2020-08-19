@@ -24,10 +24,9 @@ public class BusinessmanDashBoardRepositoryCustomImpl implements BusinessmanDash
         return queryFactory
                 .select(Projections.constructor(
                         BusinessmanDashBoardListResponseDto.class,
-                        employ.no, employ.name,
+                        employ.no, employ.name, employ.salary,
                         occupation.name,
                         schedule.workStartTime, schedule.workEndTime,
-                        record.workingTime, record.quittingTime,
                         schedule.state
                 ))
                 .from(schedule)
@@ -35,12 +34,13 @@ public class BusinessmanDashBoardRepositoryCustomImpl implements BusinessmanDash
                         .and(employ.branch.no.eq(schedule.branch.no)))
                 .leftJoin(occupation).on(occupation.branch.no.eq(schedule.branch.no)
                         .and(occupation.no.eq(schedule.occupation.no)))
-                .where(schedule.member.id.eq(requestDto.getMemberId())
+                .where(schedule.branch.member.id.eq(requestDto.getBusinessmanId())
                         .and(schedule.state.eq("R").or(schedule.state.eq("L")))
                         .and(schedule.branch.no.eq(requestDto.getBranchNo()))
                         .and(schedule.workStartTime.after(now)))
                 .fetch();
     }
+
 
     @Override
     public List<BusinessmanDashBoardListResponseDto> getBusinessmanDashBoardListWorking(BusinessmanDashBoardListRequestDto requestDto) {
@@ -49,7 +49,7 @@ public class BusinessmanDashBoardRepositoryCustomImpl implements BusinessmanDash
         return queryFactory
                 .select(Projections.constructor(
                         BusinessmanDashBoardListResponseDto.class,
-                        employ.no, employ.name,
+                        employ.no, employ.name, employ.salary,
                         occupation.name,
                         schedule.workStartTime, schedule.workEndTime,
                         record.workingTime, record.quittingTime,
@@ -64,7 +64,7 @@ public class BusinessmanDashBoardRepositoryCustomImpl implements BusinessmanDash
                         .and(record.memberId.eq(schedule.member.id))
                         .and(record.workStartTime.eq(schedule.workStartTime))
                         .and(record.workEndTime.eq(schedule.workEndTime)))
-                .where(schedule.member.id.eq(requestDto.getMemberId())
+                .where(schedule.branch.member.id.eq(requestDto.getBusinessmanId())
                         .and(schedule.state.eq("W"))
                         .and(schedule.branch.no.eq(requestDto.getBranchNo()))
                         .and(schedule.workStartTime.before(now)))
@@ -78,7 +78,7 @@ public class BusinessmanDashBoardRepositoryCustomImpl implements BusinessmanDash
         return queryFactory
                 .select(Projections.constructor(
                         BusinessmanDashBoardListResponseDto.class,
-                        employ.no, employ.name,
+                        employ.no, employ.name, employ.salary,
                         record.occupationName,
                         schedule.workStartTime, schedule.workEndTime,
                         record.workingTime, record.quittingTime,
@@ -91,7 +91,7 @@ public class BusinessmanDashBoardRepositoryCustomImpl implements BusinessmanDash
                         .and(record.memberId.eq(schedule.member.id))
                         .and(record.workStartTime.eq(schedule.workStartTime))
                         .and(record.workEndTime.eq(schedule.workEndTime)))
-                .where(record.memberId.eq(requestDto.getMemberId())
+                .where(record.businessmanId.eq(requestDto.getBusinessmanId())
                         .and(record.branchNo.eq(requestDto.getBranchNo()))
                         .and(record.workEndTime.before(now)))
                 .fetch();

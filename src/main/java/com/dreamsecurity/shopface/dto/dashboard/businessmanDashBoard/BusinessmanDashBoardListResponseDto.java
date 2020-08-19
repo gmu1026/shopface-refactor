@@ -2,16 +2,18 @@ package com.dreamsecurity.shopface.dto.dashboard.businessmanDashBoard;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
+@ToString
 public class BusinessmanDashBoardListResponseDto {
     private Long employNo;
     private String employName;
-    private Long employSalsry;
+    private Long employSalary;
     private String occupationName;
     private LocalDateTime workStartTime;
     private LocalDateTime workEndTime;
@@ -25,7 +27,7 @@ public class BusinessmanDashBoardListResponseDto {
 
     public BusinessmanDashBoardListResponseDto(Long employNo,
                                                String employName,
-                                               Long employSalsry,
+                                               Long employSalary,
                                                String occupationName,
                                                LocalDateTime workStartTime,
                                                LocalDateTime workEndTime,
@@ -34,16 +36,28 @@ public class BusinessmanDashBoardListResponseDto {
                                                String scheduleStatus) {
         this.employNo = employNo;
         this.employName = employName;
-        this.employSalsry = employSalsry;
+        this.employSalary = employSalary;
         this.occupationName = occupationName;
         this.workStartTime = workStartTime;
         this.workEndTime = workEndTime;
-//        this.hoursPlan = hoursPlan;
-//        this.salaryPlan = salaryPlan;
         this.workingTime = workingTime;
         this.quittingTime = quittingTime;
-//        this.actualWorkingHours = actualWorkingHours;
-//        this.actualSalary = actualSalary;
+        this.scheduleStatus = scheduleStatus;
+    }
+
+    public BusinessmanDashBoardListResponseDto(Long employNo,
+                                               String employName,
+                                               Long employSalary,
+                                               String occupationName,
+                                               LocalDateTime workStartTime,
+                                               LocalDateTime workEndTime,
+                                               String scheduleStatus) {
+        this.employNo = employNo;
+        this.employName = employName;
+        this.employSalary = employSalary;
+        this.occupationName = occupationName;
+        this.workStartTime = workStartTime;
+        this.workEndTime = workEndTime;
         this.scheduleStatus = scheduleStatus;
     }
 

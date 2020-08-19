@@ -10,6 +10,7 @@ public class RecordAddRequestDto {
   private long branchNo;
   private String branchName;
   private String branchPhone;
+  private String businessmanId;
   private String businessmanName;
   private String businessmanPhone;
   private String memberId;
@@ -28,6 +29,7 @@ public class RecordAddRequestDto {
     this.branchNo = entity.getBranchNo();
     this.branchName = entity.getBranchName();
     this.branchPhone = entity.getBranchPhone();
+    this.businessmanId = entity.getBusinessmanId();
     this.businessmanName = entity.getBusinessmanName();
     this.businessmanPhone = entity.getBusinessmanPhone();
     this.memberId = entity.getMemberId();
@@ -45,6 +47,7 @@ public class RecordAddRequestDto {
 
   public Record toEntity() {
     return Record.builder()
+            .businessmanId(this.businessmanId)
             .businessmanName(this.businessmanName)
             .businessmanPhone(this.businessmanPhone)
             .occupationName(this.occupationName)

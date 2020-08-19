@@ -44,7 +44,7 @@ public class Employ {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = true, insertable = false)
+    @Column(nullable = true)
     private Long salary;
 
     @Column(nullable = false, length = 100)
@@ -63,7 +63,8 @@ public class Employ {
     private String state;
 
     @Builder
-    public Employ(String name, long salary, String state, String email, Role role, Department department, Branch branch, String certCode) {
+    public Employ(Member member, String name, long salary, String state, String email, Role role, Department department, Branch branch) {
+        this.member = member;
         this.name = name;
         this.salary = salary;
         this.state = state;
