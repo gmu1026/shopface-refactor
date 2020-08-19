@@ -37,6 +37,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -129,8 +130,7 @@ public class RoleApiControllerTest {
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
                                 fieldWithPath("data").type(JsonFieldType.NUMBER).description("ID")
                         )
-                    )
-                );
+                ));
 
         List<Role> results = roleRepository.findAll();
         assertThat(results.get(0).getName()).isEqualTo(requestDto.getName());
@@ -147,13 +147,26 @@ public class RoleApiControllerTest {
             roleRepository.save(role);
         }
         //when
-        mockMvc.perform(get("/branch/" + branch.getNo() + "/role"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].name", is("역할0")))
-                .andExpect(jsonPath("$.data[1].name", is("역할1")))
-                .andExpect(jsonPath("$.data[2].name", is("역할2")))
-                .andDo(document("Role-List"));
+        ResultActions result = mockMvc.perform(get("/branch/{no}/role", branch.getNo()));
         //then
+        result
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data[0].name", is("역할0")))
+            .andExpect(jsonPath("$.data[1].name", is("역할1")))
+            .andExpect(jsonPath("$.data[2].name", is("역할2")))
+            .andDo(document("Role-List",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                          parameterWithName("no").description("지점 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                                subsectionWithPath("data.[]").type(JsonFieldType.ARRAY).description("데이터")
+                        )
+                    )
+                );
     }
 
     @Test
@@ -169,10 +182,26 @@ public class RoleApiControllerTest {
 
         String content = objectMapper.writeValueAsString(new RoleEditRequestDto("역할수정"));
         //when
-        mockMvc.perform(put("/role/" + role.getNo())
-                .content(content).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(document("Role-Edit"));
+        ResultActions result = mockMvc.perform(put("/role/{no}", role.getNo())
+                .content(content).contentType(MediaType.APPLICATION_JSON));
+        result
+            .andExpect(status().isOk())
+            .andDo(document("Role-Edit",
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    pathParameters(
+                       parameterWithName("no").description("역할 번호")
+                    ),
+                    requestFields(
+                            fieldWithPath("name").type(JsonFieldType.STRING).description("역할 명")
+                    ),
+                    responseFields(
+                            fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                            fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                            fieldWithPath("data").type(JsonFieldType.NUMBER).description("ID")
+                    )
+                )
+            );
         //then
         List<Role> results = roleRepository.findAll();
         assertThat(results.get(0).getName()).isEqualTo("역할수정");
@@ -189,9 +218,21 @@ public class RoleApiControllerTest {
 
         roleRepository.save(role);
         //when
-        mockMvc.perform(delete("/role/" + role.getNo()))
-                .andExpect(status().isOk())
-                .andDo(document("Role-Remove"));
+        ResultActions result = mockMvc.perform(delete("/role/{no}", role.getNo()));
+        result
+            .andExpect(status().isOk())
+            .andDo(document("Role-Remove",
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    pathParameters(
+                            parameterWithName("no").description("역할 번호")
+                    ),
+                    responseFields(
+                            fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                            fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                            fieldWithPath("data").type(JsonFieldType.BOOLEAN).description("데이터")
+                    )
+            ));
         //then
         List<Role> results = roleRepository.findAll();
         assertThat(results.size()).isEqualTo(0);

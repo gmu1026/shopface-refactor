@@ -2,6 +2,7 @@ package com.dreamsecurity.shopface.dto.occupation;
 
 import com.dreamsecurity.shopface.domain.Branch;
 import com.dreamsecurity.shopface.domain.Occupation;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 public class OccupationAddRequestDto {
   private String name;
   private Long branchNo;
+
+  @JsonIgnore
   private Branch branch;
 
   public OccupationAddRequestDto(String name, long branchNo) {

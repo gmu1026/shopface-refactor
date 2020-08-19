@@ -1,0 +1,49 @@
+language: java
+jdk:
+- openjdk8
+branches:
+  only:
+  - master
+  - dev
+cache:
+  directories:
+  - "$HOME/.m2/repository"
+  - "$HOME/.gradle"
+before_install:
+- chmod +x gradlew
+script: "./gradlew clean build"
+before_deploy:
+- mkdir -p before-deploy
+- cp appspec.yml before-deploy/
+- cp build/libs/*.jar before-deploy/
+- cp execute-deploy.sh before-deploy/
+- cd before-deploy && zip -r before-deploy *
+- cd ../ && mkdir -p deploy
+- mv before-deploy/before-deploy.zip deploy/shopface-refactor.zip
+deploy:
+- provider: s3
+  access_key_id: "$AWS_ACCESS_KEY"
+  secret_access_key: "$AWS_SECRET_KEY"
+  bucket: shopface-refactor-deploy
+  region: ap-northeast-2
+  skip_cleanup: true
+  acl: private
+  local_dir: deploy
+  wait-until-deployed: true
+  on:
+    all_branches: true
+- provider: codedeploy
+  access_key_id: "$AWS_ACCESS_KEY"
+  secret_access_key: "$AWS_SECRET_KEY"
+  bucket: shopface-refactor-deploy
+  key: shopface-refactor.zip
+  bundle_type: zip
+  application: shopface-refactor
+  deployment_group: shopface-refactor-deploy-group
+  region: ap-northeast-2
+  wait-until-deployed: true
+  on:
+    all_branches: true
+notifications:
+  slack:
+    secure: vymdMKWYLhKJN3O1iGpX1HpoLsNF9zngbJguaafUO4FmLOM52ycljtUe9mQybtRkibJBMFcOvUrnrtXC9SIEpLx/jzbxGQViBaqRNX85s0kBa4hTMQGi9HwDULsFYt394V1DizM78dzsPOhq4r7QAtySO7lfjDNMxa1hRBk68ZPGqxihJA4oQfN/JIXKcoou3E+mpw4sjDD2wVPx0h7tRPLGpni72YQCvrTMEZ3lsItEhMfiVJ0mCyx/5JA8d6DarPkZPPb1fOyYDwnyHBOSrWeHKD7hKU524S8ssmgFnKK1byWhQrnlXqldEq0bL0ha4lts+3IZxK4IBlwTmmkJQBaPx1ljx7G8EMtiU3Gf6kfcLJFxFCTRYb0MbE4mDUF7gTQ91btCIY2mjV3je/ULuhfQt3q5QVae//icgRN0Q09VUFB6s814Au8Ec2SYS891CMyfkkfOlQ/iiCLOTdEjss/FN8nMi/x6nrR4L79LcnydvreR8dBAJx2PK1lJ+9pXiEl/E6jXM7idDQSzKs+kJt/oQjrwKLRz/bdR6945OZOpjH737GQr+gvmhghqTib2HgouALVEQoWCZDGo59XZHFmpeUJr4aMJOyMll51IJYWepUq1Dssa2LZe4y3Xs/Yi6OhVklgCnnfyGXqG7qYuhlka78r+yB0GspMjWXrrIeo=

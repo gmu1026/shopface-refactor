@@ -14,6 +14,7 @@ import java.util.List;
 @Service
 public class BusinessmanDashBoardServiceImpl implements BusinessmanDashBoardService{
     private final BusinessmanDashBoardRepository repository;
+  
     @Override
     public List<BusinessmanDashBoardListResponseDto> getBusinessmanDashBoardListScheduled(BusinessmanDashBoardListRequestDto requestDto) {
         List<BusinessmanDashBoardListResponseDto> responseDtos = repository.getBusinessmanDashBoardListScheduled(requestDto);

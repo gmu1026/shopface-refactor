@@ -4,7 +4,6 @@ import com.dreamsecurity.shopface.domain.Record;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 public class RecordEditRequestDto {

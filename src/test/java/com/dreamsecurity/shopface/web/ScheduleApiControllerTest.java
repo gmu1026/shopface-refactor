@@ -148,30 +148,32 @@ public class ScheduleApiControllerTest {
     }
 
 //    @Test
-//    public void addSchedule() throws Exception{
+//    public void 스케줄등록_테스트() throws Exception{
 //        //given
 //        Member member = memberRepository.findAll().get(0);
 //        Branch branch = branchRepository.findAll().get(0);
 //        Occupation occupation = occupationRepository.findAll().get(0);
+//        Employ employ = employRepository.findAll().get(0);
 //
-//        LocalDateTime workStartTime = LocalDateTime.of(2020, 8, 10, 0, 0, 0);
-//        LocalDateTime workEndTime = LocalDateTime.of(2020, 8, 10, 5, 0 , 0);
+//        LocalDateTime workStartTime = LocalDateTime.now().plusHours(1);
+//        LocalDateTime workEndTime = LocalDateTime.now().plusHours(2);
 //        String color = "#0070C0";
 //
 //        Schedule schedule = Schedule.builder()
 //                .color(color)
 //                .build();
 //
-//        String content = "{\"color:\":\"#0070C0\", \"workStartTime\":\"2020-08-10T00:00:00\", " +
-//                "\"workEndTime\":\"2020-08-10T05:00:00\", \"memberId\":\""+ member.getId() + "\", " +
-//                "\"branchNo\":" + branch.getNo() + ", \"occupationNo\":"+ occupation.getNo() +"}";
+////        String content = "{\"color:\":\"#0070C0\", \"workStartTime\":\"2020-08-10T00:00:00\", " +
+////                "\"workEndTime\":\"2020-08-10T05:00:00\", \"memberId\":\""+ member.getId() + "\", " +
+////                "\"branchNo\":" + branch.getNo() + ", \"occupationNo\":"+ occupation.getNo() +"}";
 //
+//        ScheduleAddRequestDto requestDto = new ScheduleAddRequestDto(schedule);
+//
+//        requestDto.setEmployNo(employ.getNo());
+//        requestDto.setBranchNo(branch.getNo());
+//        requestDto.setOccupationNo(occupation.getNo());
+//        String content = objectMapper.writeValueAsString(requestDto);
 //        System.out.println(content);
-////        ScheduleAddRequestDto requestDto = new ScheduleAddRequestDto(schedule);
-////        requestDto.setMemberId(member.getId());
-////        requestDto.setBranchNo(branch.getNo());
-////        requestDto.setOccupationNo(occupation.getNo());
-////        String content = objectMapper.writeValueAsString(requestDto);
 //        //when
 //        mockMvc.perform(
 //                post("/schedule")

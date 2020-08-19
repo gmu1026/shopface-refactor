@@ -19,7 +19,7 @@ public class Member extends BaseTimeEntity {
     // TODO Address, DetailAddress, ZipCode => Embedded
     @PrePersist
     public void setDefaultState() {
-        this.state = this.state == null ? "D" : this.state;
+        this.state = this.state == null ? "A" : this.state;
     }
 
     @Id
@@ -86,9 +86,8 @@ public class Member extends BaseTimeEntity {
         this.zipCode = zipCode;
     }
 
-    public void update(String password, String address, String detailAddress,
+    public void update(String address, String detailAddress,
                        String zipCode, String email, String bankName, String accountNum) {
-        this.password = password;
         this.address = address;
         this.detailAddress = detailAddress;
         this.zipCode = zipCode;

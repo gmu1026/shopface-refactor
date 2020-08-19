@@ -3,9 +3,11 @@ package com.dreamsecurity.shopface.dto.branch;
 import com.dreamsecurity.shopface.domain.Branch;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class BranchEditRequestDto {
   private String name;

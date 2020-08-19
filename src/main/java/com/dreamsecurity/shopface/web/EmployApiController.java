@@ -54,4 +54,14 @@ public class EmployApiController {
   public ApiResponseDto joiningEmployee(@RequestBody EmployAcceptRequestDto requestDto) {
     return ApiResponseDto.createOK(employService.joiningEmployee(requestDto));
   }
+
+  @PatchMapping(value = "/employ/{no}")
+  public ApiResponseDto disableEmployee(@PathVariable("no") long no) {
+    return ApiResponseDto.createOK(employService.disableEmployee(no));
+  }
+
+  @PutMapping(value = "/employ/{no}/invite")
+  public ApiResponseDto inviteEmployee(@PathVariable("no") long no) {
+    return ApiResponseDto.createOK(employService.reInviteEmployee(no));
+  }
 }

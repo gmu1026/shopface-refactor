@@ -12,9 +12,8 @@ public interface EmployService {
     EmployResponseDto getEmploy(long no);
     Long editEmploy(long no, EmployEditRequestDto requestDto);
     void removeEmploy(long no);
-    boolean sendInviteMail(EmployAddRequestDto requestDto, String certCode);
-    String createCode();
-    SimpleMailMessage createInviteMessage(String email, String name, String branchName, String certCode);
     boolean joiningEmployee(EmployAcceptRequestDto requestDto);
     boolean checkCode(String requestCertCode);
+    boolean disableEmployee(long no);
+    boolean reInviteEmployee(long no);
 }

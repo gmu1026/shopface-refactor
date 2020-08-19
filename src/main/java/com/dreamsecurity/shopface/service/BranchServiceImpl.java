@@ -4,12 +4,14 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.dreamsecurity.shopface.domain.Alarm;
 import com.dreamsecurity.shopface.domain.Branch;
 import com.dreamsecurity.shopface.domain.Member;
 import com.dreamsecurity.shopface.dto.branch.BranchAddRequestDto;
 import com.dreamsecurity.shopface.dto.branch.BranchEditRequestDto;
 import com.dreamsecurity.shopface.dto.branch.BranchListResponseDto;
 import com.dreamsecurity.shopface.dto.branch.BranchResponseDto;
+import com.dreamsecurity.shopface.repository.AlarmRepository;
 import com.dreamsecurity.shopface.repository.BranchRepository;
 import com.dreamsecurity.shopface.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -29,6 +33,7 @@ import java.util.stream.Collectors;
 public class BranchServiceImpl implements BranchService {
     private final BranchRepository branchRepository;
     private final MemberRepository memberRepository;
+    private final AlarmRepository alarmRepository;
     private AmazonS3 amazonS3;
 
     @PostConstruct
@@ -74,12 +79,13 @@ public class BranchServiceImpl implements BranchService {
 
         String businessLicensePath = "";
         if (requestDto.getBusinessLicenseImage() != null) {
+            String fileName = UUID.randomUUID().toString() + "-" + requestDto.getBusinessLicenseImage().getOriginalFilename();
             amazonS3.putObject(new PutObjectRequest(
-                    this.bucket, requestDto.getBusinessLicenseImage().getOriginalFilename(),
+                    this.bucket, fileName,
                     requestDto.getBusinessLicenseImage().getInputStream(), null));
 
             businessLicensePath = amazonS3.getUrl(
-                    this.bucket, requestDto.getBusinessLicenseImage().getOriginalFilename()).toString();
+                    this.bucket, fileName).toString();
         }
 
         entity.update(requestDto.getName(), requestDto.getAddress(),
@@ -94,6 +100,29 @@ public class BranchServiceImpl implements BranchService {
         Branch entity = branchRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("해당 지점이 없습니다."));
 
+        if (entity.getBusinessLicensePath() != null) {
+            amazonS3.deleteObject(bucket, entity.getBusinessLicensePath()
+                    .substring(entity.getBusinessLicensePath().lastIndexOf("/") + 1));
+        }
+
         branchRepository.delete(entity);
+    }
+
+    @Transactional
+    @Override
+    public Boolean confirmBranch(long no) {
+        Branch branch = branchRepository.findById(no)
+                .orElseThrow(() -> new IllegalArgumentException("해당 지점이 없습니다"));
+
+        branch.confirm();
+
+        Alarm alarm = Alarm.builder()
+                .member(branch.getMember())
+                .contents(branch.getName() + " 지점이 승인되었습니다.")
+                .type("CONFIRMED_BRANCH")
+                .build();
+        alarmRepository.save(alarm);
+
+        return true;
     }
 }

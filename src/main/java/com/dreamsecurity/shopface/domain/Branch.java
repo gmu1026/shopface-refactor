@@ -90,11 +90,25 @@ public class Branch extends BaseTimeEntity {
       String detailAddress,
       String zipCode,
       String businessLicensePath) {
-    this.name = name;
-    this.address = address;
-    this.detailAddress = detailAddress;
-    this.zipCode = zipCode;
-    this.businessLicensePath = businessLicensePath;
+    if (name != null) {
+      this.name = name;
+    }
+
+    if (address != null) {
+      this.address = address;
+    }
+
+    if (detailAddress != null) {
+      this.detailAddress = detailAddress;
+    }
+
+    if (zipCode != null) {
+      this.zipCode = zipCode;
+    }
+
+    if (businessLicensePath != null) {
+      this.businessLicensePath = businessLicensePath;
+    }
   }
 
   public void confirm() {

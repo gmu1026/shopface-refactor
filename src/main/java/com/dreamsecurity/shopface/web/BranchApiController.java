@@ -6,8 +6,10 @@ import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.BranchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -32,9 +34,9 @@ public class BranchApiController {
     return ApiResponseDto.createOK(branchService.addBranch(requestDto));
   }
 
-  @PutMapping(value = "/branch/{no}")
+  @PutMapping(value = "/branch/{no}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ApiResponseDto editBranch(
-          @PathVariable("no") long no, @RequestBody BranchEditRequestDto requestDto) throws IOException {
+          @PathVariable("no") long no, BranchEditRequestDto requestDto) throws IOException {
     return ApiResponseDto.createOK(branchService.editBranch(no, requestDto));
   }
 
@@ -43,5 +45,10 @@ public class BranchApiController {
     branchService.removeBranch(no);
 
     return ApiResponseDto.createOK(true);
+  }
+
+  @PatchMapping(value = "/branch/{no}")
+  public ApiResponseDto confirmBranch(@PathVariable("no") long no) {
+    return ApiResponseDto.createOK(branchService.confirmBranch(no));
   }
 }

@@ -5,18 +5,16 @@ import com.dreamsecurity.shopface.dto.schedule.ScheduleListResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.jni.Local;
-import org.hibernate.tool.hbm2ddl.SchemaUpdate;
-import org.joda.time.DateTimeComparator;
-import org.joda.time.LocalDate;
+
+import java.time.LocalDate;
 import java.time.ZoneId;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static com.dreamsecurity.shopface.domain.QEmploy.employ;
 import static com.dreamsecurity.shopface.domain.QSchedule.schedule;
 
 @RequiredArgsConstructor
@@ -24,13 +22,26 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ScheduleListResponseDto> findAllByMemberId(String id) {
+    public List<ScheduleListResponseDto> findAllByMemberIdAndBranchNo(String id, long no) {
         return jpaQueryFactory
                 .select(Projections.constructor(ScheduleListResponseDto.class,
                         schedule.no, schedule.workStartTime , schedule.workEndTime, schedule.color,
-                        schedule.state, schedule.branch.name))
+                        schedule.state, schedule.occupation.name))
                 .from(schedule)
-                .where(schedule.member.id.eq(id))
+                .where(schedule.member.id.eq(id).and(schedule.branch.no.eq(no)))
+                .fetch();
+    }
+
+    @Override
+    public List<Schedule> findAllByToday() {
+        LocalDateTime startTime = LocalDate.now().atTime(0,0, 0);
+        LocalDateTime endTime = LocalDate.now().atTime(23,59, 59);
+
+        System.out.println(startTime + " - " + endTime);
+
+        return jpaQueryFactory
+                .selectFrom(schedule)
+                .where(schedule.workStartTime.between(startTime, endTime))
                 .fetch();
     }
 
@@ -63,12 +74,20 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     @Override
     public List<ScheduleListResponseDto> findAllBranchNo(long no) {
         return jpaQueryFactory
-                .select(Projections.constructor(ScheduleListResponseDto.class,
-                        schedule.no, schedule.workStartTime , schedule.workEndTime, schedule.color,
-                        schedule.state, schedule.member.name))
-                .from(schedule)
-                .where(schedule.branch.no.eq(no))
-                .fetch();
+            .select(
+                Projections.constructor(
+                    ScheduleListResponseDto.class,
+                    schedule.no,
+                    schedule.workStartTime,
+                    schedule.workEndTime,
+                    schedule.color,
+                    schedule.state,
+                    employ.no,
+                    employ.name,
+                    schedule.occupation.name))
+            .from(schedule).join(employ).on(schedule.member.eq(employ.member))
+            .where(schedule.branch.no.eq(no))
+            .fetch();
     }
 
     @Override

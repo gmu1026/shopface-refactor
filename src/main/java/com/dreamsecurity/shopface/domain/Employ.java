@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -71,12 +72,21 @@ public class Employ {
         this.role = role;
         this.department = department;
         this.branch = branch;
+        this.certCode = certCode;
     }
 
     public void update(long salary, Role role, Department department) {
-        this.salary = salary;
-        this.role = role;
-        this.department = department;
+        if (salary > 0) {
+            this.salary = salary;
+        }
+
+        if (role != null) {
+            this.role = role;
+        }
+
+        if (department != null) {
+            this.department = department;
+        }
     }
 
     public void joinMember(Member member) {
@@ -89,5 +99,10 @@ public class Employ {
     public void inviteMember(String certCode) {
         this.certCode = certCode;
         this.state = "I";
+    }
+
+    public void disabledEmployee() {
+        this.state = "D";
+        this.member = null;
     }
 }

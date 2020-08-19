@@ -1,6 +1,7 @@
 package com.dreamsecurity.shopface.dto.member;
 
 import com.dreamsecurity.shopface.domain.Member;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,20 +19,16 @@ public class MemberAddRequestDto {
   @NotNull(message = "이름을 입력해주세요")
   private String name;
 
-  private String address;
-
-  private String detailAddress;
-
-  private String zipCode;
-
   @NotNull(message = "이메일을 입력해주세요")
   private String email;
 
   @NotNull(message = "전화번호를 입력해주세요")
   private String phone;
 
+  @JsonIgnore
   private String state;
 
+  @JsonIgnore
   private String type;
 
   private String certCode;
@@ -50,9 +47,6 @@ public class MemberAddRequestDto {
     this.id = entity.getId();
     this.password = entity.getPassword();
     this.name = entity.getName();
-    this.address = entity.getAddress();
-    this.detailAddress = entity.getDetailAddress();
-    this.zipCode = entity.getZipCode();
     this.email = entity.getEmail();
     this.phone = entity.getPhone();
     this.type = entity.getType();
@@ -64,14 +58,15 @@ public class MemberAddRequestDto {
             .id(this.id)
             .password(this.password)
             .name(this.name)
-            .address(this.address)
-            .detailAddress(this.detailAddress)
-            .zipCode(this.zipCode)
             .email(this.email)
             .phone(this.phone)
             .type(this.type)
             .state(this.state)
             .build();
+  }
+
+  public void setCertCode(String certCode) {
+    this.certCode = certCode;
   }
 
   public void setType(String type) {

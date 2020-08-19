@@ -26,6 +26,7 @@ public class EmployServiceImpl implements EmployService {
     private final BranchRepository branchRepository;
     private final RoleRepository roleRepository;
     private final DepartmentRepository departmentRepository;
+    private final AlarmRepository alarmRepository;
     private final JavaMailSender mailSender;
 
     @Transactional
@@ -66,7 +67,8 @@ public class EmployServiceImpl implements EmployService {
     @Transactional(readOnly = true)
     @Override
     public EmployResponseDto getEmploy(long no) {
-        Employ employ = employRepository.findMemberAndEmployById(no).orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다"));
+        Employ employ = employRepository.findMemberAndEmployById(no)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다"));
 
         return new EmployResponseDto(employ);
     }
@@ -76,11 +78,18 @@ public class EmployServiceImpl implements EmployService {
     public Long editEmploy(long no, EmployEditRequestDto requestDto) {
         Employ entity = employRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("해당 고용 정보가 없습니다."));
-        Role role = roleRepository.findById(requestDto.getRoleNo())
-                .orElseThrow(() -> new IllegalIdentifierException("해당 역할이 없습니다"));
-        Department department = departmentRepository.findById(requestDto.getDepartmentNo())
-                .orElseThrow(() -> new IllegalIdentifierException("해당 부서가 없습니다"));
 
+        Role role = null;
+        if (requestDto.getRoleNo() > 0) {
+            role = roleRepository.findById(requestDto.getRoleNo())
+                    .orElseThrow(() -> new IllegalIdentifierException("해당 역할이 없습니다"));
+        }
+
+        Department department = null;
+        if (requestDto.getDepartmentNo() > 0) {
+            department = departmentRepository.findById(requestDto.getDepartmentNo())
+                    .orElseThrow(() -> new IllegalIdentifierException("해당 부서가 없습니다"));
+        }
         entity.update(requestDto.getSalary(), role, department);
 
         return no;
@@ -95,8 +104,7 @@ public class EmployServiceImpl implements EmployService {
         employRepository.delete(entity);
     }
 
-    @Override
-    public boolean sendInviteMail(EmployAddRequestDto requestDto, String certCode) {
+    private boolean sendInviteMail(EmployAddRequestDto requestDto, String certCode) {
         boolean isSuccess = false;
         try{
             mailSender.send(createInviteMessage(requestDto.getEmail(),
@@ -109,8 +117,7 @@ public class EmployServiceImpl implements EmployService {
         return isSuccess;
     }
 
-    @Override
-    public SimpleMailMessage createInviteMessage(String email, String name, String branchName, String certCode) {
+    private SimpleMailMessage createInviteMessage(String email, String name, String branchName, String certCode) {
         SimpleMailMessage message = new SimpleMailMessage();
 
         StringBuilder content = new StringBuilder();
@@ -126,8 +133,7 @@ public class EmployServiceImpl implements EmployService {
         return message;
     }
 
-    @Override
-    public String createCode() {
+    private String createCode() {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 6;
@@ -153,6 +159,14 @@ public class EmployServiceImpl implements EmployService {
         boolean isSuccess = false;
         if (checkCode(requestDto.getCertCode())) {
             employ.joinMember(member);
+
+            Alarm alarm = Alarm.builder()
+                    .member(employ.getBranch().getMember())
+                    .contents(employ.getBranch().getName() + " 지점에 근무자 " + member.getName() + "이(가) 합류하였습니다.")
+                    .type("JOIN_EMPLOYEE")
+                    .build();
+            alarmRepository.save(alarm);
+
             isSuccess = true;
         } else {
             new ApiException(ApiResponseCode.BAD_REQUEST, "코드가 일치하지 않습니다");
@@ -172,5 +186,37 @@ public class EmployServiceImpl implements EmployService {
         }
 
         return isChecked;
+    }
+
+    @Transactional
+    @Override
+    public boolean disableEmployee(long no) {
+        boolean isSuccess = false;
+
+        Employ employ = employRepository.findById(no)
+                .orElseThrow(() -> new ApiException(
+                        ApiResponseCode.NOT_FOUND, "해당 고용 정보가 없습니다"));
+
+        employ.disabledEmployee();
+        isSuccess = true;
+
+        return isSuccess;
+    }
+
+    @Transactional
+    @Override
+    public boolean reInviteEmployee(long no) {
+        boolean isSuccess = false;
+
+        Employ employ = employRepository.findById(no)
+                .orElseThrow(() -> new ApiException(ApiResponseCode.NOT_FOUND,
+                        "해당 고용 정보가 없습니다"));
+
+        String certCode = createCode();
+        sendInviteMail(new EmployAddRequestDto(employ), certCode);
+        employ.inviteMember(certCode);
+        isSuccess = true;
+
+        return isSuccess;
     }
 }
