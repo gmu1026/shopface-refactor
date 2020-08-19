@@ -189,18 +189,17 @@ include::{snippets}/Branch-remove/http-response.adoc[]
 
 ==== ADD API
 
-준비중
-//===== Request Field Example
-//
-//include::{snippets}/Employ-add/request-fields.adoc[]
-//
-//===== Request HTTP Example
-//
-//include::{snippets}/Employ-add/http-request.adoc[]
-//
-//===== Response HTTP Example
-//
-//include::{snippets}/Employ-add/http-response.adoc[]
+===== Request Field Example
+
+include::{snippets}/Employ-add/request-fields.adoc[]
+
+===== Request HTTP Example
+
+include::{snippets}/Employ-add/http-request.adoc[]
+
+===== Response HTTP Example
+
+include::{snippets}/Employ-add/http-response.adoc[]
 &#160;
 
 ==== LIST API
