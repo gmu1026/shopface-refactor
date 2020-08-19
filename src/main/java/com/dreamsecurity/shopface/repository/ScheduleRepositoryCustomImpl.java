@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static com.dreamsecurity.shopface.domain.QEmploy.employ;
 import static com.dreamsecurity.shopface.domain.QSchedule.schedule;
 
 @RequiredArgsConstructor
@@ -21,13 +22,13 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ScheduleListResponseDto> findAllByMemberId(String id) {
+    public List<ScheduleListResponseDto> findAllByMemberIdAndBranchNo(String id, long no) {
         return jpaQueryFactory
                 .select(Projections.constructor(ScheduleListResponseDto.class,
                         schedule.no, schedule.workStartTime , schedule.workEndTime, schedule.color,
-                        schedule.state, schedule.branch.name))
+                        schedule.state, schedule.occupation.name))
                 .from(schedule)
-                .where(schedule.member.id.eq(id))
+                .where(schedule.member.id.eq(id).and(schedule.branch.no.eq(no)))
                 .fetch();
     }
 
@@ -73,12 +74,20 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     @Override
     public List<ScheduleListResponseDto> findAllBranchNo(long no) {
         return jpaQueryFactory
-                .select(Projections.constructor(ScheduleListResponseDto.class,
-                        schedule.no, schedule.workStartTime , schedule.workEndTime, schedule.color,
-                        schedule.state, schedule.member.name))
-                .from(schedule)
-                .where(schedule.branch.no.eq(no))
-                .fetch();
+            .select(
+                Projections.constructor(
+                    ScheduleListResponseDto.class,
+                    schedule.no,
+                    schedule.workStartTime,
+                    schedule.workEndTime,
+                    schedule.color,
+                    schedule.state,
+                    employ.no,
+                    employ.name,
+                    schedule.occupation.name))
+            .from(schedule).join(employ).on(schedule.member.eq(employ.member))
+            .where(schedule.branch.no.eq(no))
+            .fetch();
     }
 
     @Override

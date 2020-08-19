@@ -116,8 +116,8 @@ public class ScheduleServiceImpl implements  ScheduleService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ScheduleListResponseDto> getScheduleList(String id) {
-        return scheduleRepository.findAllByMemberId(id);
+    public List<ScheduleListResponseDto> getScheduleList(String id, long no) {
+        return scheduleRepository.findAllByMemberIdAndBranchNo(id, no);
     }
 
     @Transactional(readOnly = true)
