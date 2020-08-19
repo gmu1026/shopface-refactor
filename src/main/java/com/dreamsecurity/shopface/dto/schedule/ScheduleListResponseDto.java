@@ -26,16 +26,18 @@ public class ScheduleListResponseDto {
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private String employeeName;
   private String occupationName;
+  private Long branchNo;
 
   public ScheduleListResponseDto(Long no, LocalDateTime workStartTime,
                                  LocalDateTime workEndTime, String color,
-                                 String state, String occupationName) {
+                                 String state, String occupationName, Long branchNo) {
     this.no = no;
     this.workStartTime = workStartTime;
     this.workEndTime = workEndTime;
     this.color = color;
     this.state = state;
     this.occupationName = occupationName;
+    this.branchNo = branchNo;
   }
 
   public ScheduleListResponseDto(Schedule entity) {
