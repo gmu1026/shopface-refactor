@@ -63,7 +63,9 @@ public class Employ {
     private String state;
 
     @Builder
-    public Employ(Member member, String name, long salary, String state, String email, Role role, Department department, Branch branch) {
+    public Employ(Member member, String name, long salary, String state,
+                  String email, Role role, Department department,
+                  Branch branch, String certCode) {
         this.member = member;
         this.name = name;
         this.salary = salary;
