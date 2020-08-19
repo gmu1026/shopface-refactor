@@ -22,7 +22,6 @@ public class ScheduleAddRequestDto {
   private LocalDateTime workEndTime;
   private String color;
   private Long employNo;
-  private Long branchNo;
   private Long occupationNo;
 
   @JsonIgnore
@@ -56,10 +55,6 @@ public class ScheduleAddRequestDto {
 
   public void setEmployNo(Long employNo) {
     this.employNo = employNo;
-  }
-
-  public void setBranchNo(Long branchNo) {
-    this.branchNo = branchNo;
   }
 
   public void setOccupationNo(Long occupationNo) {

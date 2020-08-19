@@ -80,7 +80,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
         Member member = memberRepository.findById(employ.getMember().getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다"));
 
-        Branch branch = branchRepository.findById(requestDto.getBranchNo())
+        Branch branch = branchRepository.findById(employ.getBranch().getNo())
                 .orElseThrow(() -> new IllegalArgumentException("해당 지점이 없습니다"));
 
         Occupation occupation = occupationRepository.findById(requestDto.getOccupationNo())
