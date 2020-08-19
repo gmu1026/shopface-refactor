@@ -43,7 +43,7 @@ public class Employ {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = true, insertable = false)
+    @Column(nullable = true)
     private Long salary;
 
     @Column(nullable = false, length = 100)
