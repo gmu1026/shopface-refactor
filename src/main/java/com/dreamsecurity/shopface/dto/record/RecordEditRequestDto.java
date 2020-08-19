@@ -3,13 +3,13 @@ package com.dreamsecurity.shopface.dto.record;
 import com.dreamsecurity.shopface.domain.Record;
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 public class RecordEditRequestDto {
   private String note;
-  private Date workingTime;
-  private Date quittingTime;
+  private LocalDateTime workingTime;
+  private LocalDateTime quittingTime;
   private long salaryPay;
 
   public RecordEditRequestDto(Record entity) {
