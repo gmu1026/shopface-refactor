@@ -100,8 +100,10 @@ public class BranchServiceImpl implements BranchService {
         Branch entity = branchRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("해당 지점이 없습니다."));
 
-        amazonS3.deleteObject(bucket, entity.getBusinessLicensePath()
-                .substring(entity.getBusinessLicensePath().lastIndexOf("/") + 1));
+        if (entity.getBusinessLicensePath() != null) {
+            amazonS3.deleteObject(bucket, entity.getBusinessLicensePath()
+                    .substring(entity.getBusinessLicensePath().lastIndexOf("/") + 1));
+        }
 
         branchRepository.delete(entity);
     }
