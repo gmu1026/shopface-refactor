@@ -1,6 +1,7 @@
 package com.dreamsecurity.shopface.web;
 
 import com.dreamsecurity.shopface.domain.*;
+import com.dreamsecurity.shopface.dto.employ.EmployAddRequestDto;
 import com.dreamsecurity.shopface.dto.employ.EmployEditRequestDto;
 import com.dreamsecurity.shopface.dto.employ.EmployListResponseDto;
 import com.dreamsecurity.shopface.repository.*;
@@ -120,35 +121,52 @@ public class EmployApiControllerTest {
         memberRepository.deleteAll();
     }
 
-//    @Test
-//    public void 고용_등록_테스트() throws Exception {
-//        //given
-//        Branch branch = branchRepository.findAll().get(0);
-//        Role role = roleRepository.findAll().get(0);
-//        Department department = departmentRepository.findAll().get(0);
-//        Employ employ = Employ.builder()
-//                .name("홍길동")
-//                .email("test@test.com")
-//                .state("I")
-//                .build();
-//
-//        EmployAddRequestDto requestDto = new EmployAddRequestDto(employ);
-//        requestDto.setBranchNo(branch.getNo());
-//        requestDto.setRoleNo(role.getNo());
-//        requestDto.setDepartmentNo(department.getNo());
-//
-//        String content = objectMapper.writeValueAsString(requestDto);
-//        //when
-//        mockMvc.perform(post("/employ").content(content).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andDo(document("Employ-add"));
-//        //then
-//        List<Employ> results = employRepository.findAll();
-//        assertThat(results.get(0).getName()).isEqualTo(employ.getName());
-//        assertThat(results.get(0).getBranch().getName()).isEqualTo(branch.getName());
-//        assertThat(results.get(0).getRole().getName()).isEqualTo(role.getName());
-//        assertThat(results.get(0).getDepartment().getName()).isEqualTo(department.getName());
-//    }
+    @Test
+    public void 고용_등록_테스트() throws Exception {
+        //given
+        Branch branch = branchRepository.findAll().get(0);
+        Role role = roleRepository.findAll().get(0);
+        Department department = departmentRepository.findAll().get(0);
+        Employ employ = Employ.builder()
+                .name("홍길동")
+                .email("test@test.com")
+                .build();
+
+        EmployAddRequestDto requestDto = new EmployAddRequestDto(employ);
+        requestDto.setBranchNo(branch.getNo());
+        requestDto.setRoleNo(role.getNo());
+        requestDto.setDepartmentNo(department.getNo());
+
+        String content = objectMapper.writeValueAsString(requestDto);
+        //when
+        ResultActions result = mockMvc.perform(post("/employ")
+                .content(content).contentType(MediaType.APPLICATION_JSON));
+        //then
+        List<Employ> results = employRepository.findAll();
+        assertThat(results.get(0).getName()).isEqualTo(employ.getName());
+        assertThat(results.get(0).getBranch().getName()).isEqualTo(branch.getName());
+        assertThat(results.get(0).getRole().getName()).isEqualTo(role.getName());
+        assertThat(results.get(0).getDepartment().getName()).isEqualTo(department.getName());
+
+        result
+                .andExpect(status().isOk())
+                .andDo(document("Employ-add",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("근무자 이름"),
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                                fieldWithPath("branchNo").type(JsonFieldType.NUMBER).description("지점 번호"),
+                                fieldWithPath("roleNo").type(JsonFieldType.NUMBER).description("역할 번호").optional(),
+                                fieldWithPath("departmentNo").type(JsonFieldType.NUMBER).description("부서 번호").optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
+                                fieldWithPath("data").type(JsonFieldType.NUMBER).description("ID")
+                        )
+                ));
+    }
 
     @Test
     public void 고용_목록조회_테스트() throws Exception {

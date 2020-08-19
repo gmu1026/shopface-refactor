@@ -4,6 +4,7 @@ import com.dreamsecurity.shopface.domain.Branch;
 import com.dreamsecurity.shopface.domain.Department;
 import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.domain.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,8 +13,14 @@ import lombok.NoArgsConstructor;
 public class EmployAddRequestDto {
   private String name;
   private String email;
+
+  @JsonIgnore
   private Branch branch;
+
+  @JsonIgnore
   private Role role;
+
+  @JsonIgnore
   private Department department;
   private long branchNo;
   private long roleNo;
