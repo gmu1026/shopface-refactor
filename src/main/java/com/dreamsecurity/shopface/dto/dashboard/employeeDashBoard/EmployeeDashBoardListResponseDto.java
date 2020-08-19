@@ -2,11 +2,13 @@ package com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
+@ToString
 public class EmployeeDashBoardListResponseDto {
     //예정 스케줄
     private String branchName;
@@ -20,15 +22,16 @@ public class EmployeeDashBoardListResponseDto {
     private LocalDateTime quittingTime;
     private double actualWorkingHours;
     private double actualSalary;
-    private String division;
+    private String state;
 
     public EmployeeDashBoardListResponseDto (String branchName,
-                                              String occupationName,
-                                              Long employSalsry,
-                                              LocalDateTime workStartTime,
-                                              LocalDateTime workEndTime,
-                                              LocalDateTime workingTime,
-                                              LocalDateTime quittingTime) {
+                                             String occupationName,
+                                             Long employSalsry,
+                                             LocalDateTime workStartTime,
+                                             LocalDateTime workEndTime,
+                                             LocalDateTime workingTime,
+                                             LocalDateTime quittingTime,
+                                             String state) {
         this.branchName = branchName;
         this.occupationName = occupationName;
         this.employSalsry = employSalsry;
@@ -36,18 +39,21 @@ public class EmployeeDashBoardListResponseDto {
         this.workEndTime = workEndTime;
         this.workingTime = workingTime;
         this.quittingTime = quittingTime;
+        this.state = state;
     }
 
     public EmployeeDashBoardListResponseDto (String branchName,
                                              String occupationName,
                                              Long employSalsry,
                                              LocalDateTime workStartTime,
-                                             LocalDateTime workEndTime) {
+                                             LocalDateTime workEndTime,
+                                             String state) {
         this.branchName = branchName;
         this.occupationName = occupationName;
         this.employSalsry = employSalsry;
         this.workStartTime = workStartTime;
         this.workEndTime = workEndTime;
+        this.state = state;
     }
 
     public void setHoursPlan(double hoursPlan) {

@@ -48,7 +48,7 @@ public class EmployeeDashBoardRepositoryCustomImpl implements EmployeeDashBoardR
         return queryFactory
                 .select(Projections.constructor(
                         EmployeeDashBoardListResponseDto.class,
-                        branch.name, occupation.name, employ.salary,
+                        branch.name, record.occupationName, employ.salary,
                         record.workStartTime, record.workEndTime,
                         record.workingTime, record.quittingTime,
                         schedule.state

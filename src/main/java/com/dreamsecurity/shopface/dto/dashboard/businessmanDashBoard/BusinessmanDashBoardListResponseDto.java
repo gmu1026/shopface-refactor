@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class BusinessmanDashBoardListResponseDto {
     private Long employNo;
     private String employName;
-    private Long employSalsry;
+    private Long employSalary;
     private String occupationName;
     private LocalDateTime workStartTime;
     private LocalDateTime workEndTime;
@@ -27,7 +27,7 @@ public class BusinessmanDashBoardListResponseDto {
 
     public BusinessmanDashBoardListResponseDto(Long employNo,
                                                String employName,
-                                               Long employSalsry,
+                                               Long employSalary,
                                                String occupationName,
                                                LocalDateTime workStartTime,
                                                LocalDateTime workEndTime,
@@ -36,7 +36,7 @@ public class BusinessmanDashBoardListResponseDto {
                                                String scheduleStatus) {
         this.employNo = employNo;
         this.employName = employName;
-        this.employSalsry = employSalsry;
+        this.employSalary = employSalary;
         this.occupationName = occupationName;
         this.workStartTime = workStartTime;
         this.workEndTime = workEndTime;
@@ -47,14 +47,14 @@ public class BusinessmanDashBoardListResponseDto {
 
     public BusinessmanDashBoardListResponseDto(Long employNo,
                                                String employName,
-                                               Long employSalsry,
+                                               Long employSalary,
                                                String occupationName,
                                                LocalDateTime workStartTime,
                                                LocalDateTime workEndTime,
                                                String scheduleStatus) {
         this.employNo = employNo;
         this.employName = employName;
-        this.employSalsry = employSalsry;
+        this.employSalary = employSalary;
         this.occupationName = occupationName;
         this.workStartTime = workStartTime;
         this.workEndTime = workEndTime;
