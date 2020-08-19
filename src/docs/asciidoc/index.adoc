@@ -53,11 +53,11 @@ include::{snippets}/Member-add-employee/http-response.adoc[]
 
 ===== Request HTTP Example
 
-include::{snippets}/Member-List/http-request.adoc[]
+include::{snippets}/Member-list/http-request.adoc[]
 
 ===== Response HTTP Example
 
-include::{snippets}/Member-List/http-response.adoc[]
+include::{snippets}/Member-list/http-response.adoc[]
 
 &#160;
 
@@ -82,7 +82,6 @@ include::{snippets}/Member-Edit/path-parameters.adoc[]
 
 ===== Request HTTP Example
 include::{snippets}/Member-Edit/request-fields.adoc[]
-
 
 include::{snippets}/Member-Edit/http-request.adoc[]
 
