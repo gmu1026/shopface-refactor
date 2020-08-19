@@ -78,16 +78,16 @@ include::{snippets}/Member-detail/http-response.adoc[]
 ==== EDIT API
 
 ===== Path Parameter Example
-include::{snippets}/Member-Edit/path-parameters.adoc[]
+include::{snippets}/Member-edit/path-parameters.adoc[]
 
 ===== Request HTTP Example
-include::{snippets}/Member-Edit/request-fields.adoc[]
+include::{snippets}/Member-edit/request-fields.adoc[]
 
-include::{snippets}/Member-Edit/http-request.adoc[]
+include::{snippets}/Member-edit/http-request.adoc[]
 
 ===== Response HTTP Example
 
-include::{snippets}/Member-Edit/http-response.adoc[]
+include::{snippets}/Member-edit/http-response.adoc[]
 
 &#160;
 
@@ -95,15 +95,15 @@ include::{snippets}/Member-Edit/http-response.adoc[]
 
 ===== Path Parameter Example
 
-include::{snippets}/Member-Remove/path-parameters.adoc[]
+include::{snippets}/Member-remove/path-parameters.adoc[]
 
 ===== Request HTTP Example
 
-include::{snippets}/Member-Remove/http-request.adoc[]
+include::{snippets}/Member-remove/http-request.adoc[]
 
 ===== Response HTTP Example
 
-include::{snippets}/Member-Remove/http-response.adoc[]
+include::{snippets}/Member-remove/http-response.adoc[]
 
 == Branch API
 
