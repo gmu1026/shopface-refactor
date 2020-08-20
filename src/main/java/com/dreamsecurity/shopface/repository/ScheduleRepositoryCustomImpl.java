@@ -85,7 +85,7 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
                     employ.name,
                     schedule.occupation.name,
                     schedule.branch.no))
-            .from(schedule)
+            .from(schedule).join(employ).on(schedule.member.eq(employ.member))
             .where(schedule.branch.no.eq(no))
             .orderBy(schedule.workStartTime.asc())
             .fetch();
