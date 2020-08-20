@@ -37,8 +37,6 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
         LocalDateTime startTime = LocalDate.now().atTime(0,0, 0);
         LocalDateTime endTime = LocalDate.now().atTime(23,59, 59);
 
-        System.out.println(startTime + " - " + endTime);
-
         return jpaQueryFactory
                 .selectFrom(schedule)
                 .where(schedule.workStartTime.between(startTime, endTime))
@@ -103,12 +101,24 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     public Boolean existSchedule(LocalDateTime startTime, LocalDateTime endTime, String memberId) {
         Integer result =  jpaQueryFactory
                 .selectOne()
-                .from(schedule).where(schedule.member.id.eq(memberId))
+                .from(schedule)
                 .where(schedule.member.id.eq(memberId))
                 .where(schedule.workStartTime.between(startTime, endTime)
                         .or(schedule.workEndTime.between(startTime, endTime)))
                 .fetchFirst();
 
         return result == null;
+    }
+
+    @Override
+    public List<Schedule> findAllByTodayAndMemberId(String memberId) {
+        LocalDateTime startTime = LocalDate.now().atTime(0,0, 0);
+        LocalDateTime endTime = LocalDate.now().atTime(23,59, 59);
+
+        return jpaQueryFactory
+                .selectFrom(schedule)
+                .where(schedule.member.id.eq(memberId))
+                .where(schedule.workStartTime.between(startTime, endTime))
+                .fetch();
     }
 }
