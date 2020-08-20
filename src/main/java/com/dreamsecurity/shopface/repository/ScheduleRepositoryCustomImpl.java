@@ -29,6 +29,7 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
                         schedule.state, schedule.occupation.name, schedule.branch.no))
                 .from(schedule)
                 .where(schedule.member.id.eq(id).and(schedule.branch.no.eq(no)))
+                .orderBy(schedule.workStartTime.asc())
                 .fetch();
     }
 
@@ -84,8 +85,9 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
                     employ.name,
                     schedule.occupation.name,
                     schedule.branch.no))
-            .from(schedule).join(employ).on(schedule.member.eq(employ.member)).fetchJoin()
+            .from(schedule)
             .where(schedule.branch.no.eq(no))
+            .orderBy(schedule.workStartTime.asc())
             .fetch();
     }
 
