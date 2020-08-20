@@ -66,11 +66,25 @@ public class Schedule {
       LocalDateTime workEndTime,
       Occupation occupation,
       String color) {
-    this.member = member;
-    this.workStartTime = workStartTime;
-    this.workEndTime = workEndTime;
-    this.occupation = occupation;
-    this.color = color;
+    if (member != null) {
+      this.member = member;
+    }
+
+    if (workStartTime != null) {
+      this.workStartTime = workStartTime;
+    }
+
+    if (workEndTime != null) {
+      this.workEndTime = workEndTime;
+    }
+
+    if (occupation != null) {
+      this.occupation = occupation;
+    }
+
+    if (color != null) {
+      this.color = color;
+    }
   }
 
   public void workingSchedule() {

@@ -18,6 +18,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -91,6 +92,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
     if (requestDto.getWorkStartTime().toLocalDate().isBefore(LocalDate.now())) {
         throw new ApiException(ApiResponseCode.BAD_REQUEST, "스케줄을 등록할 수 없는 날짜입니다");
     }
+
       if (scheduleRepository.existSchedule(
           requestDto.getWorkStartTime(), requestDto.getWorkEndTime(), member.getId())) {
            requestDto.setMember(member);
@@ -140,12 +142,18 @@ public class ScheduleServiceImpl implements  ScheduleService {
         Schedule entity = scheduleRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("해당 스케줄이 없습니다."));
 
+        Employ employ = employRepository.findById(requestDto.getEmployNo())
+                .orElseThrow(() -> new IllegalArgumentException("해당 근무자가 없습니다"));
+
+        Occupation occupation = occupationRepository.findById(requestDto.getOccupationNo())
+                .orElseThrow(() -> new IllegalArgumentException("해당 업무가 없습니다"));
+
         if (requestDto.getWorkStartTime().isBefore(requestDto.getWorkEndTime())) {
             if (occupationRepository.findByNoAndBranchNo(requestDto.getOccupation().getNo(), requestDto.getOccupation().getBranch().getNo()) != null) {
                 for (ScheduleColor color : ScheduleColor.values()) {
                     if (color.getColorCode().equals(requestDto.getColor())) {
                         for (ScheduleState state : ScheduleState.values()) {
-                            if (state.getState().equals(requestDto.getState())) {
+                            if ("R".equals(entity.getState())) {
                                 Alarm alarm = Alarm.builder()
                                         .member(entity.getMember())
                                         .contents(entity.getBranch().getName() + " 지점에서 스케줄이 수정되었습니다. "
@@ -155,8 +163,8 @@ public class ScheduleServiceImpl implements  ScheduleService {
 
                                 alarmRepository.save(alarm);
 
-                                entity.update(requestDto.getMember(), requestDto.getWorkStartTime(),
-                                        requestDto.getWorkEndTime(), requestDto.getOccupation(), requestDto.getColor());
+                                entity.update(employ.getMember(), requestDto.getWorkStartTime(),
+                                        requestDto.getWorkEndTime(), occupation, requestDto.getColor());
 
                                 return no;
                             }
@@ -296,5 +304,18 @@ public class ScheduleServiceImpl implements  ScheduleService {
         alarmRepository.save(alarm);
 
         return true;
+    }
+
+    private boolean checkSchedule(String memberId, LocalDateTime workStartTime, LocalDateTime workEndTime) {
+        boolean isDuplicate = false;
+
+        List<Schedule> schedules = scheduleRepository.findAllByTodayAndMemberId(memberId);
+        for (Schedule schedule: schedules) {
+            Timestamp startTime = Timestamp.valueOf(schedule.getWorkStartTime());
+            Timestamp endTime = Timestamp.valueOf(schedule.getWorkEndTime());
+
+        }
+
+        return isDuplicate;
     }
 }
