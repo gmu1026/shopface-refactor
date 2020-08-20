@@ -93,8 +93,9 @@ public class ScheduleServiceImpl implements  ScheduleService {
         throw new ApiException(ApiResponseCode.BAD_REQUEST, "스케줄을 등록할 수 없는 날짜입니다");
     }
 
-      if (scheduleRepository.existSchedule(
-          requestDto.getWorkStartTime(), requestDto.getWorkEndTime(), member.getId())) {
+//      if (scheduleRepository.existSchedule(
+//          requestDto.getWorkStartTime(), requestDto.getWorkEndTime(), member.getId())) {
+        if (checkSchedule(member.getId(), requestDto.getWorkStartTime(), requestDto.getWorkEndTime())) {
            requestDto.setMember(member);
            requestDto.setBranch(branch);
            requestDto.setOccupation(occupation);
@@ -149,7 +150,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 업무가 없습니다"));
 
         if (requestDto.getWorkStartTime().isBefore(requestDto.getWorkEndTime())) {
-            if (occupationRepository.findByNoAndBranchNo(requestDto.getOccupation().getNo(), requestDto.getOccupation().getBranch().getNo()) != null) {
+            if (occupationRepository.findByNoAndBranchNo(occupation.getNo(), occupation.getBranch().getNo()) != null) {
                 for (ScheduleColor color : ScheduleColor.values()) {
                     if (color.getColorCode().equals(requestDto.getColor())) {
                         for (ScheduleState state : ScheduleState.values()) {
@@ -309,11 +310,23 @@ public class ScheduleServiceImpl implements  ScheduleService {
     private boolean checkSchedule(String memberId, LocalDateTime workStartTime, LocalDateTime workEndTime) {
         boolean isDuplicate = false;
 
-        List<Schedule> schedules = scheduleRepository.findAllByTodayAndMemberId(memberId);
-        for (Schedule schedule: schedules) {
-            Timestamp startTime = Timestamp.valueOf(schedule.getWorkStartTime());
-            Timestamp endTime = Timestamp.valueOf(schedule.getWorkEndTime());
+        long requestStartTime = Timestamp.valueOf(workStartTime).getTime();
+        long requestEndTime = Timestamp.valueOf(workEndTime).getTime();
 
+        List<Schedule> schedules = scheduleRepository.findAllByDateAndMemberId(
+                workStartTime, workEndTime, memberId);
+        if (schedules.size() == 0) {
+            isDuplicate = true;
+        }
+
+        for (Schedule schedule: schedules) {
+            long startTime = Timestamp.valueOf(schedule.getWorkStartTime()).getTime();
+            long endTime = Timestamp.valueOf(schedule.getWorkEndTime()).getTime();
+
+            if ((startTime <= requestStartTime && endTime >= requestStartTime) ||
+                    ((startTime <= requestEndTime) && (endTime >= requestEndTime))) {
+                isDuplicate = false;
+            }
         }
 
         return isDuplicate;

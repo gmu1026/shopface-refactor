@@ -111,14 +111,14 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     }
 
     @Override
-    public List<Schedule> findAllByTodayAndMemberId(String memberId) {
-        LocalDateTime startTime = LocalDate.now().atTime(0,0, 0);
-        LocalDateTime endTime = LocalDate.now().atTime(23,59, 59);
+    public List<Schedule> findAllByDateAndMemberId(LocalDateTime startTime, LocalDateTime endTime, String memberId) {
+        LocalDateTime targetStartTime = startTime.toLocalDate().atTime(0,0,0);
+        LocalDateTime targetEndTime = endTime.toLocalDate().atTime(23,59, 59);
 
         return jpaQueryFactory
                 .selectFrom(schedule)
                 .where(schedule.member.id.eq(memberId))
-                .where(schedule.workStartTime.between(startTime, endTime))
+                .where(schedule.workStartTime.between(targetStartTime, targetEndTime))
                 .fetch();
     }
 }

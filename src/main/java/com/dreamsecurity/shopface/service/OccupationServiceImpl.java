@@ -39,8 +39,7 @@ public class OccupationServiceImpl implements OccupationService{
     @Transactional(readOnly = true)
     @Override
     public List<OccupationListResponseDto> getOccupationList(long no) {
-        return occupationRepository.findAll().stream()
-                .map(OccupationListResponseDto::new).collect(Collectors.toList());
+        return occupationRepository.findAllByBranchNo(no);
     }
 
     @Transactional
