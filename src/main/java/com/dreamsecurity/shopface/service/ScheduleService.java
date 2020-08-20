@@ -14,4 +14,6 @@ public interface ScheduleService {
     ScheduleResponseDto getSchedule(long no);
     Long editSchedule(long no, ScheduleEditRequestDto requestDto);
     void removeSchedule(long no);
+    Boolean workingSchedule(long no);
+    Boolean quittingSchedule(long no);
 }

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -98,10 +99,21 @@ public class Record {
         this.note = note;
     }
 
-    public void update(String note, LocalDateTime workingTime, LocalDateTime quittingTime, long salaryPay) {
-        this.note = note;
-        this.workingTime = workingTime;
-        this.quittingTime = quittingTime;
-        this.salaryPay = salaryPay;
+    public void update(String note, LocalDateTime workingTime, LocalDateTime quittingTime, Long salaryPay) {
+        if (note != null) {
+            this.note = note;
+        }
+
+        if (workingTime != null) {
+            this.workingTime = workingTime;
+        }
+
+        if (quittingTime != null) {
+            this.quittingTime = quittingTime;
+        }
+
+        if (salaryPay != null) {
+            this.salaryPay = salaryPay;
+        }
     }
 }

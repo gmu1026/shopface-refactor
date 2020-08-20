@@ -43,14 +43,11 @@ public class EmployRepositoryCustomImpl implements EmployRepositoryCustom {
     }
 
     @Override
-    public List<EmployListResponseDto> findByMemberIdAndBranchNo(String memberId, long branchNo) {
+    public Employ findByMemberIdAndBranchNo(String memberId, long branchNo) {
         return jpaQueryFactory
-                .select(Projections.constructor(EmployListResponseDto.class,
-                        employ.no, employ.name , employ.state, employ.salary,
-                        employ.employDate, employ.role.name, employ.department.name))
-                .from(employ)
+                .selectFrom(employ)
                 .where(employ.branch.no.eq(branchNo).and(employ.member.id.eq(memberId)))
-                .fetch();
+                .fetchOne();
     }
 
     @Override

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,41 +34,42 @@ public class ScheduleServiceImpl implements  ScheduleService {
     private final EmployRepository employRepository;
     private final OccupationRepository occupationRepository;
     private final AlarmRepository alarmRepository;
+    private final RecordRepository recordRepository;
 
-    @Transactional(readOnly = true)
-    public boolean isOccupationNoChecked(Occupation occupation, Branch branch, String requestColor) {
-        OccupationResponseDto existOccupation = occupationRepository.findByNoAndBranchNo(occupation.getNo(), branch.getNo());
-
-        log.info(existOccupation.getName());
-        if (existOccupation != null) {
-            for (ScheduleColor color : ScheduleColor.values()) {
-                log.info(color.getColorCode());
-                if (color.getColorCode().equals(requestColor)) {
-                    return true;
-                }
-            }
-            new IllegalArgumentException("등록할 수 없는 색상입니다.");
-            return false;
-        }else {
-            new IllegalArgumentException("업무 명이 잘못되었습니다.");
-            return false;
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public boolean checkEmploy (Member member, Branch branch) {
-        boolean result = false;
-
-        List<EmployListResponseDto> entity = employRepository.findByMemberIdAndBranchNo(
-                member.getId(), branch.getNo());
-        if(!entity.isEmpty()) {
-            result = true;
-        } else {
-            result = false;
-        }
-
-        return result;
-    }
+//    @Transactional(readOnly = true)
+//    public boolean isOccupationNoChecked(Occupation occupation, Branch branch, String requestColor) {
+//        OccupationResponseDto existOccupation = occupationRepository.findByNoAndBranchNo(occupation.getNo(), branch.getNo());
+//
+//        log.info(existOccupation.getName());
+//        if (existOccupation != null) {
+//            for (ScheduleColor color : ScheduleColor.values()) {
+//                log.info(color.getColorCode());
+//                if (color.getColorCode().equals(requestColor)) {
+//                    return true;
+//                }
+//            }
+//            new IllegalArgumentException("등록할 수 없는 색상입니다.");
+//            return false;
+//        }else {
+//            new IllegalArgumentException("업무 명이 잘못되었습니다.");
+//            return false;
+//        }
+//    }
+//
+//    @Transactional(readOnly = true)
+//    public boolean checkEmploy (Member member, Branch branch) {
+//        boolean result = false;
+//
+//        List<EmployListResponseDto> entity = employRepository.findByMemberIdAndBranchNo(
+//                member.getId(), branch.getNo());
+//        if(!entity.isEmpty()) {
+//            result = true;
+//        } else {
+//            result = false;
+//        }
+//
+//        return result;
+//    }
 
     @Transactional
     @Override
@@ -218,5 +220,81 @@ public class ScheduleServiceImpl implements  ScheduleService {
             alarmRepository.save(employeeAlarm);
             alarmRepository.save(businessmanAlarm);
         }
+    }
+
+    @Transactional
+    @Override
+    public Boolean workingSchedule(long no) {
+        Schedule schedule = scheduleRepository.findById(no)
+                .orElseThrow(() -> new IllegalArgumentException("해당 스케줄이 없습니다"));
+
+        schedule.workingSchedule();
+
+        Employ employ = employRepository.findByMemberIdAndBranchNo(
+                schedule.getMember().getId(), schedule.getBranch().getNo());
+
+        double betweenTime = (double) ChronoUnit.SECONDS.between(schedule.getWorkStartTime(),
+                        schedule.getWorkEndTime()) /  3600;
+        Record record = Record.builder()
+                .branchNo(schedule.getBranch().getNo())
+                .branchName(schedule.getBranch().getName())
+                .branchPhone(schedule.getBranch().getPhone())
+                .businessmanId(schedule.getBranch().getMember().getId())
+                .businessmanName(schedule.getBranch().getMember().getName())
+                .businessmanPhone(schedule.getBranch().getMember().getPhone())
+                .memberId(schedule.getMember().getId())
+                .memberName(schedule.getMember().getName())
+                .memberPhone(schedule.getMember().getPhone())
+                .occupationName(schedule.getOccupation().getName())
+                .salaryPlan((long) (employ.getSalary() * betweenTime))
+                .workingTime(LocalDateTime.now())
+                .workStartTime(schedule.getWorkStartTime())
+                .workEndTime(schedule.getWorkEndTime())
+                .build();
+        recordRepository.save(record);
+
+        Alarm alarm = Alarm.builder()
+                .member(schedule.getBranch().getMember())
+                .contents(schedule.getBranch().getName() +
+                        " 지점" + schedule.getMember().getName() +
+                        " 근무자가 정상 출근하였습니다")
+                .type("COMMUTE_SUCCESS")
+                .build();
+        alarmRepository.save(alarm);
+
+        return true;
+    }
+
+    @Transactional
+    @Override
+    public Boolean quittingSchedule(long no) {
+        LocalDateTime quittingTime = LocalDateTime.now();
+
+        Schedule schedule = scheduleRepository.findById(no)
+                .orElseThrow(() -> new IllegalArgumentException("해당 스케줄이 없습니다"));
+
+        Record record = recordRepository.findByMemberIdAndBranchNoAndWorkStartTime(
+                schedule.getMember().getId(), schedule.getBranch().getNo(), schedule.getWorkStartTime());
+
+        Employ employ = employRepository.findByMemberIdAndBranchNo(
+                schedule.getMember().getId(), schedule.getBranch().getNo());
+
+        schedule.quittingSchedule();
+
+        double workTIme = (double) ChronoUnit.SECONDS.between(record.getWorkingTime(), quittingTime) / 3600;
+        long salaryPay = (long) (workTIme * employ.getSalary());
+
+        record.update(null, null, quittingTime,  salaryPay);
+
+        Alarm alarm = Alarm.builder()
+                .member(schedule.getMember())
+                .contents(schedule.getBranch().getName() +
+                        " 지점" + schedule.getMember().getName() +
+                        " 근무자가 정상 퇴근하였습니다")
+                .type("COMMUTE_SUCCESS")
+                .build();
+        alarmRepository.save(alarm);
+
+        return true;
     }
 }
