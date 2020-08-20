@@ -84,7 +84,7 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
                     employ.name,
                     schedule.occupation.name,
                     schedule.branch.no))
-            .from(schedule).join(employ).on(schedule.member.eq(employ.member))
+            .from(schedule).join(employ).on(schedule.member.eq(employ.member)).fetchJoin()
             .where(schedule.branch.no.eq(no))
             .fetch();
     }

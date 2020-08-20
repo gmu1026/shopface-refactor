@@ -1,8 +1,6 @@
 package com.dreamsecurity.shopface.service;
 
 import com.dreamsecurity.shopface.domain.*;
-import com.dreamsecurity.shopface.dto.employ.EmployListResponseDto;
-import com.dreamsecurity.shopface.dto.occupation.OccupationResponseDto;
 import com.dreamsecurity.shopface.dto.schedule.ScheduleAddRequestDto;
 import com.dreamsecurity.shopface.dto.schedule.ScheduleEditRequestDto;
 import com.dreamsecurity.shopface.dto.schedule.ScheduleListResponseDto;
@@ -326,6 +324,10 @@ public class ScheduleServiceImpl implements  ScheduleService {
             if ((startTime <= requestStartTime && endTime >= requestStartTime) ||
                     ((startTime <= requestEndTime) && (endTime >= requestEndTime))) {
                 isDuplicate = false;
+
+                return isDuplicate;
+            } else {
+                isDuplicate = true;
             }
         }
 
