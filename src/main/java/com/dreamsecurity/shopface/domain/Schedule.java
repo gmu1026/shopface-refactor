@@ -73,12 +73,12 @@ public class Schedule {
     this.color = color;
   }
 
-  public void startSchedule() {
+  public void workingSchedule() {
     this.state = "W";
     // W = Working
   }
 
-  public void endSchedule() {
+  public void quittingSchedule() {
     this.state = "C";
     // C = Complete
   }

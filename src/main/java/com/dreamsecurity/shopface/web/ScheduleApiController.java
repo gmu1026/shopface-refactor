@@ -45,4 +45,14 @@ public class ScheduleApiController {
 
     return ApiResponseDto.createOK(true);
   }
+
+  @PutMapping(value = "/schedule/{no}/working")
+  public ApiResponseDto workingSchedule(@PathVariable("no") long no) {
+    return ApiResponseDto.createOK(scheduleService.workingSchedule(no));
+  }
+
+  @PutMapping(value = "/schedule/{no}/quitting")
+  public ApiResponseDto quittingSchedule(@PathVariable("no") long no) {
+    return ApiResponseDto.createOK(scheduleService.quittingSchedule(no));
+  }
 }
