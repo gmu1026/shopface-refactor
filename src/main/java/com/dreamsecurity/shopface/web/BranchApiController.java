@@ -19,6 +19,11 @@ import java.io.IOException;
 public class BranchApiController {
   private final BranchService branchService;
 
+  @GetMapping(value = "/branch")
+  public ApiResponseDto getBranchList() {
+    return ApiResponseDto.createOK(branchService.getBranchList());
+  }
+
   @GetMapping(value = "/member/{id}/branch")
   public ApiResponseDto getBranchList(@PathVariable("id") String memberId) {
     return ApiResponseDto.createOK(branchService.getBranchList(memberId));
@@ -47,8 +52,13 @@ public class BranchApiController {
     return ApiResponseDto.createOK(true);
   }
 
-  @PatchMapping(value = "/branch/{no}")
+  @PatchMapping(value = "/branch/{no}/confirm")
   public ApiResponseDto confirmBranch(@PathVariable("no") long no) {
     return ApiResponseDto.createOK(branchService.confirmBranch(no));
+  }
+
+  @PatchMapping(value = "/branch/{no}/reject")
+  public ApiResponseDto rejectBranch(@PathVariable("no") long no) {
+    return ApiResponseDto.createOK(branchService.rejectBranch(no));
   }
 }

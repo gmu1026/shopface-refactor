@@ -20,7 +20,7 @@ import java.util.List;
 public class Branch extends BaseTimeEntity {
   @PrePersist
   public void setDefaultState() {
-    this.state = this.state == null ? "W" : this.state;
+    this.state = this.state == null ? "N" : this.state;
   }
 
   @Id
@@ -117,5 +117,9 @@ public class Branch extends BaseTimeEntity {
     } else {
       throw new ApiException(ApiResponseCode.BAD_REQUEST, "이미 확인된 지점입니다");
     }
+  }
+
+  public void reject() {
+    this.state = "N";
   }
 }

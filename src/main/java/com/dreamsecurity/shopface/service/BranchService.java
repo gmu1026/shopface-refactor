@@ -11,9 +11,11 @@ import java.util.List;
 
 public interface BranchService {
     Long addBranch(BranchAddRequestDto requestDto);
+    List<BranchListResponseDto> getBranchList();
     List<BranchListResponseDto> getBranchList(String memberId);
     BranchResponseDto getBranch(long no);
     Long editBranch(long no, BranchEditRequestDto requestDto) throws IOException;
     void removeBranch(long no);
     Boolean confirmBranch(long no);
+    Boolean rejectBranch(long no);
 }

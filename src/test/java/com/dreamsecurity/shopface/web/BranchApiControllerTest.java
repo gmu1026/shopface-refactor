@@ -90,7 +90,6 @@ public class BranchApiControllerTest {
                 .address("서울")
                 .detailAddress("강남")
                 .zipCode("11111")
-                .state("W")
                 .build();
 
         BranchAddRequestDto requestDto = new BranchAddRequestDto(branch);

@@ -58,6 +58,13 @@ public class BranchServiceImpl implements BranchService {
 
     @Transactional(readOnly = true)
     @Override
+    public List<BranchListResponseDto> getBranchList() {
+        return branchRepository.findAll().stream()
+                .map(BranchListResponseDto::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<BranchListResponseDto> getBranchList(String memberId) {
         return branchRepository.findAllByMemberId(memberId);
     }
@@ -120,6 +127,23 @@ public class BranchServiceImpl implements BranchService {
                 .member(branch.getMember())
                 .contents(branch.getName() + " 지점이 승인되었습니다.")
                 .type("CONFIRMED_BRANCH")
+                .build();
+        alarmRepository.save(alarm);
+
+        return true;
+    }
+
+    @Override
+    public Boolean rejectBranch(long no) {
+        Branch branch = branchRepository.findById(no)
+                .orElseThrow(() -> new IllegalArgumentException("해당 지점이 없습니다"));
+
+        branch.reject();
+
+        Alarm alarm = Alarm.builder()
+                .member(branch.getMember())
+                .contents(branch.getName() + " 지점이 승인거절되었습니다.")
+                .type("REJECTED_BRANCH")
                 .build();
         alarmRepository.save(alarm);
 
