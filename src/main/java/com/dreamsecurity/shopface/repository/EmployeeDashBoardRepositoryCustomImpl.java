@@ -26,9 +26,9 @@ public class EmployeeDashBoardRepositoryCustomImpl implements EmployeeDashBoardR
         return queryFactory
                 .select(Projections.constructor(
                         EmployeeDashBoardListResponseDto.class,
-                        branch.name, occupation.name, employ.salary,
-                        schedule.workStartTime, schedule.workEndTime,
-                        schedule.state
+                        branch.name, occupation.name,
+                        employ.salary, schedule.no, schedule.workStartTime,
+                        schedule.workEndTime, schedule.state
                 ))
                 .from(schedule)
                 .leftJoin(employ).on(employ.member.id.eq(schedule.member.id)
@@ -49,7 +49,7 @@ public class EmployeeDashBoardRepositoryCustomImpl implements EmployeeDashBoardR
                 .select(Projections.constructor(
                         EmployeeDashBoardListResponseDto.class,
                         branch.name, record.occupationName, employ.salary,
-                        record.workStartTime, record.workEndTime,
+                        schedule.no, record.workStartTime, record.workEndTime,
                         record.workingTime, record.quittingTime,
                         schedule.state
                 ))
