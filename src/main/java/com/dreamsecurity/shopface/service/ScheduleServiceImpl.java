@@ -147,31 +147,25 @@ public class ScheduleServiceImpl implements  ScheduleService {
         Occupation occupation = occupationRepository.findById(requestDto.getOccupationNo())
                 .orElseThrow(() -> new IllegalArgumentException("해당 업무가 없습니다"));
 
-        if (requestDto.getWorkStartTime().isBefore(requestDto.getWorkEndTime())) {
-            if (occupationRepository.findByNoAndBranchNo(occupation.getNo(), occupation.getBranch().getNo()) != null) {
-                for (ScheduleColor color : ScheduleColor.values()) {
-                    if (color.getColorCode().equals(requestDto.getColor())) {
-                        for (ScheduleState state : ScheduleState.values()) {
-                            if ("R".equals(entity.getState())) {
-                                Alarm alarm = Alarm.builder()
-                                        .member(entity.getMember())
-                                        .contents(entity.getBranch().getName() + " 지점에서 스케줄이 수정되었습니다. "
-                                                + entity.getWorkStartTime() + entity.getWorkEndTime() + "에서 변경됨")
-                                        .type("UPDATE_SCHEDULE")
-                                        .build();
+        if (checkSchedule(entity.getMember().getId(), 
+                requestDto.getWorkStartTime(),requestDto.getWorkEndTime())) {
+            throw new ApiException(ApiResponseCode.BAD_REQUEST, "이미 스케줄이 존재합니다");
+        }
+        
+        if ("R".equals(entity.getState())) {
+            entity.update(employ.getMember(), requestDto.getWorkStartTime(),
+                    requestDto.getWorkEndTime(), occupation, requestDto.getColor());
 
-                                alarmRepository.save(alarm);
-
-                                entity.update(employ.getMember(), requestDto.getWorkStartTime(),
-                                        requestDto.getWorkEndTime(), occupation, requestDto.getColor());
-
-                                return no;
-                            }
-                        } new IllegalArgumentException("잘못된 스케줄 상태입니다.");
-                    }
-                } new IllegalArgumentException("잘못된 색상입니다.");
-            } new IllegalArgumentException("잘못된 업무입니다.");
-        } new IllegalArgumentException("종료시간이 시작시간보다 빠른 시각입니다.");
+            Alarm alarm = Alarm.builder()
+                    .member(entity.getMember())
+                    .contents(entity.getBranch().getName() + " 지점에서 스케줄이 수정되었습니다. "
+                            + entity.getWorkStartTime() + entity.getWorkEndTime() + "에서 변경됨")
+                    .type("UPDATE_SCHEDULE")
+                    .build();
+            alarmRepository.save(alarm);
+        } else {
+            throw new ApiException(ApiResponseCode.BAD_REQUEST, "수정할 수 없는 스케줄입니다");
+        }
 
         return no;
     }
@@ -310,6 +304,10 @@ public class ScheduleServiceImpl implements  ScheduleService {
 
         long requestStartTime = Timestamp.valueOf(workStartTime).getTime();
         long requestEndTime = Timestamp.valueOf(workEndTime).getTime();
+
+        if (workStartTime.isBefore(LocalDateTime.now()) || workEndTime.isBefore(LocalDateTime.now())) {
+            return isDuplicate;
+        }
 
         List<Schedule> schedules = scheduleRepository.findAllByDateAndMemberId(
                 workStartTime, workEndTime, memberId);
