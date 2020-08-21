@@ -18,9 +18,9 @@ public class ScheduleApiController {
     return ApiResponseDto.createOK(scheduleService.getScheduleList(no));
   }
 
-  @GetMapping(value = "/member/{id}/branch/{no}/schedule")
-  private ApiResponseDto getScheduleList(@PathVariable("id") String id, @PathVariable("no") long no) {
-    return ApiResponseDto.createOK(scheduleService.getScheduleList(id, no));
+  @GetMapping(value = "/member/{id}/schedule")
+  private ApiResponseDto getScheduleList(@PathVariable("id") String id) {
+    return ApiResponseDto.createOK(scheduleService.getScheduleList(id));
   }
 
   @GetMapping(value = "/schedule/{no}")

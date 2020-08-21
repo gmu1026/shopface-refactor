@@ -91,8 +91,6 @@ public class ScheduleServiceImpl implements  ScheduleService {
         throw new ApiException(ApiResponseCode.BAD_REQUEST, "스케줄을 등록할 수 없는 날짜입니다");
     }
 
-//      if (scheduleRepository.existSchedule(
-//          requestDto.getWorkStartTime(), requestDto.getWorkEndTime(), member.getId())) {
         if (checkSchedule(member.getId(), requestDto.getWorkStartTime(), requestDto.getWorkEndTime())) {
            requestDto.setMember(member);
            requestDto.setBranch(branch);
@@ -122,8 +120,8 @@ public class ScheduleServiceImpl implements  ScheduleService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ScheduleListResponseDto> getScheduleList(String id, long no) {
-        return scheduleRepository.findAllByMemberIdAndBranchNo(id, no);
+    public List<ScheduleListResponseDto> getScheduleList(String id) {
+        return scheduleRepository.findAllByMemberId(id);
     }
 
     @Transactional(readOnly = true)
