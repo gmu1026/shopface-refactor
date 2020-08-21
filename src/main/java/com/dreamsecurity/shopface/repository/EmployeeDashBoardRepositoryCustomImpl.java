@@ -26,17 +26,14 @@ public class EmployeeDashBoardRepositoryCustomImpl implements EmployeeDashBoardR
         return queryFactory
                 .select(Projections.constructor(
                         EmployeeDashBoardListResponseDto.class,
-                        branch.name, occupation.name,
+                        schedule.branch.name, schedule.occupation.name,
                         employ.salary, schedule.no, schedule.workStartTime,
                         schedule.workEndTime, schedule.state
                 ))
                 .from(schedule)
                 .leftJoin(employ).on(employ.member.id.eq(schedule.member.id)
                         .and(employ.branch.no.eq(schedule.branch.no)))
-                .leftJoin(occupation).on(occupation.branch.no.eq(schedule.branch.no)
-                        .and(occupation.no.eq(schedule.occupation.no)))
-                .leftJoin(branch).on(branch.no.eq(schedule.branch.no))
-                .where(schedule.member.id.eq(memberId)
+                .where(schedule.member.id.eq(memberId).and(schedule.branch.no.eq(employ.branch.no))
                         .and((schedule.state.eq("R").or(schedule.state.eq("L"))))
                         .and(schedule.workStartTime.after(now)))
                 .fetch();
