@@ -15,12 +15,6 @@ import java.time.LocalDateTime;
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Employ {
-//    @PrePersist
-//    public void setDefaultState() {
-//        this.state = this.state == null ? "I" : this.state;
-//    }
-    //I = Invite
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long no;
@@ -50,7 +44,7 @@ public class Employ {
     @Column(nullable = false, length = 100)
     private String email;
 
-    @Column(nullable = true, length = 6)
+    @Column(nullable = true, length = 6, unique = true)
     private String certCode;
 
     @Column
