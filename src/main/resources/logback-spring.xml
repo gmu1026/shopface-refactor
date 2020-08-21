@@ -8,7 +8,6 @@
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <file>${LOG_PATH}</file>
             <fileNamePattern>${LOG_DIR}/application.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxHistory>14</maxHistory>
             <maxFileSize>50MB</maxFileSize>
