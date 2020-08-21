@@ -71,7 +71,7 @@ public class Employ {
         this.certCode = certCode;
     }
 
-    public void update(long salary, Role role, Department department) {
+    public void update(long salary, Role role, Department department, String name) {
         if (salary > 0) {
             this.salary = salary;
         }
@@ -82,6 +82,10 @@ public class Employ {
 
         if (department != null) {
             this.department = department;
+        }
+
+        if (name != null) {
+            this.name = name;
         }
     }
 

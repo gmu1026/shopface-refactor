@@ -14,6 +14,7 @@ public class EmployEditRequestDto {
   private long salary;
   private long roleNo;
   private long departmentNo;
+  private String name;
 
   public void setRoleNo(long no) {
     this.roleNo = no;

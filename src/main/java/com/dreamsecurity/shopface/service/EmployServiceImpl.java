@@ -90,7 +90,7 @@ public class EmployServiceImpl implements EmployService {
             department = departmentRepository.findById(requestDto.getDepartmentNo())
                     .orElseThrow(() -> new IllegalIdentifierException("해당 부서가 없습니다"));
         }
-        entity.update(requestDto.getSalary(), role, department);
+        entity.update(requestDto.getSalary(), role, department, requestDto.getName());
 
         return no;
     }
