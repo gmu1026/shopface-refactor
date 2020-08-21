@@ -270,7 +270,7 @@ public class EmployApiControllerTest {
         departmentRepository.save(editDepartment);
 
         EmployEditRequestDto requestDto = new EmployEditRequestDto(
-                10000, editRole.getNo(), editDepartment.getNo());
+                10000, editRole.getNo(), editDepartment.getNo(), editDepartment.getName());
 
         String content = objectMapper.writeValueAsString(requestDto);
         //when
@@ -293,7 +293,8 @@ public class EmployApiControllerTest {
                         requestFields(
                                 fieldWithPath("salary").type(JsonFieldType.NUMBER).description("시급").optional(),
                                 fieldWithPath("roleNo").type(JsonFieldType.NUMBER).description("역할 번호").optional(),
-                                fieldWithPath("departmentNo").type(JsonFieldType.NUMBER).description("부서 번호").optional()
+                                fieldWithPath("departmentNo").type(JsonFieldType.NUMBER).description("부서 번호").optional(),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("이름").optional()
                         ),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
