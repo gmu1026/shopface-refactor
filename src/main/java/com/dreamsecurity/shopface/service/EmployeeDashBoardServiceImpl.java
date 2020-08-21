@@ -1,10 +1,8 @@
 package com.dreamsecurity.shopface.service;
 
-import com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard.EmployeeDashBoardListRequestDto;
 import com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard.EmployeeDashBoardListResponseDto;
 import com.dreamsecurity.shopface.repository.EmployeeDashBoardRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
