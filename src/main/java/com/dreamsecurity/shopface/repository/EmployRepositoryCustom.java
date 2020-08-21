@@ -14,4 +14,5 @@ public interface EmployRepositoryCustom {
     List<Employ> findAllByBranchNoAndRoleNo(long branchNo, long roleNo);
     Employ findByCertCode(String certCode);
     Optional<Employ> findMemberAndEmployById(long no);
+    Boolean existCertCode(String certCode);
 }

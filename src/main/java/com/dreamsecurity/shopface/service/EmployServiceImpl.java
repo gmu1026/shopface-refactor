@@ -180,8 +180,7 @@ public class EmployServiceImpl implements EmployService {
     public boolean checkCode(String requestCertCode) {
         boolean isChecked = false;
 
-        // TODO exist로 바꿀 것
-        if (employRepository.findByCertCode(requestCertCode) != null) {
+        if (employRepository.existCertCode(requestCertCode)) {
             isChecked = true;
         }
 

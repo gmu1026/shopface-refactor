@@ -68,6 +68,20 @@ public class EmployRepositoryCustomImpl implements EmployRepositoryCustom {
 
     @Override
     public Employ findByCertCode(String certCode) {
-        return jpaQueryFactory.selectFrom(employ).where(employ.certCode.eq(certCode)).fetchOne();
+        return jpaQueryFactory
+                .selectFrom(employ)
+                .where(employ.certCode.eq(certCode))
+                .fetchOne();
+    }
+
+    @Override
+    public Boolean existCertCode(String certCode) {
+        Integer result = jpaQueryFactory
+                .selectOne()
+                .from(employ)
+                .where(employ.certCode.eq(certCode))
+                .fetchFirst();
+
+        return result > 0;
     }
 }
