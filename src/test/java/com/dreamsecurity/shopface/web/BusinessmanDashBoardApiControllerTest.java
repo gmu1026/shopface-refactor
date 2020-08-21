@@ -34,42 +34,48 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class BusinessmanDashBoardApiControllerTest {
-//    @Rule
-//    public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
-//
-//    private MockMvc mockMvc;
-//
-//    @Autowired
-//    WebApplicationContext context;
-//
-//    private ObjectMapper objectMapper = new ObjectMapper();
-//
-//    @Autowired
-//    MemberRepository memberRepository;
-//
-//    @Autowired
-//    ScheduleRepository scheduleRepository;
-//
-//    @Autowired
-//    EmployRepository employRepository;
-//
-//    @Autowired
-//    OccupationRepository occupationRepository;
-//
-//    @Autowired
-//    BranchRepository branchRepository;
-//
-//    @Autowired
-//    RecordRepository recordRepository;
-//
-//    @Autowired
-//    BusinessmanDashBoardRepository businessmanDashBoardRepository;
-//
-//    @Before
-//    public void setUp() throws Exception {
-//        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-//                .apply(documentationConfiguration(this.restDocumentation))
-//                .build();
+    @Rule
+    public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
+
+    private MockMvc mockMvc;
+
+    @Autowired
+    WebApplicationContext context;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    ScheduleRepository scheduleRepository;
+
+    @Autowired
+    EmployRepository employRepository;
+
+    @Autowired
+    OccupationRepository occupationRepository;
+
+    @Autowired
+    BranchRepository branchRepository;
+
+    @Autowired
+    RecordRepository recordRepository;
+
+    @Autowired
+    BusinessmanDashBoardRepository businessmanDashBoardRepository;
+
+    @Before
+    public void setUp() throws Exception {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+                .apply(documentationConfiguration(this.restDocumentation))
+                .build();
+    }
+
+    @Test
+    public void 테스트() throws Exception {
+
+    }
 //
 //        // Member business
 //        Member business = Member.builder()
