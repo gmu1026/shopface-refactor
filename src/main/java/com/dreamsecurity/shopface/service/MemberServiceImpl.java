@@ -50,8 +50,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<MemberListResponseDto> getMemberList() {
         // TODO JWT Scope 설정을 통한 권한 확인
-        
-        // TODO Util Class 만들 것 - ASC, DESC
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
 
         return memberRepository.findAll(sort).stream()
