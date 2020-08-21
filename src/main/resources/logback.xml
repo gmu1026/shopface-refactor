@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <property name="LOG_DIR" value="${HOME}/logs/shopface-refactor" />
+    <property name="LOG_PATH" value="{LOG_DIR}/application.log" />
 
     <appender name="dailyRollingFileAppender"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-<!--            <fileNamePattern>/home/ec2-user/logs/shopface-refactor/application.%d{yyyy-MM-dd}.%i.log</fileNamePattern>-->
+            <file>${LOG_PATH}</file>
+            <fileNamePattern>${LOG_DIR}/application.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxHistory>14</maxHistory>
             <maxFileSize>50MB</maxFileSize>
             <totalSizeCap>1GB</totalSizeCap>
