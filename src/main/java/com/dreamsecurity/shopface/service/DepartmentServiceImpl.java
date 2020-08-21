@@ -63,7 +63,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         List<Employ> results = employRepository.findAllByBranchNoAndDepartmentNo(entity.getBranch().getNo(), no);
 
         for (Employ employ : results) {
-            employ.update(employ.getSalary(),employ.getRole(), null);
+            employ.update(employ.getSalary(),employ.getRole(), null, null);
         }
 
         departmentRepository.delete(entity);
