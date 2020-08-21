@@ -17,12 +17,6 @@ public class AlarmApiController {
     return ApiResponseDto.createOK(alarmService.getAlarmLists(memberId));
   }
 
-  @PostMapping(value = "/alarm")
-  public ResponseEntity addAlarm(@RequestBody AlarmAddRequestDto requestDto) {
-    // TODO 필요없다고 생각 로직에 의해서 등록이 되는 것이지 외부 요청에 의해 등록되는 것이 아님 API는 외부와 노출될 수 밖에 없음
-    return ResponseEntity.ok().body(alarmService.addAlarm(requestDto));
-  }
-
   @PutMapping(value = "/alarm/{no}")
   public ApiResponseDto readAlarm(@PathVariable long no) {
     return ApiResponseDto.createOK(alarmService.readAlarm(no));
