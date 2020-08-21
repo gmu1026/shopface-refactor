@@ -35,41 +35,6 @@ public class ScheduleServiceImpl implements  ScheduleService {
     private final AlarmRepository alarmRepository;
     private final RecordRepository recordRepository;
 
-//    @Transactional(readOnly = true)
-//    public boolean isOccupationNoChecked(Occupation occupation, Branch branch, String requestColor) {
-//        OccupationResponseDto existOccupation = occupationRepository.findByNoAndBranchNo(occupation.getNo(), branch.getNo());
-//
-//        log.info(existOccupation.getName());
-//        if (existOccupation != null) {
-//            for (ScheduleColor color : ScheduleColor.values()) {
-//                log.info(color.getColorCode());
-//                if (color.getColorCode().equals(requestColor)) {
-//                    return true;
-//                }
-//            }
-//            new IllegalArgumentException("등록할 수 없는 색상입니다.");
-//            return false;
-//        }else {
-//            new IllegalArgumentException("업무 명이 잘못되었습니다.");
-//            return false;
-//        }
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public boolean checkEmploy (Member member, Branch branch) {
-//        boolean result = false;
-//
-//        List<EmployListResponseDto> entity = employRepository.findByMemberIdAndBranchNo(
-//                member.getId(), branch.getNo());
-//        if(!entity.isEmpty()) {
-//            result = true;
-//        } else {
-//            result = false;
-//        }
-//
-//        return result;
-//    }
-
     @Transactional
     @Override
     public Long addSchedule(ScheduleAddRequestDto requestDto) {
@@ -78,18 +43,12 @@ public class ScheduleServiceImpl implements  ScheduleService {
         Employ employ = employRepository.findById(requestDto.getEmployNo())
                 .orElseThrow(() -> new IllegalArgumentException("해당 근무자는 없습니다"));
 
-        Member member = memberRepository.findById(employ.getMember().getId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다"));
+        Member member = employ.getMember();
 
-        Branch branch = branchRepository.findById(employ.getBranch().getNo())
-                .orElseThrow(() -> new IllegalArgumentException("해당 지점이 없습니다"));
+        Branch branch = employ.getBranch();
 
         Occupation occupation = occupationRepository.findById(requestDto.getOccupationNo())
                 .orElseThrow(() -> new IllegalArgumentException("해당 업무가 없습니다"));
-
-    if (requestDto.getWorkStartTime().toLocalDate().isBefore(LocalDate.now())) {
-        throw new ApiException(ApiResponseCode.BAD_REQUEST, "스케줄을 등록할 수 없는 날짜입니다");
-    }
 
         if (checkSchedule(member.getId(), requestDto.getWorkStartTime(), requestDto.getWorkEndTime())) {
            requestDto.setMember(member);

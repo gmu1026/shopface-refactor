@@ -33,12 +33,15 @@ public class ScheduleListResponseDto {
 
   public ScheduleListResponseDto(Long no, LocalDateTime workStartTime,
                                  LocalDateTime workEndTime, String color,
-                                 String state, String occupationName, Long branchNo) {
+                                 String state, Long employNo, String employeeName,
+                                 String occupationName, Long branchNo) {
     this.no = no;
     this.workStartTime = workStartTime;
     this.workEndTime = workEndTime;
     this.color = color;
     this.state = state;
+    this.employNo = employNo;
+    this.employeeName = employeeName;
     this.occupationName = occupationName;
     this.branchNo = branchNo;
   }
