@@ -82,6 +82,6 @@ public class EmployRepositoryCustomImpl implements EmployRepositoryCustom {
                 .where(employ.certCode.eq(certCode))
                 .fetchFirst();
 
-        return result > 0;
+        return result == 0;
     }
 }
