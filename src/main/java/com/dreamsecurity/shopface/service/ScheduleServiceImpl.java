@@ -104,19 +104,23 @@ public class ScheduleServiceImpl implements  ScheduleService {
         Occupation occupation = occupationRepository.findById(requestDto.getOccupationNo())
                 .orElseThrow(() -> new IllegalArgumentException("해당 업무가 없습니다"));
 
-        if (checkSchedule(entity.getMember().getId(), 
+        if (checkSchedule(employ.getMember().getId(),
                 requestDto.getWorkStartTime(),requestDto.getWorkEndTime())) {
             throw new ApiException(ApiResponseCode.BAD_REQUEST, "이미 스케줄이 존재합니다");
         }
         
         if ("R".equals(entity.getState())) {
+            LocalDateTime beforeStartTime = entity.getWorkStartTime();
+            LocalDateTime beforeEndTime = entity.getWorkEndTime();
+
             entity.update(employ.getMember(), requestDto.getWorkStartTime(),
                     requestDto.getWorkEndTime(), occupation, requestDto.getColor());
 
             Alarm alarm = Alarm.builder()
                     .member(entity.getMember())
                     .contents(entity.getBranch().getName() + " 지점에서 스케줄이 수정되었습니다. "
-                            + entity.getWorkStartTime() + entity.getWorkEndTime() + "에서 변경됨")
+                            + beforeStartTime + beforeEndTime + "에서"
+                            + entity.getWorkStartTime() + entity.getWorkEndTime() + "로 변경됨")
                     .type("UPDATE_SCHEDULE")
                     .build();
             alarmRepository.save(alarm);
