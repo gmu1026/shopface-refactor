@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface AvailableTimeRepository extends JpaRepository<AvailableTime, Long> {
-    List<AvailableTime> findAllByBranch(Branch branch);
+public interface AvailableTimeRepository extends JpaRepository<AvailableTime, Long>, AvailableTimeRepositoryCustom{
     List<AvailableTime> findAllByMember(Member member);
 }

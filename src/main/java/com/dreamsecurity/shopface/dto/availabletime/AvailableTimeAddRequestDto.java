@@ -29,4 +29,12 @@ public class AvailableTimeAddRequestDto {
                 .endTime(this.endTime)
                 .build();
     }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
 }
