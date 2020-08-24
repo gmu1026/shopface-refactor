@@ -3,16 +3,21 @@ spring:
     include: aws, db, mail
   mvc:
     log-request-details: true
-
-logging:
-  level:
-    org.springframework.web: TRACE
-    org:
-      hibernate:
-        SQL: DEBUG
-        type: TRACE
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_fo5H9gHvl/.well-known/jwks.json
+  logging:
+    level:
+      org.springframework.web: DEBUG
+      org:
+        hibernate:
+          SQL: DEBUG
+          type: TRACE
 
 
 server:
   error:
     include-stacktrace: never
+
