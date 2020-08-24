@@ -1,5 +1,6 @@
 package com.dreamsecurity.shopface.service;
 
+import com.dreamsecurity.shopface.dto.dashboard.EmployeeDashBoardResponseDto;
 import com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard.EmployeeDashBoardListResponseDto;
 import com.dreamsecurity.shopface.repository.EmployeeDashBoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +51,10 @@ public class EmployeeDashBoardServiceImpl implements EmployeeDashBoardService{
             }
         }
         return responseDtos;
+    }
+
+    @Override
+    public EmployeeDashBoardResponseDto getEmployeeDashBoardCurrentSchedule(String memberId) {
+        return employeeDashBoardRepository.getEmployeeDashBoardCurrentWork(memberId);
     }
 }
