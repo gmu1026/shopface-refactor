@@ -68,12 +68,12 @@ public class EmployeeDashBoardRepositoryCustomImpl implements EmployeeDashBoardR
                 .select(Projections.constructor(
                         EmployeeDashBoardResponseDto.class, schedule.no,
                         schedule.workStartTime, schedule.workEndTime,
-                        schedule.branch.name, schedule.occupation.name))
+                        schedule.branch.name, schedule.occupation.name,
+                        record.workingTime, record.quittingTime))
                 .from(schedule)
-//                .join(record)
-//                .on(record.memberId.eq(memberId)
-//                        .and(record.workStartTime.eq(schedule.workStartTime)))
-                .where(schedule.member.id.eq(memberId).and(schedule.workEndTime.after(LocalDateTime.now())))
+                .leftJoin(record)
+                .on(schedule.member.id.eq(record.memberId).and(record.workStartTime.eq(schedule.workStartTime)))
+                .where(schedule.workEndTime.after(LocalDateTime.now()))
                 .orderBy(schedule.workStartTime.asc())
                 .fetchFirst();
     }

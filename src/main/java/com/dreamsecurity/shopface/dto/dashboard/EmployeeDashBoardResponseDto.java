@@ -17,11 +17,7 @@ public class EmployeeDashBoardResponseDto {
     private LocalDateTime workEndTime;
     private String branchName;
     private String occupationName;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime workingTime;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime quittingTime;
 //    private Long hours;
 //    private Long minutes;
