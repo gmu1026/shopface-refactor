@@ -37,8 +37,7 @@ public class AvailableTime {
         this.endTime = endTime;
     }
 
-    public void update(Branch branch, LocalDateTime startTime, LocalDateTime endTime) {
-        this.branch = branch;
+    public void update(LocalDateTime startTime, LocalDateTime endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
     }

@@ -5,6 +5,7 @@ import com.dreamsecurity.shopface.domain.Branch;
 import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.domain.Member;
 import com.dreamsecurity.shopface.dto.availabletime.AvailableTimeAddRequestDto;
+import com.dreamsecurity.shopface.dto.availabletime.AvailableTimeEditRequestDto;
 import com.dreamsecurity.shopface.repository.AvailableTimeRepository;
 import com.dreamsecurity.shopface.repository.BranchRepository;
 import com.dreamsecurity.shopface.repository.EmployRepository;
@@ -33,13 +34,13 @@ import static com.dreamsecurity.shopface.ApiDocumentUtils.getDocumentRequest;
 import static com.dreamsecurity.shopface.ApiDocumentUtils.getDocumentResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -185,9 +186,10 @@ public class AvailableTimeApiControllerTest {
                 .build();
 
         AvailableTimeAddRequestDto requestDto = new AvailableTimeAddRequestDto(availableTime);
+        requestDto.setMemberId(member.getId());
+        requestDto.setBranchNo(branch.getNo());
 
         String content = objectMapper.writeValueAsString(requestDto);
-
         //when
         ResultActions result = mockMvc.perform(post("/availableTime")
                 .content(content).contentType(MediaType.APPLICATION_JSON_VALUE));
@@ -325,32 +327,19 @@ public class AvailableTimeApiControllerTest {
         availableTimeRepository.save(availableTime);
 
         AvailableTime target = AvailableTime.builder()
-                .member(member)
-                .branch(branch)
                 .startTime(LocalDateTime.of(2020,9, 10, 0,0,0))
                 .endTime(LocalDateTime.of(2020, 9, 10, 6,0, 0))
                 .build();
 
-        String content = objectMapper.writeValueAsString(AvailableTime.builder()
-                .member(member)
-                .branch(branch)
-                .startTime(LocalDateTime.of(2020,9, 10, 0,0,0))
-                .endTime(LocalDateTime.of(2020, 9, 10, 6,0, 0))
-                .build());
-
-        System.out.println("----------------------------------------------------------------시작");
+        String content = objectMapper.writeValueAsString(new AvailableTimeEditRequestDto(target));
         //when /availabletime/{no}
         ResultActions result = mockMvc.perform(put("/availabletime/{no}", availableTime.getNo())
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
-//                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE));
-        System.out.println("-----------------------------------------------------------------끝");
         //then
         List<AvailableTime> results = availableTimeRepository.findAll();
-        assertThat(results.get(0).getMember().getId()).isEqualTo(target.getMember().getId());
-        assertThat(results.get(0).getBranch().getNo()).isEqualTo(target.getBranch().getNo());
-        assertThat(results.get(0).getStartTime()).isEqualTo(("2020-09-10T00:00:00"));
-        assertThat(results.get(0).getEndTime()).isEqualTo("2020-09-10T06:00:00");
+        assertThat(results.get(0).getStartTime()).isEqualTo(target.getStartTime());
+        assertThat(results.get(0).getEndTime()).isEqualTo(target.getEndTime());
 
 //        result
 //                .andExpect(status().isOk())
