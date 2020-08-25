@@ -115,9 +115,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
 
             Alarm alarm = Alarm.builder()
                     .member(entity.getMember())
-                    .contents(entity.getBranch().getName() + " 지점에서 스케줄이 수정되었습니다. "
-                            + beforeStartTime + beforeEndTime + "에서"
-                            + entity.getWorkStartTime() + entity.getWorkEndTime() + "로 변경됨")
+                    .contents(entity.getBranch().getName() + " 지점에서 스케줄이 수정되었습니다.")
                     .type("UPDATE_SCHEDULE")
                     .build();
             alarmRepository.save(alarm);
