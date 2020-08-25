@@ -1,7 +1,5 @@
 package com.dreamsecurity.shopface.dto.dashboard;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,20 +10,18 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class EmployeeDashBoardResponseDto {
-    private Long no;
+    private Long scheduleNo;
     private LocalDateTime workStartTime;
     private LocalDateTime workEndTime;
     private String branchName;
     private String occupationName;
     private LocalDateTime workingTime;
     private LocalDateTime quittingTime;
-//    private Long hours;
-//    private Long minutes;
 
     public EmployeeDashBoardResponseDto(
-            Long no, LocalDateTime workStartTime, LocalDateTime workEndTime,
+            Long scheduleNo, LocalDateTime workStartTime, LocalDateTime workEndTime,
             String branchName, String occupationName) {
-        this.no = no;
+        this.scheduleNo = scheduleNo;
         this.workStartTime = workStartTime;
         this.workEndTime = workEndTime;
         this.branchName = branchName;
