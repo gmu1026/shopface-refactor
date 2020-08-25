@@ -181,6 +181,7 @@ public class MemberApiControllerTest {
                 .detailAddress("강남")
                 .zipCode("12121")
                 .phone("01014785236")
+                .state("N")
                 .build();
 
         branchRepository.save(branch);

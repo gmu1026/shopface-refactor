@@ -116,7 +116,8 @@ public class BranchApiControllerTest {
                                 fieldWithPath("address").type(JsonFieldType.STRING).description("주소"),
                                 fieldWithPath("detailAddress").type(JsonFieldType.STRING).description("상세 주소"),
                                 fieldWithPath("zipCode").type(JsonFieldType.STRING).description("우편 번호"),
-                                fieldWithPath("memberId").type(JsonFieldType.STRING).description("회원 아이디")
+                                fieldWithPath("memberId").type(JsonFieldType.STRING).description("회원 아이디"),
+                                fieldWithPath("state").ignored()
                         ),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
@@ -138,6 +139,7 @@ public class BranchApiControllerTest {
                     .detailAddress("강남")
                     .zipCode("11111")
                     .member(businessman)
+                    .state("N")
                     .build();
             branchRepository.save(branch);
         }
