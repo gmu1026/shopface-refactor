@@ -1,7 +1,6 @@
 package com.dreamsecurity.shopface.service;
 
-import com.dreamsecurity.shopface.dto.dashboard.EmployeeDashBoardResponseDto;
-import com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard.EmployeeDashBoardListRequestDto;
+import com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard.EmployeeDashBoardResponseDto;
 import com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard.EmployeeDashBoardListResponseDto;
 
 import java.util.List;

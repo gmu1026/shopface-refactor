@@ -3,7 +3,6 @@ package com.dreamsecurity.shopface.web;
 import com.dreamsecurity.shopface.domain.*;
 import com.dreamsecurity.shopface.dto.employ.EmployAddRequestDto;
 import com.dreamsecurity.shopface.dto.employ.EmployEditRequestDto;
-import com.dreamsecurity.shopface.dto.employ.EmployListResponseDto;
 import com.dreamsecurity.shopface.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
@@ -22,7 +21,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.dreamsecurity.shopface.ApiDocumentUtils.getDocumentRequest;
@@ -49,7 +47,7 @@ public class EmployApiControllerTest {
     @Autowired
     WebApplicationContext context;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     EmployRepository employRepository;

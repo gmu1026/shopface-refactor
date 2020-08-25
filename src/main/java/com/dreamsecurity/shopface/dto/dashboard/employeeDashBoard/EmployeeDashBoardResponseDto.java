@@ -1,4 +1,4 @@
-package com.dreamsecurity.shopface.dto.dashboard;
+package com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

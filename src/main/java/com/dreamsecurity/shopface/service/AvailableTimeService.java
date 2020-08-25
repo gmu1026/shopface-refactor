@@ -1,6 +1,5 @@
 package com.dreamsecurity.shopface.service;
 
-import com.dreamsecurity.shopface.domain.AvailableTime;
 import com.dreamsecurity.shopface.dto.availabletime.AvailableTimeAddRequestDto;
 import com.dreamsecurity.shopface.dto.availabletime.AvailableTimeEditRequestDto;
 import com.dreamsecurity.shopface.dto.availabletime.AvailableTimeListResponseDto;

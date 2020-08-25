@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
 @Service
 public class ScheduleServiceImpl implements  ScheduleService {
     private final ScheduleRepository scheduleRepository;
-    private final MemberRepository memberRepository;
-    private final BranchRepository branchRepository;
     private final EmployRepository employRepository;
     private final OccupationRepository occupationRepository;
     private final AlarmRepository alarmRepository;
@@ -35,7 +33,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
     @Transactional
     @Override
     public Long addSchedule(ScheduleAddRequestDto requestDto) {
-        Long result = 0L;
+        Long result;
 
         Employ employ = employRepository.findById(requestDto.getEmployNo())
                 .orElseThrow(() -> new IllegalArgumentException("해당 근무자는 없습니다"));
@@ -107,9 +105,6 @@ public class ScheduleServiceImpl implements  ScheduleService {
         }
         
         if ("R".equals(entity.getState())) {
-            LocalDateTime beforeStartTime = entity.getWorkStartTime();
-            LocalDateTime beforeEndTime = entity.getWorkEndTime();
-
             entity.update(employ.getMember(), requestDto.getWorkStartTime(),
                     requestDto.getWorkEndTime(), occupation, requestDto.getColor());
 
@@ -145,7 +140,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
                     .build();
             alarmRepository.save(alarm);
         } else {
-            new IllegalArgumentException("출근, 지각, 결근 상태인 스케줄은 삭제할 수 없습니다.");
+            throw new IllegalArgumentException("출근, 지각, 결근 상태인 스케줄은 삭제할 수 없습니다.");
         }
     }
 

@@ -1,12 +1,10 @@
 package com.dreamsecurity.shopface.dto.alarm;
 
 import com.dreamsecurity.shopface.domain.Alarm;
-import com.dreamsecurity.shopface.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @AllArgsConstructor

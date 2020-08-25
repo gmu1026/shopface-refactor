@@ -4,7 +4,6 @@ import com.dreamsecurity.shopface.dto.branch.BranchAddRequestDto;
 import com.dreamsecurity.shopface.dto.branch.BranchEditRequestDto;
 import com.dreamsecurity.shopface.dto.branch.BranchListResponseDto;
 import com.dreamsecurity.shopface.dto.branch.BranchResponseDto;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;

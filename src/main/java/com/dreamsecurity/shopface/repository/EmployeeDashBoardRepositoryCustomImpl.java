@@ -1,6 +1,6 @@
 package com.dreamsecurity.shopface.repository;
 
-import com.dreamsecurity.shopface.dto.dashboard.EmployeeDashBoardResponseDto;
+import com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard.EmployeeDashBoardResponseDto;
 import com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard.EmployeeDashBoardListResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

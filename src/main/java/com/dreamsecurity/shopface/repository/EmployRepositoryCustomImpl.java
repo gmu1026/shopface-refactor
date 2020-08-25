@@ -2,8 +2,6 @@ package com.dreamsecurity.shopface.repository;
 
 import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.dto.employ.EmployListResponseDto;
-import com.dreamsecurity.shopface.dto.employ.EmployResponseDto;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 

@@ -1,8 +1,5 @@
 package com.dreamsecurity.shopface.dto.employ;
 
-import com.dreamsecurity.shopface.domain.Department;
-import com.dreamsecurity.shopface.domain.Employ;
-import com.dreamsecurity.shopface.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

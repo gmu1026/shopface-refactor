@@ -3,12 +3,9 @@ package com.dreamsecurity.shopface.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @NoArgsConstructor
@@ -57,19 +54,19 @@ public class Record {
     @Column(nullable = false)
     private LocalDateTime workingTime;
 
-    @Column(nullable = true)
+    @Column
     private LocalDateTime quittingTime;
 
-    @Column(nullable = true)
+    @Column
     private Long salaryPlan;
 
-    @Column(nullable = true)
+    @Column
     private Long salaryPay;
 
-    @Column(nullable = true)
+    @Column
     private Long evaluation;
 
-    @Column(nullable = true, length = 4000)
+    @Column(length = 4000)
     private String note;
 
     @Builder

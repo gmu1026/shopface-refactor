@@ -1,6 +1,5 @@
 package com.dreamsecurity.shopface.service;
 
-import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.domain.Member;
 import com.dreamsecurity.shopface.dto.member.MemberAddRequestDto;
 import com.dreamsecurity.shopface.dto.member.MemberEditRequestDto;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -102,15 +100,5 @@ public class MemberServiceImpl implements MemberService {
         entity.confirm();
 
         return entity.getId();
-    }
-
-    @Transactional
-    @Override
-    public void joinEmployee(String certCode, String memberId) {
-        Employ employ = employRepository.findByCertCode(certCode);
-        Member employee = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다"));
-
-        employ.joinMember(employee);
     }
 }

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,13 +37,13 @@ public class Employ {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = true)
+    @Column
     private Long salary;
 
     @Column(nullable = false, length = 100)
     private String email;
 
-    @Column(nullable = true, length = 6, unique = true)
+    @Column(length = 6, unique = true)
     private String certCode;
 
     @Column
@@ -104,5 +103,6 @@ public class Employ {
     public void disabledEmployee() {
         this.state = "D";
         this.member = null;
+        this.closeDate = LocalDateTime.now();
     }
 }

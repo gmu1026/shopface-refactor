@@ -104,24 +104,20 @@ public class EmployServiceImpl implements EmployService {
         employRepository.delete(entity);
     }
 
-    private boolean sendInviteMail(EmployAddRequestDto requestDto, String certCode) {
-        boolean isSuccess = false;
+    private void sendInviteMail(EmployAddRequestDto requestDto, String certCode) {
         try{
             mailSender.send(createInviteMessage(requestDto.getEmail(),
-                    requestDto.getName(), requestDto.getBranch().getName(), certCode));
-
-            isSuccess = true;
+                    requestDto.getBranch().getName(), certCode));
         } catch (MailException e) {
-            new ApiException(ApiResponseCode.SERVER_ERROR, "다시 시도해주세요");
+            throw new ApiException(ApiResponseCode.SERVER_ERROR, "다시 시도해주세요");
         }
-        return isSuccess;
     }
 
-    private SimpleMailMessage createInviteMessage(String email, String name, String branchName, String certCode) {
+    private SimpleMailMessage createInviteMessage(String email, String branchName, String certCode) {
         SimpleMailMessage message = new SimpleMailMessage();
 
         StringBuilder content = new StringBuilder();
-        content.append(branchName + "으로부터 근무자 합류 초대를 하였습니다.\n");
+        content.append(branchName).append("으로부터 근무자 합류 초대를 하였습니다.\n");
         content.append("https://cproduction.net/certcode\n");
         content.append("초대코드를 입력해주세요.\n");
         content.append(certCode);
@@ -139,13 +135,11 @@ public class EmployServiceImpl implements EmployService {
         int targetStringLength = 6;
         Random random = new Random();
 
-        String code = random.ints(leftLimit, rightLimit + 1)
+        return random.ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
-
-        return code;
     }
 
     @Transactional
@@ -169,7 +163,7 @@ public class EmployServiceImpl implements EmployService {
 
             isSuccess = true;
         } else {
-            new ApiException(ApiResponseCode.BAD_REQUEST, "코드가 일치하지 않습니다");
+            throw new ApiException(ApiResponseCode.BAD_REQUEST, "코드가 일치하지 않습니다");
         }
 
         return isSuccess;
@@ -190,23 +184,18 @@ public class EmployServiceImpl implements EmployService {
     @Transactional
     @Override
     public boolean disableEmployee(long no) {
-        boolean isSuccess = false;
-
         Employ employ = employRepository.findById(no)
                 .orElseThrow(() -> new ApiException(
                         ApiResponseCode.NOT_FOUND, "해당 고용 정보가 없습니다"));
 
         employ.disabledEmployee();
-        isSuccess = true;
 
-        return isSuccess;
+        return true;
     }
 
     @Transactional
     @Override
     public boolean reInviteEmployee(long no) {
-        boolean isSuccess = false;
-
         Employ employ = employRepository.findById(no)
                 .orElseThrow(() -> new ApiException(ApiResponseCode.NOT_FOUND,
                         "해당 고용 정보가 없습니다"));
@@ -214,8 +203,7 @@ public class EmployServiceImpl implements EmployService {
         String certCode = createCode();
         sendInviteMail(new EmployAddRequestDto(employ), certCode);
         employ.inviteMember(certCode);
-        isSuccess = true;
 
-        return isSuccess;
+        return true;
     }
 }

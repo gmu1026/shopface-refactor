@@ -2,7 +2,6 @@ package com.dreamsecurity.shopface.repository;
 
 import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.dto.employ.EmployListResponseDto;
-import com.dreamsecurity.shopface.dto.employ.EmployResponseDto;
 
 import java.util.List;
 import java.util.Optional;

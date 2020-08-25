@@ -1,7 +1,6 @@
 package com.dreamsecurity.shopface.dto.role;
 
 import com.dreamsecurity.shopface.domain.Role;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

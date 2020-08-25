@@ -1,10 +1,8 @@
 package com.dreamsecurity.shopface.web;
 
-import com.dreamsecurity.shopface.dto.alarm.AlarmAddRequestDto;
 import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.AlarmService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
