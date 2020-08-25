@@ -109,7 +109,7 @@ public class EmployServiceImpl implements EmployService {
             mailSender.send(createInviteMessage(requestDto.getEmail(),
                     requestDto.getBranch().getName(), certCode));
         } catch (MailException e) {
-            throw new ApiException(ApiResponseCode.SERVER_ERROR, "다시 시도해주세요");
+            e.printStackTrace();
         }
     }
 
