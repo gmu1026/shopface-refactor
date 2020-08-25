@@ -101,7 +101,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
         Occupation occupation = occupationRepository.findById(requestDto.getOccupationNo())
                 .orElseThrow(() -> new IllegalArgumentException("해당 업무가 없습니다"));
 
-        if (checkSchedule(employ.getMember().getId(),
+        if (!checkSchedule(employ.getMember().getId(),
                 requestDto.getWorkStartTime(),requestDto.getWorkEndTime())) {
             throw new ApiException(ApiResponseCode.BAD_REQUEST, "이미 스케줄이 존재합니다");
         }
