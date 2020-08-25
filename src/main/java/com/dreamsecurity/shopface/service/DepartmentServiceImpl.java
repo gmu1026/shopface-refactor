@@ -1,11 +1,16 @@
 package com.dreamsecurity.shopface.service;
 
+import com.dreamsecurity.shopface.domain.Branch;
 import com.dreamsecurity.shopface.domain.Department;
+import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.dto.department.DepartmentAddRequestDto;
 import com.dreamsecurity.shopface.dto.department.DepartmentEditRequestDto;
 import com.dreamsecurity.shopface.dto.department.DepartmentListResponseDto;
+import com.dreamsecurity.shopface.repository.BranchRepository;
 import com.dreamsecurity.shopface.repository.DepartmentRepository;
+import com.dreamsecurity.shopface.repository.EmployRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +21,17 @@ import java.util.stream.Collectors;
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
+    private final BranchRepository branchRepository;
+    private final EmployRepository employRepository;
 
     @Transactional
     @Override
     public Long addDepartment(DepartmentAddRequestDto requestDto) {
+        Branch branch = branchRepository.findById(requestDto.getBranchNo())
+                .orElseThrow(() -> new IllegalIdentifierException("해당 지점이 없습니다"));
+
+        requestDto.setBranch(branch);
+
         return departmentRepository.save(requestDto.toEntity()).getNo();
     }
 
@@ -48,6 +60,13 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department entity = departmentRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("해당 부서가 존재하지 않습니다."));
 
+        List<Employ> results = employRepository.findAllByBranchNoAndDepartmentNo(entity.getBranch().getNo(), no);
+
+        for (Employ employ : results) {
+            employ.update(employ.getSalary(),employ.getRole(), null, null);
+        }
+
         departmentRepository.delete(entity);
     }
 }
+

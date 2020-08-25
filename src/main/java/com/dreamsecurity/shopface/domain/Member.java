@@ -1,19 +1,25 @@
 package com.dreamsecurity.shopface.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Member extends BaseTimeEntity {
     // TODO Address, DetailAddress, ZipCode => Embedded
+    @PrePersist
+    public void setDefaultState() {
+        this.state = this.state == null ? "A" : this.state;
+    }
+
     @Id
     private String id;
 
@@ -26,13 +32,13 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 100)
     private String phone;
 
-    @Column(nullable = true, length = 100)
+    @Column(length = 100)
     private String email;
 
-    @Column(nullable = true, length = 100)
+    @Column(length = 100, insertable = false)
     private String bankName;
 
-    @Column(nullable = true, length = 30)
+    @Column(length = 30, insertable = false)
     private String accountNum;
 
     @Column(nullable = false, length = 1)
@@ -41,17 +47,23 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 1)
     private String type;
 
-    @Column(nullable = true, length = 300)
+    @Column(length = 300, insertable = false)
     private String address;
 
-    @Column(nullable = true, length = 300)
+    @Column(length = 300, insertable = false)
     private String detailAddress;
 
-    @Column(nullable = true, length = 5)
+    @Column(length = 5, insertable = false)
     private String zipCode;
 
-//    @OneToMany
-//    private List<Alarm> alarms;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "member")
+    private List<Branch> branches;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "member")
+    private List<Alarm> alarms;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "member")
+    private List<Employ> employs;
 
     @Builder
     public Member(String id, String password, String name,
@@ -72,14 +84,21 @@ public class Member extends BaseTimeEntity {
         this.zipCode = zipCode;
     }
 
-    public void update(String password, String address, String detailAddress,
+    public void update(String address, String detailAddress,
                        String zipCode, String email, String bankName, String accountNum) {
-        this.password = password;
         this.address = address;
         this.detailAddress = detailAddress;
         this.zipCode = zipCode;
         this.email = email;
         this.bankName = bankName;
         this.accountNum = accountNum;
+    }
+
+    public void confirm() {
+        this.state = "A";
+    }
+
+    public void deleteAccount() {
+        this.state = "D";
     }
 }

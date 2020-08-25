@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    include: aws, db, mail
   mvc:
     log-request-details: true
 
@@ -8,16 +8,10 @@ logging:
   level:
     org:
       hibernate:
-        SQL: DEBUG
+        type:
+          descriptor:
+            sql: trace
+server:
+  error:
+    include-stacktrace: never
 
----
-spring:
-  profiles:
-    active: prod
-    include: aws, db
-
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: DEBUG

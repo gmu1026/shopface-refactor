@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -19,11 +19,11 @@ public class Schedule {
 
   @ManyToOne @JoinColumn private Branch branch;
 
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date workStartTime;
+  @Column
+  private LocalDateTime workStartTime;
 
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date workEndTime;
+  @Column
+  private LocalDateTime workEndTime;
 
   @OneToOne
   @JoinColumn
@@ -39,8 +39,8 @@ public class Schedule {
   public Schedule(
       Member member,
       Branch branch,
-      Date workStartTime,
-      Date workEndTime,
+      LocalDateTime workStartTime,
+      LocalDateTime workEndTime,
       Occupation occupation,
       String color,
       String state) {
@@ -55,14 +55,40 @@ public class Schedule {
 
   public void update(
       Member member,
-      Date workStartTime,
-      Date workEndTime,
+      LocalDateTime workStartTime,
+      LocalDateTime workEndTime,
       Occupation occupation,
       String color) {
-    this.member = member;
-    this.workStartTime = workStartTime;
-    this.workEndTime = workEndTime;
-    this.occupation = occupation;
-    this.color = color;
+    if (member != null) {
+      this.member = member;
+    }
+
+    if (workStartTime != null) {
+      this.workStartTime = workStartTime;
+    }
+
+    if (workEndTime != null) {
+      this.workEndTime = workEndTime;
+    }
+
+    if (occupation != null) {
+      this.occupation = occupation;
+    }
+
+    if (color != null) {
+      this.color = color;
+    }
+  }
+
+  public void workingSchedule() {
+    this.state = "W";
+  }
+
+  public void quittingSchedule() {
+    this.state = "C";
+  }
+
+  public void absenteeism() {
+    this.state = "A";
   }
 }

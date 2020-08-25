@@ -1,7 +1,8 @@
 plugins {
     id 'org.springframework.boot' version '2.3.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'org.asciidoctor.convert' version '1.5.8'
+    id 'org.asciidoctor.convert' version '1.5.3'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
     id 'java'
 }
 
@@ -19,47 +20,61 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    set('snippetsDir', file("build/generated-snippets"))
-}
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.3.RELEASE'
     implementation 'junit:junit:4.12'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.h2database:h2'
+    implementation 'com.h2database:h2'
     runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
-    compile group: 'org.springframework.restdocs', name: 'spring-restdocs-asciidoctor', version: '2.0.4.RELEASE'
+    asciidoctor group: 'org.springframework.restdocs', name: 'spring-restdocs-asciidoctor', version: '2.0.4.RELEASE'
     testCompile group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc', version: '2.0.4.RELEASE'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    compile group: 'commons-io', name: 'commons-io', version: '2.7'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.832'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.3.2.RELEASE'
+    implementation 'com.querydsl:querydsl-jpa'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.3.2.RELEASE'
+}
+
+ext {
+    snippetsDir = file('build/generated-snippets')
 }
 
 test {
     outputs.dir snippetsDir
-    useJUnitPlatform()
 }
 
 asciidoctor {
-    inputs.dir snippetsDir
+    attributes "snippets": snippetsDir
     dependsOn test
 }
 
-task copyDocument(type: Copy) {
+bootJar {
     dependsOn asciidoctor
-
-    from file("build/asciidoc/html5/")
-    into file("src/main/resources/static/docs")
+    from ("${asciidoctor.outputDir}/html5") {
+        into 'static/docs'
+    }
 }
 
-build {
-    dependsOn copyDocument
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
 }

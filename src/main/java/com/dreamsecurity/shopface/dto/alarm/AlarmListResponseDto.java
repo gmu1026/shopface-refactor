@@ -1,19 +1,19 @@
 package com.dreamsecurity.shopface.dto.alarm;
 
 import com.dreamsecurity.shopface.domain.Alarm;
-import com.dreamsecurity.shopface.domain.Member;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
+@AllArgsConstructor
 public class AlarmListResponseDto {
   private long no;
   private String contents;
   private String type;
-  private Date registerDate;
+  private LocalDateTime registerDate;
   private String checkState;
-  private Member member;
 
   public AlarmListResponseDto(Alarm entity) {
     this.no = entity.getNo();
@@ -21,6 +21,5 @@ public class AlarmListResponseDto {
     this.type = entity.getType();
     this.registerDate = entity.getRegisterDate();
     this.checkState = entity.getCheckState();
-    this.member = entity.getMember();
   }
 }

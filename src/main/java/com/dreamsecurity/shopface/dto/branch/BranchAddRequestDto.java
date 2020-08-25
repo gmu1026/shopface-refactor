@@ -2,7 +2,7 @@ package com.dreamsecurity.shopface.dto.branch;
 
 import com.dreamsecurity.shopface.domain.Branch;
 import com.dreamsecurity.shopface.domain.Member;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +14,10 @@ public class BranchAddRequestDto {
   private String address;
   private String detailAddress;
   private String zipCode;
-  private String state;
+  private String memberId;
+  private String state = "N";
+
+  @JsonIgnore
   private Member member;
 
   public BranchAddRequestDto(Branch entity) {
@@ -23,7 +26,6 @@ public class BranchAddRequestDto {
     this.address = entity.getAddress();
     this.detailAddress = entity.getDetailAddress();
     this.zipCode = entity.getZipCode();
-    this.state = entity.getState();
     this.member = entity.getMember();
   }
 
@@ -34,8 +36,16 @@ public class BranchAddRequestDto {
             .address(this.address)
             .detailAddress(this.detailAddress)
             .zipCode(this.zipCode)
-            .state(this.state)
             .member(this.member)
+            .state(this.state)
             .build();
+  }
+
+  public void setMemberId(String memberId) {
+    this.memberId = memberId;
+  }
+
+  public void setMember(Member member) {
+    this.member = member;
   }
 }

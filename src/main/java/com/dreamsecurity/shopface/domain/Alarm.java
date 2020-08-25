@@ -3,41 +3,42 @@ package com.dreamsecurity.shopface.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Getter
 @NoArgsConstructor
 @Entity
-public class Alarm {
+public class Alarm extends BaseTimeEntity {
+  @PrePersist
+  public void setDefaultCheckState() {
+    this.checkState = this.checkState == null ? "N" : this.checkState;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long no;
 
   @ManyToOne @JoinColumn private Member member;
 
+  @Column(nullable = false)
   private String type;
 
+  @Column(nullable = false)
   private String contents;
-
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date registerDate;
 
   @Column(nullable = false, length = 1)
   private String checkState;
 
   @Builder
-  public Alarm(String type, String contents, Date registerDate, String checkState, Member member) {
+  public Alarm(String type, String contents, String checkState, Member member) {
     this.type = type;
     this.contents = contents;
-    this.registerDate = registerDate;
     this.checkState = checkState;
     this.member = member;
   }
 
-  public void update(String checkState) {
-    this.checkState = checkState;
+  public void readAlarm() {
+    this.checkState = "Y";
   }
 }

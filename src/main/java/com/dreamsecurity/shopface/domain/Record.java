@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -16,13 +16,16 @@ public class Record {
     private long no;
 
     @Column(nullable = false, length = 100)
+    private String businessmanId;
+
+    @Column(nullable = false, length = 100)
     private String businessmanName;
 
     @Column(nullable = false, length = 100)
     private String businessmanPhone;
 
     @Column(nullable = false)
-    private long branchNo;
+    private Long branchNo;
 
     @Column(nullable = false, length = 100)
     private String branchName;
@@ -39,39 +42,47 @@ public class Record {
     @Column(nullable = false, length = 100)
     private String memberPhone;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date workStartTime;
+    @Column(nullable = false, length = 100)
+    private String occupationName;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date workEndTime;
+    @Column(nullable = false)
+    private LocalDateTime workStartTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date workingTime;
+    @Column(nullable = false)
+    private LocalDateTime workEndTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date quittingTime;
+    @Column(nullable = false)
+    private LocalDateTime workingTime;
 
-    @Column(nullable = true)
-    private long salaryPlan;
+    @Column
+    private LocalDateTime quittingTime;
 
-    @Column(nullable = true)
-    private long salaryPay;
+    @Column
+    private Long salaryPlan;
 
-    @Column(nullable = true)
-    private long evaluation;
+    @Column
+    private Long salaryPay;
 
-    @Column(nullable = true, length = 4000)
+    @Column
+    private Long evaluation;
+
+    @Column(length = 4000)
     private String note;
 
     @Builder
-    public Record(String businessmanName, String businessmanPhone,
-                  String memberId, String memberName, String memberPhone,
+    public Record(String businessmanId, String businessmanName, String businessmanPhone,
+                  String memberId, String memberName, String memberPhone, String occupationName,
                   long branchNo, String branchName, String branchPhone,
-                  Date workStartTime, Date workEndTime, Date workingTime,
-                  Date quittingTime, long salaryPlan, long salaryPay,
+                  LocalDateTime workStartTime, LocalDateTime workEndTime, LocalDateTime workingTime,
+                  LocalDateTime quittingTime, long salaryPlan, long salaryPay,
                   long evaluation, String note) {
+        this.businessmanId = businessmanId;
         this.businessmanName = businessmanName;
         this.businessmanPhone = businessmanPhone;
+        this.memberId = memberId;
+        this.memberName = memberName;
+        this.memberPhone = memberPhone;
+        this.occupationName = occupationName;
         this.branchNo = branchNo;
         this.branchName = branchName;
         this.branchPhone = branchPhone;
@@ -85,10 +96,21 @@ public class Record {
         this.note = note;
     }
 
-    public void update(String note, Date workingTime, Date quittingTime, long salaryPay) {
-        this.note = note;
-        this.workingTime = workingTime;
-        this.quittingTime = quittingTime;
-        this.salaryPay = salaryPay;
+    public void update(String note, LocalDateTime workingTime, LocalDateTime quittingTime, Long salaryPay) {
+        if (note != null) {
+            this.note = note;
+        }
+
+        if (workingTime != null) {
+            this.workingTime = workingTime;
+        }
+
+        if (quittingTime != null) {
+            this.quittingTime = quittingTime;
+        }
+
+        if (salaryPay != null) {
+            this.salaryPay = salaryPay;
+        }
     }
 }

@@ -1,10 +1,11 @@
 package com.dreamsecurity.shopface.service;
 
 import com.dreamsecurity.shopface.domain.Alarm;
-import com.dreamsecurity.shopface.dto.alarm.AlarmAddRequestDto;
-import com.dreamsecurity.shopface.dto.alarm.AlarmEditRequestDto;
 import com.dreamsecurity.shopface.dto.alarm.AlarmListResponseDto;
 import com.dreamsecurity.shopface.repository.AlarmRepository;
+import com.dreamsecurity.shopface.repository.MemberRepository;
+import com.dreamsecurity.shopface.response.ApiException;
+import com.dreamsecurity.shopface.response.ApiResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,33 +17,35 @@ import java.util.stream.Collectors;
 @Service
 public class AlarmServiceImpl implements AlarmService {
     private final AlarmRepository alarmRepository;
-
-    @Transactional
-    @Override
-    public Long addAlarm(AlarmAddRequestDto requestDto) {
-        return alarmRepository.save(requestDto.toEntity()).getNo();
-    }
+    private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
     @Override
-    public List<AlarmListResponseDto> getAlarmList(String memberId) {
-        return alarmRepository.findAllByMemberId(memberId).stream()
+    public List<AlarmListResponseDto> getAlarmLists(String memberId) {
+        return memberRepository
+                .findById(memberId)
+                .orElseThrow(() -> new ApiException(ApiResponseCode.NOT_FOUND, "해당 회원이 없습니다"))
+                .getAlarms()
+                .stream()
                 .map(AlarmListResponseDto::new)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public Long editAlarm(long no, AlarmEditRequestDto requestDto) {
-        Alarm alarm = alarmRepository.findByNo(no)
+    public Long readAlarm(long no) {
+        Alarm alarm = alarmRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("해당 알림이 존재하지 않습니다."));
-        alarm.update(requestDto.getCheckState());
+
+        alarm.readAlarm();
 
         return no;
     }
 
+    @Transactional
     @Override
     public void removeAlarm(long no) {
-        Alarm alarm = alarmRepository.findByNo(no)
+        Alarm alarm = alarmRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("해당 알림이 존재하지 않습니다."));
 
         alarmRepository.delete(alarm);

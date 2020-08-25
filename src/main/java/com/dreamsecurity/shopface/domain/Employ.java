@@ -1,24 +1,22 @@
 package com.dreamsecurity.shopface.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Employ {
-    @PrePersist
-    public void setDefaultState() {
-        this.state = this.state == null ? "B" : this.state;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long no;
+    private Long no;
 
     @ManyToOne
     @JoinColumn
@@ -39,34 +37,72 @@ public class Employ {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = true)
-    private long salary;
+    @Column
+    private Long salary;
 
-    @Column(nullable = true, length = 6)
+    @Column(nullable = false, length = 100)
+    private String email;
+
+    @Column(length = 6, unique = true)
     private String certCode;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date employDate;
+    @Column
+    private LocalDateTime employDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date closeDate;
+    @Column
+    private LocalDateTime closeDate;
 
     @Column(nullable = false, length = 1)
     private String state;
 
     @Builder
-    public Employ(String name, long salary, String state, Role role, Department department, Branch branch) {
+    public Employ(Member member, String name, long salary, String state,
+                  String email, Role role, Department department,
+                  Branch branch, String certCode) {
+        this.member = member;
         this.name = name;
         this.salary = salary;
         this.state = state;
+        this.email = email;
         this.role = role;
         this.department = department;
         this.branch = branch;
+        this.certCode = certCode;
     }
 
-    public void update(long salary, Role role, Department department) {
-        this.salary = salary;
-        this.role = role;
-        this.department = department;
+    public void update(long salary, Role role, Department department, String name) {
+        if (salary > 0) {
+            this.salary = salary;
+        }
+
+        if (role != null) {
+            this.role = role;
+        }
+
+        if (department != null) {
+            this.department = department;
+        }
+
+        if (name != null) {
+            this.name = name;
+        }
+    }
+
+    public void joinMember(Member member) {
+        this.member = member;
+        this.state = "E";
+        this.certCode = null;
+        this.employDate = LocalDateTime.now();
+    }
+
+    public void inviteMember(String certCode) {
+        this.certCode = certCode;
+        this.state = "I";
+    }
+
+    public void disabledEmployee() {
+        this.state = "D";
+        this.member = null;
+        this.closeDate = LocalDateTime.now();
     }
 }

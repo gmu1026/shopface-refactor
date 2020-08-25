@@ -4,19 +4,28 @@ import com.dreamsecurity.shopface.domain.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
+@NoArgsConstructor
 public class MemberEditRequestDto {
   private String password;
+
+  @NotNull(message = "주소를 입력해주세요")
   private String address;
+
+  @NotNull(message = "상세 주소를 입력해주세요")
   private String detailAddress;
+
+  @NotNull(message = "우편번호를 입력해주세요")
   private String zipCode;
+
+  @NotNull(message = "이메일을 입력해주세요")
   private String email;
+
   private String bankName;
+
   private String accountNum;
-
-  public MemberEditRequestDto() {
-
-  }
 
   public MemberEditRequestDto(Member entity) {
     this.password = entity.getPassword();
