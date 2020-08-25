@@ -17,10 +17,19 @@ public class EmployeeDashBoardApiController {
     // 근무자용 대시보드 목록 조회
     @GetMapping(value = "/employee/{id}/{status}")
     public ApiResponseDto getEmployeeDashBoardList(@PathVariable("id") String id, @PathVariable("status") String status) {
-        if (ScheduleState.REGISTER.getState().equals(status) || ScheduleState.LATE.getState().equals(status)) {
+        if (ScheduleState.REGISTER.getState().equals(status) ||
+                ScheduleState.LATE.getState().equals(status) ||
+                ScheduleState.GO_WORKING.getState().equals(status)) {
             return ApiResponseDto.createOK(employeeDashBoardService.getEmployeeDashBoardListScheduled(id));
         } else {
             return ApiResponseDto.createOK(employeeDashBoardService.getEmployeeDashBoardListWorkDone(id));
         }
+    }
+
+    @GetMapping(value = "/employee/{id}")
+    public ApiResponseDto getEmployeeDashBoardCurrentSchedule(@PathVariable("id") String memberId) {
+        return ApiResponseDto.createOK(
+                this.employeeDashBoardService
+                        .getEmployeeDashBoardCurrentSchedule(memberId));
     }
 }

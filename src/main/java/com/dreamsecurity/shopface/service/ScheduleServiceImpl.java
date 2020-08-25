@@ -5,8 +5,6 @@ import com.dreamsecurity.shopface.dto.schedule.ScheduleAddRequestDto;
 import com.dreamsecurity.shopface.dto.schedule.ScheduleEditRequestDto;
 import com.dreamsecurity.shopface.dto.schedule.ScheduleListResponseDto;
 import com.dreamsecurity.shopface.dto.schedule.ScheduleResponseDto;
-import com.dreamsecurity.shopface.enums.ScheduleColor;
-import com.dreamsecurity.shopface.enums.ScheduleState;
 import com.dreamsecurity.shopface.repository.*;
 import com.dreamsecurity.shopface.response.ApiException;
 import com.dreamsecurity.shopface.response.ApiResponseCode;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -166,7 +163,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
 
             Alarm employeeAlarm = Alarm.builder()
                     .member(schedule.getMember())
-                    .contents(schedule.getBranch().getName() + " 지점에서 근무가 비정상 처리되었습니다 "
+                    .contents(schedule.getBranch().getName() + " 지점에서 근무가 비정상 처리되었습니다. "
                             + schedule.getWorkStartTime() + "부터 " +
                             schedule.getWorkEndTime() + "까지의 스케줄")
                     .type("ABSENTEEISM_SCHEDULE")
@@ -174,7 +171,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
 
             Alarm businessmanAlarm = Alarm.builder()
                     .member(schedule.getBranch().getMember())
-                    .contents(schedule.getBranch().getName() + " 지점에서 근무가 비정상 처리되었습니다 "
+                    .contents(schedule.getBranch().getName() + " 지점에서 근무가 비정상 처리되었습니다. "
                             + schedule.getWorkStartTime() + "부터 " +
                             schedule.getWorkEndTime() + "까지의 스케줄")
                     .type("ABSENTEEISM_SCHEDULE")
@@ -189,6 +186,10 @@ public class ScheduleServiceImpl implements  ScheduleService {
     public Boolean workingSchedule(long no) {
         Schedule schedule = scheduleRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("해당 스케줄이 없습니다"));
+
+        if ("W".equals(schedule.getState())) {
+            throw new ApiException(ApiResponseCode.BAD_REQUEST, "이미 출근한 스케줄입니다");
+        }
 
         schedule.workingSchedule();
 
@@ -219,7 +220,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
                 .member(schedule.getBranch().getMember())
                 .contents(schedule.getBranch().getName() +
                         " 지점" + schedule.getMember().getName() +
-                        " 근무자가 정상 출근하였습니다")
+                        " 근무자가 정상 출근하였습니다.")
                 .type("COMMUTE_SUCCESS")
                 .build();
         alarmRepository.save(alarm);
@@ -241,6 +242,10 @@ public class ScheduleServiceImpl implements  ScheduleService {
         Employ employ = employRepository.findByMemberIdAndBranchNo(
                 schedule.getMember().getId(), schedule.getBranch().getNo());
 
+        if ("C".equals(schedule.getState())) {
+            throw new ApiException(ApiResponseCode.BAD_REQUEST, "이미 퇴근한 스케줄입니다");
+        }
+
         schedule.quittingSchedule();
 
         double workTIme = (double) ChronoUnit.SECONDS.between(record.getWorkingTime(), quittingTime) / 3600;
@@ -252,7 +257,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
                 .member(schedule.getMember())
                 .contents(schedule.getBranch().getName() +
                         " 지점" + schedule.getMember().getName() +
-                        " 근무자가 정상 퇴근하였습니다")
+                        " 근무자가 정상 퇴근하였습니다.")
                 .type("COMMUTE_SUCCESS")
                 .build();
         alarmRepository.save(alarm);
