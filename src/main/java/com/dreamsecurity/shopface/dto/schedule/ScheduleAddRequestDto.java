@@ -18,6 +18,7 @@ public class ScheduleAddRequestDto {
   private String color;
   private Long employNo;
   private Long occupationNo;
+  private String state = "R";
 
   @JsonIgnore
   private Member member;
@@ -45,6 +46,7 @@ public class ScheduleAddRequestDto {
             .workEndTime(this.workEndTime)
             .occupation(this.occupation)
             .color(this.color)
+            .state(this.state)
             .build();
   }
 

@@ -49,7 +49,10 @@ public class ScheduleServiceImpl implements  ScheduleService {
            requestDto.setMember(member);
            requestDto.setBranch(branch);
            requestDto.setOccupation(occupation);
-           result = scheduleRepository.save(requestDto.toEntity()).getNo();
+
+           Schedule schedule = requestDto.toEntity();
+           scheduleRepository.save(schedule);
+           result = schedule.getNo();
 
            Alarm alarm = Alarm.builder()
                    .member(member)
@@ -135,7 +138,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
                     .member(entity.getMember())
                     .contents(entity.getBranch().getName() + " 지점에서 스케줄이 삭제되었습니다. "
                             + entity.getWorkStartTime() + "부터 " +
-                            entity.getWorkEndTime() + "까지의 스케줄")
+                            entity.getWorkEndTime())
                     .type("REMOVE_SCHEDULE")
                     .build();
             alarmRepository.save(alarm);
@@ -158,7 +161,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
                     .member(schedule.getMember())
                     .contents(schedule.getBranch().getName() + " 지점에서 근무가 비정상 처리되었습니다. "
                             + schedule.getWorkStartTime() + "부터 " +
-                            schedule.getWorkEndTime() + "까지의 스케줄")
+                            schedule.getWorkEndTime())
                     .type("ABSENTEEISM_SCHEDULE")
                     .build();
 
@@ -166,7 +169,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
                     .member(schedule.getBranch().getMember())
                     .contents(schedule.getBranch().getName() + " 지점에서 근무가 비정상 처리되었습니다. "
                             + schedule.getWorkStartTime() + "부터 " +
-                            schedule.getWorkEndTime() + "까지의 스케줄")
+                            schedule.getWorkEndTime())
                     .type("ABSENTEEISM_SCHEDULE")
                     .build();
             alarmRepository.save(employeeAlarm);

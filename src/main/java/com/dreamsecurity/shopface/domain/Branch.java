@@ -17,11 +17,6 @@ import java.util.List;
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Branch extends BaseTimeEntity {
-  @PrePersist
-  public void setDefaultState() {
-    this.state = this.state == null ? "N" : this.state;
-  }
-
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long no;

@@ -15,6 +15,7 @@ public class BranchAddRequestDto {
   private String detailAddress;
   private String zipCode;
   private String memberId;
+  private String state = "N";
 
   @JsonIgnore
   private Member member;
@@ -36,6 +37,7 @@ public class BranchAddRequestDto {
             .detailAddress(this.detailAddress)
             .zipCode(this.zipCode)
             .member(this.member)
+            .state(this.state)
             .build();
   }
 
