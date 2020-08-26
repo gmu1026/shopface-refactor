@@ -6,7 +6,6 @@ import com.dreamsecurity.shopface.repository.*;
 import com.dreamsecurity.shopface.response.ApiException;
 import com.dreamsecurity.shopface.response.ApiResponseCode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Random;
 
 @RequiredArgsConstructor
-@Slf4j
 @Service
 public class EmployServiceImpl implements EmployService {
     private final MemberRepository memberRepository;
