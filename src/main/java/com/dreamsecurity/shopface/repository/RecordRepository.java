@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RecordRepository extends JpaRepository<Record, Long>, RecordRepositoryCustom {
-    Optional<Record> findByMemberId(String memberId);
     List<Record> findAllByMemberId(String memberId);
+    List<Record> findAllByBranchNo(Long branchNo);
 }
