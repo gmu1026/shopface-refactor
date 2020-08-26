@@ -163,6 +163,22 @@ public class AvailableTimeApiControllerTest {
                 .state("I")
                 .build();
         employRepository.save(employ2);
+
+//        AvailableTime saving = AvailableTime.builder()
+//                .member(employee1)
+//                .branch(branch1)
+//                .startTime(LocalDateTime.of(2020,9, 12, 9,0,0))
+//                .endTime(LocalDateTime.of(2020, 9, 12, 12,0, 0))
+//                .build();
+//        availableTimeRepository.save(saving);
+
+//        AvailableTime saving2 = AvailableTime.builder()
+//                .member(employee1)
+//                .branch(branch1)
+//                .startTime(LocalDateTime.of(2020,9, 12, 8,0,0))
+//                .endTime(LocalDateTime.of(2020, 9, 12, 12,0, 0))
+//                .build();
+//        availableTimeRepository.save(saving2);
     }
 
     @After
@@ -178,6 +194,8 @@ public class AvailableTimeApiControllerTest {
         Member member = memberRepository.findAll().get(1);
         Branch branch = branchRepository.findAll().get(0);
 
+
+
         AvailableTime availableTime = AvailableTime.builder()
                 .member(member)
                 .branch(branch)
@@ -191,12 +209,16 @@ public class AvailableTimeApiControllerTest {
 
         String content = objectMapper.writeValueAsString(requestDto);
         //when
-        ResultActions result = mockMvc.perform(post("/availableTime")
-                .content(content).contentType(MediaType.APPLICATION_JSON_VALUE));
+        ResultActions result = mockMvc.perform(post("/availabletime")
+                .content(content).contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+
         //then
         List<AvailableTime> results = availableTimeRepository.findAll();
         assertThat(results.get(0).getMember().getId()).isEqualTo(availableTime.getMember().getId());
         assertThat(results.get(0).getBranch().getNo()).isEqualTo(availableTime.getBranch().getNo());
+        assertThat(results.get(0).getStartTime()).isEqualTo(LocalDateTime.of(2020,9,12,5,0,0));
+        assertThat(results.get(0).getEndTime()).isEqualTo(LocalDateTime.of(2020, 9, 12, 12,0, 0));
     }
 
     @Test
@@ -327,6 +349,7 @@ public class AvailableTimeApiControllerTest {
         availableTimeRepository.save(availableTime);
 
         AvailableTime target = AvailableTime.builder()
+                .member(member)
                 .startTime(LocalDateTime.of(2020,9, 10, 0,0,0))
                 .endTime(LocalDateTime.of(2020, 9, 10, 6,0, 0))
                 .build();
@@ -340,26 +363,6 @@ public class AvailableTimeApiControllerTest {
         List<AvailableTime> results = availableTimeRepository.findAll();
         assertThat(results.get(0).getStartTime()).isEqualTo(target.getStartTime());
         assertThat(results.get(0).getEndTime()).isEqualTo(target.getEndTime());
-
-//        result
-//                .andExpect(status().isOk())
-//                .andDo(document("AvailableTime-edit",
-//                        getDocumentRequest(),
-//                        getDocumentResponse(),
-//                        pathParameters(
-//                                parameterWithName("no").description("가용시간 번호")
-//                        ),
-//                        requestParameters(
-//                                parameterWithName("startTime").description("가용 시작 시간"),
-//                                parameterWithName("endTime").description("가용 종료 시간").optional()
-//                        ),
-//                        responseFields(
-//                                fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
-//                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과메시지"),
-//                                fieldWithPath("data").type(JsonFieldType.NUMBER).description("ID")
-//                        )
-//                ));
-
     }
 
     @Test

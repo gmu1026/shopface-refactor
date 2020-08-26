@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AvailableTimeRepositoryCustom {
-    List<AvailableTimePersnalListResponseDto> findAllByMemberIdAndBetweenStartDateAndEndDate(LocalDateTime start, LocalDateTime end, String memberId);
+    List<AvailableTime> findAllByMemberIdAndBetweenStartDateAndEndDate(LocalDateTime start, LocalDateTime end, String memberId);
     List<AvailableTimePersnalListResponseDto> findAllByMemberId(String memberId);
     List<AvailableTime> findAllByMemberIdAndStartTimeAndEndTime(Long no, LocalDateTime start, LocalDateTime end, String memberId);
     List<AvailableTimeListResponseDto> findAllByBranchNo(Long branchNo);

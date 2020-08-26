@@ -34,9 +34,7 @@ public class AvailableTimeServiceImpl implements AvailableTimeService {
 
         requestDto.setBranch(branch);
         requestDto.setMember(member);
-        // 가용시간 전체 조회
-        // 가용시간겹치는지 비교
-        // 가용시간 등록 빛 삭제 진행 끝
+
         LocalDateTime start = LocalDateTime.of(requestDto.getStartTime().getYear(),
                 requestDto.getStartTime().getMonth(),
                 requestDto.getStartTime().getDayOfMonth(),
@@ -46,39 +44,39 @@ public class AvailableTimeServiceImpl implements AvailableTimeService {
                 requestDto.getEndTime().getDayOfMonth(),
                 0,0,0);
 
-        if (start == end) {
+        if (start.isEqual(end)) {
             end = LocalDateTime.of(end.getYear(), end.getMonth(), end.getDayOfMonth() + 1,0,0,0);
         }
 
         LocalDateTime newStart = requestDto.getStartTime();
         LocalDateTime newEnd = requestDto.getEndTime();
 
-        List<AvailableTimePersnalListResponseDto> responseDtos = availableTimeRepository.findAllByMemberIdAndBetweenStartDateAndEndDate(start, end, requestDto.getMember().getId());
-        //TODO list가 하나도 없을 경우 (등록된 가용시간이 하나도 없을 경우)  for문이 어떻게 작동되는가? 테스트 하기
-        for (AvailableTimePersnalListResponseDto responseDto : responseDtos) {
-            LocalDateTime oldStart = requestDto.getStartTime();
-            LocalDateTime oldEnd = requestDto.getEndTime();
+        List<AvailableTime> responseDtos = availableTimeRepository.findAllByMemberIdAndBetweenStartDateAndEndDate(start, end, requestDto.getMember().getId());
 
-            if (!((oldStart == newStart) && (oldEnd == newEnd))) {
+        for (AvailableTime responseDto : responseDtos) {
+            LocalDateTime oldStart = responseDto.getStartTime();
+            LocalDateTime oldEnd = responseDto.getEndTime();
+
+            if (!((oldStart.isEqual(newStart)) && (oldEnd.isEqual(newEnd)))) {
                 if (!(((newStart.isAfter(oldStart) || newStart.isEqual(oldStart))
                             && (newStart.isBefore(oldEnd) || newStart.isEqual(oldEnd)))
                         && (newEnd.isAfter(oldStart) || newEnd.isEqual(oldStart))
                             && (newEnd.isBefore(oldEnd) || newEnd.isEqual(oldEnd)))) {
                     if (oldStart.isAfter(newStart) && oldEnd.isBefore(newEnd)) {
-                        availableTimeRepository.delete(requestDto.toEntity());
+                        availableTimeRepository.delete(responseDto);
                     } else if (((newStart.isAfter(oldStart) || newStart.isEqual(oldStart))
                                 && (newStart.isBefore(oldEnd) || newStart.isEqual(oldEnd)))
                             || (newEnd.isAfter(oldStart) || newEnd.isEqual(oldStart))
                                 && (newEnd.isBefore(oldEnd) || newEnd.isEqual(oldEnd))) {
-                        newStart = (oldStart.isAfter(newStart) && oldStart.isEqual(newStart)) ? newStart : oldStart;
-                        newEnd = (oldEnd.isBefore(newEnd) && oldEnd.isEqual(newEnd)) ? newEnd : oldEnd;
-                        availableTimeRepository.delete(requestDto.toEntity());
+                        newStart = (oldStart.isAfter(newStart) || oldStart.isEqual(newStart)) ? newStart : oldStart;
+                        newEnd = (oldEnd.isBefore(newEnd) || oldEnd.isEqual(newEnd)) ? newEnd : oldEnd;
+                        availableTimeRepository.delete(responseDto);
                     } else if (((oldStart.isAfter(newStart)) && (oldStart.isAfter(newEnd)))
                             || ((oldEnd.isBefore(newStart)) && (oldEnd.isBefore(newEnd)))) {
                         continue;
-                    } else { new IllegalArgumentException("중복된 가용시간이 존재합니다."); }
-                } else { new IllegalArgumentException("중복된 가용시간이 존재합니다."); }
-            } else { new IllegalArgumentException("중복된 가용시간이 존재합니다."); }
+                    } else { new IllegalArgumentException("중복된 가용시간이 존재합니다."); return 0L;}
+                } else { new IllegalArgumentException("중복된 가용시간이 존재합니다."); return 0L; }
+            } else { new IllegalArgumentException("중복된 가용시간이 존재합니다."); return 0L;}
         }
         requestDto.setStartTime(newStart);
         requestDto.setEndTime(newEnd);
@@ -109,13 +107,13 @@ public class AvailableTimeServiceImpl implements AvailableTimeService {
     public Long editAvailableTime(long no, AvailableTimeEditRequestDto requestDto) {
         AvailableTime availableTime = availableTimeRepository.findById(no)
                 .orElseThrow(() -> new IllegalArgumentException("해당 가용시간이 없습니다."));
+        List<AvailableTime> responseDtos = availableTimeRepository.findAllByMemberIdAndStartTimeAndEndTime(no, requestDto.getStartTime(), requestDto.getEndTime(),requestDto.getMemberId());
 
-//        List<AvailableTime> responseDtos = availableTimeRepository.findAllByMemberIdAndStartTimeAndEndTime(no, requestDto.getStartTime(), requestDto.getEndTime(),requestDto.getMember().getId());
-//        for (AvailableTime responseDto : responseDtos) {
-//            requestDto.setStartTime(requestDto.getStartTime().isBefore(responseDto.getStartTime()) ? requestDto.getStartTime() : responseDto.getStartTime());
-//            requestDto.setEndTime(requestDto.getEndTime().isAfter(responseDto.getEndTime()) ? requestDto.getEndTime() : responseDto.getEndTime());
-//            availableTimeRepository.delete(responseDto);
-//        }
+        for (AvailableTime responseDto : responseDtos) {
+            requestDto.setStartTime(requestDto.getStartTime().isBefore(responseDto.getStartTime()) ? requestDto.getStartTime() : responseDto.getStartTime());
+            requestDto.setEndTime(requestDto.getEndTime().isAfter(responseDto.getEndTime()) ? requestDto.getEndTime() : responseDto.getEndTime());
+            availableTimeRepository.delete(responseDto);
+        }
         availableTime.update(requestDto.getStartTime(), requestDto.getEndTime());
 
         return no;

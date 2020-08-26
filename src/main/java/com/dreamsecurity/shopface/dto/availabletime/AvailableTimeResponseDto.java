@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Getter
 public class AvailableTimeResponseDto {
-    // TODO 일단은 가용시간은 Branch 이동이 자유롭게 설계
     private Branch branch;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

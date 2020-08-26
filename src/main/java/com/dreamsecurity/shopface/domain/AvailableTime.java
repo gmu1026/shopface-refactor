@@ -1,5 +1,6 @@
 package com.dreamsecurity.shopface.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity
+@AllArgsConstructor
 public class AvailableTime {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

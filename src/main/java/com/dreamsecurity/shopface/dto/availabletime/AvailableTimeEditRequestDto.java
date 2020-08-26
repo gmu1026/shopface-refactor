@@ -26,7 +26,10 @@ public class AvailableTimeEditRequestDto {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime endTime;
 
+    private String memberId;
+
     public AvailableTimeEditRequestDto(AvailableTime entity) {
+        this.memberId = entity.getMember().getId();
         this.startTime = entity.getStartTime();
         this.endTime = entity.getEndTime();
     }
