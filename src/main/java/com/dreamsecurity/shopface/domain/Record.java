@@ -51,7 +51,7 @@ public class Record {
     @Column(nullable = false)
     private LocalDateTime workEndTime;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime workingTime;
 
     @Column
