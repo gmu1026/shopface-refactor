@@ -49,12 +49,11 @@ public class BusinessmanDashBoardServiceImpl implements BusinessmanDashBoardServ
     @Override
     public List<BusinessmanDashBoardListResponseDto> getBusinessmanDashBoardListWorkDone(BusinessmanDashBoardListRequestDto requestDto) {
         List<BusinessmanDashBoardListResponseDto> responseDtos = repository.getBusinessmanDashBoardListWorkDone(requestDto);
-
         for (BusinessmanDashBoardListResponseDto responseDto : responseDtos) {
+
             long hoursPlan = ChronoUnit.MINUTES.between(responseDto.getWorkStartTime(), responseDto.getWorkEndTime());
             responseDto.setHoursPlan((double) hoursPlan / 60);
             responseDto.setSalaryPlan(responseDto.getEmploySalary() * responseDto.getHoursPlan());
-
             //출근처리했지만 퇴근처리는 안하고 스케줄이 끝난경우
             if (responseDto.getWorkingTime() != null && responseDto.getQuittingTime() == null) {
                 long actualHours = ChronoUnit.MINUTES.between(responseDto.getWorkingTime(), responseDto.getWorkEndTime());
@@ -64,12 +63,13 @@ public class BusinessmanDashBoardServiceImpl implements BusinessmanDashBoardServ
                 long actualHours = ChronoUnit.MINUTES.between(responseDto.getWorkStartTime(), responseDto.getQuittingTime());
                 responseDto.setActualWorkingHours((double) actualHours / 60);
                 responseDto.setActualSalary(responseDto.getEmploySalary() * responseDto.getActualWorkingHours());
-            } else {// 출근처리와 퇴근처리를 정상적으로 한 경우
-                long actualHours = ChronoUnit.MINUTES.between(responseDto.getWorkingTime(), responseDto.getQuittingTime());
-                responseDto.setActualWorkingHours((double) actualHours / 60);
-                responseDto.setActualSalary(responseDto.getEmploySalary() * responseDto.getActualWorkingHours());
+            } else if (responseDto.getWorkingTime() != null && responseDto.getQuittingTime() != null) {// 출근처리와 퇴근처리를 정상적으로 한 경우
+                    long actualHours = ChronoUnit.MINUTES.between(responseDto.getWorkingTime(), responseDto.getQuittingTime());
+                    responseDto.setActualWorkingHours((double) actualHours / 60);
+                    responseDto.setActualSalary(responseDto.getEmploySalary() * responseDto.getActualWorkingHours());
             }
         }
+
         return responseDtos;
     }
 }
