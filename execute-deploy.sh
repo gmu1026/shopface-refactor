@@ -6,7 +6,7 @@ if [ -z $CURRENT_PID ]; then
 else
 	echo "> kill -15 $CURRENT_PID"
 	kill -15 $CURRENT_PID
-	sleep 15
+	sleep 10
 fi
 
 echo "> 애플리케이션 배포"
