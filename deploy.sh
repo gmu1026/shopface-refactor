@@ -15,4 +15,4 @@ JAR_NAME=$(ls | grep 'shopface' | tail -n 1)
 
 echo "> JAR name: $JAR_NAME"
 
-nohup java -jar -Dspring.config.location=/home/ec2-user/properties/shopface-refactor/application-db.yml,/home/ec2-user/properties/shopface-refactor/application-aws.yml,/home/ec2-user/properties/shopface-refactor/application-mail.properties,classpath:application.yml $JAR_NAME > 2>&1 &
+nohup java -jar -Dspring.config.location=/home/ec2-user/properties/shopface-refactor/application-db.yml,/home/ec2-user/properties/shopface-refactor/application-aws.yml,/home/ec2-user/properties/shopface-refactor/application-mail.properties,classpath:application.yml $JAR_NAME &
