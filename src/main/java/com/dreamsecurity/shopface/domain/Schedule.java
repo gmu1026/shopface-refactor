@@ -81,6 +81,9 @@ public class Schedule {
   }
 
   public void workingSchedule() {
+    if (LocalDateTime.now().isAfter(this.workStartTime)) {
+      this.state = "L";
+    }
     this.state = "W";
   }
 
