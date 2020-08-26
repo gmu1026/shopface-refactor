@@ -33,7 +33,7 @@ public class ScheduleServiceImpl implements  ScheduleService {
     @Transactional
     @Override
     public Long addSchedule(ScheduleAddRequestDto requestDto) {
-        Long result;
+        long result;
 
         Employ employ = employRepository.findById(requestDto.getEmployNo())
                 .orElseThrow(() -> new IllegalArgumentException("해당 근무자는 없습니다"));
@@ -156,6 +156,22 @@ public class ScheduleServiceImpl implements  ScheduleService {
 
         for (Schedule schedule : absenteeismList) {
             schedule.absenteeism();
+
+            Record record = Record.builder()
+                    .branchNo(schedule.getBranch().getNo())
+                    .branchName(schedule.getBranch().getName())
+                    .branchPhone(schedule.getBranch().getPhone())
+                    .businessmanId(schedule.getBranch().getMember().getId())
+                    .businessmanName(schedule.getBranch().getMember().getName())
+                    .businessmanPhone(schedule.getBranch().getMember().getPhone())
+                    .memberId(schedule.getMember().getId())
+                    .memberName(schedule.getMember().getName())
+                    .memberPhone(schedule.getMember().getPhone())
+                    .occupationName(schedule.getOccupation().getName())
+                    .workStartTime(schedule.getWorkStartTime())
+                    .workEndTime(schedule.getWorkEndTime())
+                    .build();
+            recordRepository.save(record);
 
             Alarm employeeAlarm = Alarm.builder()
                     .member(schedule.getMember())
