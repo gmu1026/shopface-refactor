@@ -218,7 +218,7 @@ public class AvailableTimeApiControllerTest {
         assertThat(results.get(0).getMember().getId()).isEqualTo(availableTime.getMember().getId());
         assertThat(results.get(0).getBranch().getNo()).isEqualTo(availableTime.getBranch().getNo());
         assertThat(results.get(0).getStartTime()).isEqualTo(LocalDateTime.of(2020,9,12,5,0,0));
-        assertThat(results.get(0).getEndTime()).isEqualTo(LocalDateTime.of(2020, 9, 12, 12,0, 0));
+        assertThat(results.get(0).getEndTime()).isEqualTo(LocalDateTime.of(2020, 9, 12, 10,0, 0));
     }
 
     @Test
