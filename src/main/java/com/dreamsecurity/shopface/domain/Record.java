@@ -3,11 +3,9 @@ package com.dreamsecurity.shopface.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @NoArgsConstructor
@@ -53,22 +51,22 @@ public class Record {
     @Column(nullable = false)
     private LocalDateTime workEndTime;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime workingTime;
 
-    @Column(nullable = true)
+    @Column
     private LocalDateTime quittingTime;
 
-    @Column(nullable = true)
+    @Column
     private Long salaryPlan;
 
-    @Column(nullable = true)
+    @Column
     private Long salaryPay;
 
-    @Column(nullable = true)
+    @Column
     private Long evaluation;
 
-    @Column(nullable = true, length = 4000)
+    @Column(length = 4000)
     private String note;
 
     @Builder
@@ -98,10 +96,21 @@ public class Record {
         this.note = note;
     }
 
-    public void update(String note, LocalDateTime workingTime, LocalDateTime quittingTime, long salaryPay) {
-        this.note = note;
-        this.workingTime = workingTime;
-        this.quittingTime = quittingTime;
-        this.salaryPay = salaryPay;
+    public void update(String note, LocalDateTime workingTime, LocalDateTime quittingTime, Long salaryPay) {
+        if (note != null) {
+            this.note = note;
+        }
+
+        if (workingTime != null) {
+            this.workingTime = workingTime;
+        }
+
+        if (quittingTime != null) {
+            this.quittingTime = quittingTime;
+        }
+
+        if (salaryPay != null) {
+            this.salaryPay = salaryPay;
+        }
     }
 }

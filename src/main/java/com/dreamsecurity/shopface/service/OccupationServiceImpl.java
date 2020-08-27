@@ -11,12 +11,10 @@ import com.dreamsecurity.shopface.repository.BranchRepository;
 import com.dreamsecurity.shopface.repository.OccupationRepository;
 import com.dreamsecurity.shopface.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -28,8 +26,10 @@ public class OccupationServiceImpl implements OccupationService{
     @Transactional
     @Override
     public Long addOccupation(OccupationAddRequestDto requestDto) {
-        branchRepository.findById(requestDto.getBranchNo())
+        Branch branch = branchRepository.findById(requestDto.getBranchNo())
                 .orElseThrow(() -> new IllegalArgumentException("사업장이 존재하지 않습니다."));
+
+        requestDto.setBranch(branch);
 
         return occupationRepository.save(requestDto.toEntity()).getNo();
     }
@@ -37,8 +37,7 @@ public class OccupationServiceImpl implements OccupationService{
     @Transactional(readOnly = true)
     @Override
     public List<OccupationListResponseDto> getOccupationList(long no) {
-        return occupationRepository.findAll().stream()
-                .map(OccupationListResponseDto::new).collect(Collectors.toList());
+        return occupationRepository.findAllByBranchNo(no);
     }
 
     @Transactional

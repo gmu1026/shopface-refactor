@@ -1,7 +1,6 @@
 package com.dreamsecurity.shopface.repository;
 
-import com.dreamsecurity.shopface.dto.dashboard.businessmanDashBoard.BusinessmanDashBoardListResponseDto;
-import com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard.EmployeeDashBoardListRequestDto;
+import com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard.EmployeeDashBoardResponseDto;
 import com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard.EmployeeDashBoardListResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,11 +9,10 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.dreamsecurity.shopface.domain.QBranch.branch;
 import static com.dreamsecurity.shopface.domain.QEmploy.employ;
-import static com.dreamsecurity.shopface.domain.QOccupation.occupation;
 import static com.dreamsecurity.shopface.domain.QRecord.record;
 import static com.dreamsecurity.shopface.domain.QSchedule.schedule;
-import static com.dreamsecurity.shopface.domain.QBranch.branch;
 
 @RequiredArgsConstructor
 public class EmployeeDashBoardRepositoryCustomImpl implements EmployeeDashBoardRepositoryCustom {
@@ -26,18 +24,16 @@ public class EmployeeDashBoardRepositoryCustomImpl implements EmployeeDashBoardR
         return queryFactory
                 .select(Projections.constructor(
                         EmployeeDashBoardListResponseDto.class,
-                        branch.name, occupation.name, employ.salary,
-                        schedule.workStartTime, schedule.workEndTime,
-                        schedule.state
+                        schedule.branch.name, schedule.occupation.name,
+                        employ.salary, schedule.no, schedule.workStartTime,
+                        schedule.workEndTime, schedule.state
                 ))
                 .from(schedule)
                 .leftJoin(employ).on(employ.member.id.eq(schedule.member.id)
                         .and(employ.branch.no.eq(schedule.branch.no)))
-                .leftJoin(occupation).on(occupation.branch.no.eq(schedule.branch.no)
-                        .and(occupation.no.eq(schedule.occupation.no)))
-                .leftJoin(branch).on(branch.no.eq(schedule.branch.no))
-                .where(schedule.member.id.eq(memberId)
-                        .and((schedule.state.eq("R").or(schedule.state.eq("L"))))
+                .where(schedule.member.id.eq(memberId).and(schedule.branch.no.eq(employ.branch.no))
+                        .and((schedule.state.eq("R").or(schedule.state.eq("L"))
+                                .or(schedule.state.eq("W"))))
                         .and(schedule.workStartTime.after(now)))
                 .fetch();
     }
@@ -49,7 +45,7 @@ public class EmployeeDashBoardRepositoryCustomImpl implements EmployeeDashBoardR
                 .select(Projections.constructor(
                         EmployeeDashBoardListResponseDto.class,
                         branch.name, record.occupationName, employ.salary,
-                        record.workStartTime, record.workEndTime,
+                        schedule.no, record.workStartTime, record.workEndTime,
                         record.workingTime, record.quittingTime,
                         schedule.state
                 ))
@@ -64,5 +60,21 @@ public class EmployeeDashBoardRepositoryCustomImpl implements EmployeeDashBoardR
                 .where(record.memberId.eq(memberId)
                         .and(record.workEndTime.before(now)))
                 .fetch();
+    }
+
+    @Override
+    public EmployeeDashBoardResponseDto getEmployeeDashBoardCurrentWork(String memberId) {
+        return queryFactory
+                .select(Projections.constructor(
+                        EmployeeDashBoardResponseDto.class, schedule.no,
+                        schedule.workStartTime, schedule.workEndTime,
+                        schedule.branch.name, schedule.occupation.name,
+                        record.workingTime, record.quittingTime))
+                .from(schedule)
+                .leftJoin(record)
+                .on(schedule.member.id.eq(record.memberId).and(record.workStartTime.eq(schedule.workStartTime)))
+                .where(schedule.workEndTime.after(LocalDateTime.now()))
+                .orderBy(schedule.workStartTime.asc())
+                .fetchFirst();
     }
 }

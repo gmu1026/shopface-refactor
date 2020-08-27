@@ -1,8 +1,6 @@
 package com.dreamsecurity.shopface.service;
 
-import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.dto.employ.*;
-import org.springframework.mail.SimpleMailMessage;
 
 import java.util.List;
 

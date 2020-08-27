@@ -1,6 +1,5 @@
 package com.dreamsecurity.shopface.dto.occupation;
 
-import com.dreamsecurity.shopface.domain.Occupation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

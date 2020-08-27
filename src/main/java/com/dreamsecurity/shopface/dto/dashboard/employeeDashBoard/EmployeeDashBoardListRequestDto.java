@@ -1,6 +1,5 @@
 package com.dreamsecurity.shopface.dto.dashboard.employeeDashBoard;
 
-import com.dreamsecurity.shopface.domain.Employ;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

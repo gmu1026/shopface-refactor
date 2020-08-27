@@ -39,7 +39,7 @@ public class ScheduleApiControllerTest {
     @Autowired
     WebApplicationContext context;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     MemberRepository memberRepository;

@@ -48,7 +48,7 @@ public class MemberApiControllerTest {
 
     private MockMvc mockMvc;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     WebApplicationContext context;
@@ -181,6 +181,7 @@ public class MemberApiControllerTest {
                 .detailAddress("강남")
                 .zipCode("12121")
                 .phone("01014785236")
+                .state("N")
                 .build();
 
         branchRepository.save(branch);

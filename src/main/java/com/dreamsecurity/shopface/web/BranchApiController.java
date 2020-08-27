@@ -7,9 +7,7 @@ import com.dreamsecurity.shopface.service.BranchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -18,6 +16,11 @@ import java.io.IOException;
 @RestController
 public class BranchApiController {
   private final BranchService branchService;
+
+  @GetMapping(value = "/branch")
+  public ApiResponseDto getBranchList() {
+    return ApiResponseDto.createOK(branchService.getBranchList());
+  }
 
   @GetMapping(value = "/member/{id}/branch")
   public ApiResponseDto getBranchList(@PathVariable("id") String memberId) {
@@ -47,8 +50,13 @@ public class BranchApiController {
     return ApiResponseDto.createOK(true);
   }
 
-  @PatchMapping(value = "/branch/{no}")
+  @PatchMapping(value = "/branch/{no}/confirm")
   public ApiResponseDto confirmBranch(@PathVariable("no") long no) {
     return ApiResponseDto.createOK(branchService.confirmBranch(no));
+  }
+
+  @PatchMapping(value = "/branch/{no}/reject")
+  public ApiResponseDto rejectBranch(@PathVariable("no") long no) {
+    return ApiResponseDto.createOK(branchService.rejectBranch(no));
   }
 }

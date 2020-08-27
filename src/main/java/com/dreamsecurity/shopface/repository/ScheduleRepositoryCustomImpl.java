@@ -22,13 +22,16 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ScheduleListResponseDto> findAllByMemberIdAndBranchNo(String id, long no) {
+    public List<ScheduleListResponseDto> findAllByMemberId(String id) {
         return jpaQueryFactory
-                .select(Projections.constructor(ScheduleListResponseDto.class,
-                        schedule.no, schedule.workStartTime , schedule.workEndTime, schedule.color,
-                        schedule.state, schedule.occupation.name, schedule.branch.no))
+                .select(Projections.constructor(
+                        ScheduleListResponseDto.class, schedule.no,
+                        schedule.workStartTime, schedule.workEndTime,
+                        schedule.color, schedule.state, schedule.branch.no,
+                        schedule.branch.name, schedule.occupation.name))
                 .from(schedule)
-                .where(schedule.member.id.eq(id).and(schedule.branch.no.eq(no)))
+                .where(schedule.member.id.eq(id))
+                .orderBy(schedule.workStartTime.asc())
                 .fetch();
     }
 
@@ -36,8 +39,6 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     public List<Schedule> findAllByToday() {
         LocalDateTime startTime = LocalDate.now().atTime(0,0, 0);
         LocalDateTime endTime = LocalDate.now().atTime(23,59, 59);
-
-        System.out.println(startTime + " - " + endTime);
 
         return jpaQueryFactory
                 .selectFrom(schedule)
@@ -86,8 +87,9 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
                     employ.name,
                     schedule.occupation.name,
                     schedule.branch.no))
-            .from(schedule).join(employ).on(schedule.member.eq(employ.member))
+            .from(schedule).join(employ).on(schedule.member.eq(employ.member).and(employ.branch.eq(schedule.branch)))
             .where(schedule.branch.no.eq(no))
+            .orderBy(schedule.workStartTime.asc())
             .fetch();
     }
 
@@ -100,15 +102,14 @@ public class ScheduleRepositoryCustomImpl implements ScheduleRepositoryCustom {
     }
 
     @Override
-    public Boolean existSchedule(LocalDateTime startTime, LocalDateTime endTime, String memberId) {
-        Integer result =  jpaQueryFactory
-                .selectOne()
-                .from(schedule).where(schedule.member.id.eq(memberId))
-                .where(schedule.member.id.eq(memberId))
-                .where(schedule.workStartTime.between(startTime, endTime)
-                        .or(schedule.workEndTime.between(startTime, endTime)))
-                .fetchFirst();
+    public List<Schedule> findAllByDateAndMemberId(LocalDateTime startTime, LocalDateTime endTime, String memberId) {
+        LocalDateTime targetStartTime = startTime.toLocalDate().atTime(0,0,0);
+        LocalDateTime targetEndTime = endTime.toLocalDate().atTime(23,59, 59);
 
-        return result == null;
+        return jpaQueryFactory
+                .selectFrom(schedule)
+                .where(schedule.member.id.eq(memberId))
+                .where(schedule.workStartTime.between(targetStartTime, targetEndTime))
+                .fetch();
     }
 }

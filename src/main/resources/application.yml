@@ -8,9 +8,10 @@ logging:
   level:
     org:
       hibernate:
-        SQL: DEBUG
-        type: TRACE
-
+        type:
+          descriptor:
+            sql: trace
 server:
   error:
     include-stacktrace: never
+

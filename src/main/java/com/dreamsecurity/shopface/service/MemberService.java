@@ -15,5 +15,4 @@ public interface MemberService {
     void removeMember(String id);
     boolean checkDuplicateId(String id);
     String confirmMember(String id);
-    void joinEmployee(String certCode, String memberId);
 }

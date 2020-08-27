@@ -1,18 +1,18 @@
 package com.dreamsecurity.shopface.repository;
 
-import static com.dreamsecurity.shopface.domain.QSchedule.schedule;
-import static com.dreamsecurity.shopface.domain.QEmploy.employ;
-import static com.dreamsecurity.shopface.domain.QOccupation.occupation;
-import static com.dreamsecurity.shopface.domain.QRecord.record;
 import com.dreamsecurity.shopface.dto.dashboard.businessmanDashBoard.BusinessmanDashBoardListRequestDto;
 import com.dreamsecurity.shopface.dto.dashboard.businessmanDashBoard.BusinessmanDashBoardListResponseDto;
-import com.dreamsecurity.shopface.enums.ScheduleState;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.dreamsecurity.shopface.domain.QEmploy.employ;
+import static com.dreamsecurity.shopface.domain.QOccupation.occupation;
+import static com.dreamsecurity.shopface.domain.QRecord.record;
+import static com.dreamsecurity.shopface.domain.QSchedule.schedule;
 
 @RequiredArgsConstructor
 public class BusinessmanDashBoardRepositoryCustomImpl implements BusinessmanDashBoardRepositoryCustom{

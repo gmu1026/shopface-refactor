@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -54,6 +53,13 @@ public class BranchServiceImpl implements BranchService {
         requestDto.setMember(member);
 
         return branchRepository.save(requestDto.toEntity()).getNo();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<BranchListResponseDto> getBranchList() {
+        return branchRepository.findAll().stream()
+                .map(BranchListResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -120,6 +126,23 @@ public class BranchServiceImpl implements BranchService {
                 .member(branch.getMember())
                 .contents(branch.getName() + " 지점이 승인되었습니다.")
                 .type("CONFIRMED_BRANCH")
+                .build();
+        alarmRepository.save(alarm);
+
+        return true;
+    }
+
+    @Override
+    public Boolean rejectBranch(long no) {
+        Branch branch = branchRepository.findById(no)
+                .orElseThrow(() -> new IllegalArgumentException("해당 지점이 없습니다"));
+
+        branch.reject();
+
+        Alarm alarm = Alarm.builder()
+                .member(branch.getMember())
+                .contents(branch.getName() + " 지점이 승인거절되었습니다.")
+                .type("REJECTED_BRANCH")
                 .build();
         alarmRepository.save(alarm);
 

@@ -5,7 +5,6 @@ import com.dreamsecurity.shopface.dto.role.RoleEditRequestDto;
 import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.RoleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -15,14 +14,11 @@ public class RoleApiController {
 
   @GetMapping(value = "/branch/{no}/role")
   public ApiResponseDto getRoleList(@PathVariable("no") long no) {
-//    return ResponseEntity.ok().body(roleService.getRoleList(no));
     return ApiResponseDto.createOK(roleService.getRoleList(no));
   }
 
   @PostMapping(value = "/role")
   public ApiResponseDto addRole(@RequestBody RoleAddRequestDto requestDto) {
-//    TODO 응답 통합 필요
-//    return ResponseEntity.ok().body(roleService.addRole(requestDto));
     return ApiResponseDto.createOK(roleService.addRole(requestDto));
   }
 

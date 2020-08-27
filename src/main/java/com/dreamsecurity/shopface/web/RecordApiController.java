@@ -1,11 +1,9 @@
 package com.dreamsecurity.shopface.web;
 
-import com.dreamsecurity.shopface.dto.record.RecordAddRequestDto;
 import com.dreamsecurity.shopface.dto.record.RecordEditRequestDto;
 import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.RecordService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -18,9 +16,9 @@ public class RecordApiController {
     return ApiResponseDto.createOK(recordService.getRecordList(memberId));
   }
 
-  @PostMapping(value = "/record")
-  public ApiResponseDto addRecord(@RequestBody RecordAddRequestDto requestDto) {
-    return ApiResponseDto.createOK(recordService.addRecord(requestDto));
+  @GetMapping(value = "/branch/{no}/record")
+  public ApiResponseDto getBranchRecordList(@PathVariable("no") Long no) {
+    return ApiResponseDto.createOK(recordService.getBranchRecordList(no));
   }
 
   @PutMapping(value = "/record/{no}")

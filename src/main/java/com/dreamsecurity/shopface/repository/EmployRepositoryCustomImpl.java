@@ -2,8 +2,6 @@ package com.dreamsecurity.shopface.repository;
 
 import com.dreamsecurity.shopface.domain.Employ;
 import com.dreamsecurity.shopface.dto.employ.EmployListResponseDto;
-import com.dreamsecurity.shopface.dto.employ.EmployResponseDto;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -43,14 +41,11 @@ public class EmployRepositoryCustomImpl implements EmployRepositoryCustom {
     }
 
     @Override
-    public List<EmployListResponseDto> findByMemberIdAndBranchNo(String memberId, long branchNo) {
+    public Employ findByMemberIdAndBranchNo(String memberId, long branchNo) {
         return jpaQueryFactory
-                .select(Projections.constructor(EmployListResponseDto.class,
-                        employ.no, employ.name , employ.state, employ.salary,
-                        employ.employDate, employ.role.name, employ.department.name))
-                .from(employ)
+                .selectFrom(employ)
                 .where(employ.branch.no.eq(branchNo).and(employ.member.id.eq(memberId)))
-                .fetch();
+                .fetchOne();
     }
 
     @Override
@@ -71,6 +66,20 @@ public class EmployRepositoryCustomImpl implements EmployRepositoryCustom {
 
     @Override
     public Employ findByCertCode(String certCode) {
-        return jpaQueryFactory.selectFrom(employ).where(employ.certCode.eq(certCode)).fetchOne();
+        return jpaQueryFactory
+                .selectFrom(employ)
+                .where(employ.certCode.eq(certCode))
+                .fetchOne();
+    }
+
+    @Override
+    public Boolean existCertCode(String certCode) {
+        Integer result = jpaQueryFactory
+                .selectOne()
+                .from(employ)
+                .where(employ.certCode.eq(certCode))
+                .fetchFirst();
+
+        return result != null;
     }
 }

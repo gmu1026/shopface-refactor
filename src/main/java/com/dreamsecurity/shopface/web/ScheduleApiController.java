@@ -5,7 +5,6 @@ import com.dreamsecurity.shopface.dto.schedule.ScheduleEditRequestDto;
 import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -18,9 +17,9 @@ public class ScheduleApiController {
     return ApiResponseDto.createOK(scheduleService.getScheduleList(no));
   }
 
-  @GetMapping(value = "/member/{id}/branch/{no}/schedule")
-  private ApiResponseDto getScheduleList(@PathVariable("id") String id, @PathVariable("no") long no) {
-    return ApiResponseDto.createOK(scheduleService.getScheduleList(id, no));
+  @GetMapping(value = "/member/{id}/schedule")
+  private ApiResponseDto getScheduleList(@PathVariable("id") String id) {
+    return ApiResponseDto.createOK(scheduleService.getScheduleList(id));
   }
 
   @GetMapping(value = "/schedule/{no}")
@@ -44,5 +43,15 @@ public class ScheduleApiController {
     scheduleService.removeSchedule(no);
 
     return ApiResponseDto.createOK(true);
+  }
+
+  @PutMapping(value = "/schedule/{no}/working")
+  public ApiResponseDto workingSchedule(@PathVariable("no") long no) {
+    return ApiResponseDto.createOK(scheduleService.workingSchedule(no));
+  }
+
+  @PutMapping(value = "/schedule/{no}/quitting")
+  public ApiResponseDto quittingSchedule(@PathVariable("no") long no) {
+    return ApiResponseDto.createOK(scheduleService.quittingSchedule(no));
   }
 }

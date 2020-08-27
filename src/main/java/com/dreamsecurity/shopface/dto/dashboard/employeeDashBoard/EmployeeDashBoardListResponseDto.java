@@ -13,7 +13,8 @@ public class EmployeeDashBoardListResponseDto {
     //예정 스케줄
     private String branchName;
     private String occupationName;
-    private Long employSalsry;
+    private Long employSalary;
+    private Long scheduleNo;
     private LocalDateTime workStartTime;
     private LocalDateTime workEndTime;
     private double hoursPlan;
@@ -26,7 +27,8 @@ public class EmployeeDashBoardListResponseDto {
 
     public EmployeeDashBoardListResponseDto (String branchName,
                                              String occupationName,
-                                             Long employSalsry,
+                                             Long employSalary,
+                                             Long scheduleNo,
                                              LocalDateTime workStartTime,
                                              LocalDateTime workEndTime,
                                              LocalDateTime workingTime,
@@ -34,7 +36,8 @@ public class EmployeeDashBoardListResponseDto {
                                              String state) {
         this.branchName = branchName;
         this.occupationName = occupationName;
-        this.employSalsry = employSalsry;
+        this.employSalary = employSalary;
+        this.scheduleNo = scheduleNo;
         this.workStartTime = workStartTime;
         this.workEndTime = workEndTime;
         this.workingTime = workingTime;
@@ -44,13 +47,15 @@ public class EmployeeDashBoardListResponseDto {
 
     public EmployeeDashBoardListResponseDto (String branchName,
                                              String occupationName,
-                                             Long employSalsry,
+                                             Long employSalary,
+                                             Long scheduleNo,
                                              LocalDateTime workStartTime,
                                              LocalDateTime workEndTime,
                                              String state) {
         this.branchName = branchName;
         this.occupationName = occupationName;
-        this.employSalsry = employSalsry;
+        this.employSalary = employSalary;
+        this.scheduleNo = scheduleNo;
         this.workStartTime = workStartTime;
         this.workEndTime = workEndTime;
         this.state = state;

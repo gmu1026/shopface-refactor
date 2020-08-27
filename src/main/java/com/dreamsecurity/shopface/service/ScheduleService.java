@@ -10,8 +10,10 @@ import java.util.List;
 public interface ScheduleService {
     Long addSchedule(ScheduleAddRequestDto requestDto);
     List<ScheduleListResponseDto> getScheduleList(long no);
-    List<ScheduleListResponseDto> getScheduleList(String id, long no);
+    List<ScheduleListResponseDto> getScheduleList(String id);
     ScheduleResponseDto getSchedule(long no);
     Long editSchedule(long no, ScheduleEditRequestDto requestDto);
     void removeSchedule(long no);
+    Boolean workingSchedule(long no);
+    Boolean quittingSchedule(long no);
 }

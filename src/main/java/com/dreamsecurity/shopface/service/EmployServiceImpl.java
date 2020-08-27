@@ -6,7 +6,6 @@ import com.dreamsecurity.shopface.repository.*;
 import com.dreamsecurity.shopface.response.ApiException;
 import com.dreamsecurity.shopface.response.ApiResponseCode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Random;
 
 @RequiredArgsConstructor
-@Slf4j
 @Service
 public class EmployServiceImpl implements EmployService {
     private final MemberRepository memberRepository;
@@ -90,7 +88,7 @@ public class EmployServiceImpl implements EmployService {
             department = departmentRepository.findById(requestDto.getDepartmentNo())
                     .orElseThrow(() -> new IllegalIdentifierException("해당 부서가 없습니다"));
         }
-        entity.update(requestDto.getSalary(), role, department);
+        entity.update(requestDto.getSalary(), role, department, requestDto.getName());
 
         return no;
     }
@@ -104,24 +102,20 @@ public class EmployServiceImpl implements EmployService {
         employRepository.delete(entity);
     }
 
-    private boolean sendInviteMail(EmployAddRequestDto requestDto, String certCode) {
-        boolean isSuccess = false;
+    private void sendInviteMail(EmployAddRequestDto requestDto, String certCode) {
         try{
             mailSender.send(createInviteMessage(requestDto.getEmail(),
-                    requestDto.getName(), requestDto.getBranch().getName(), certCode));
-
-            isSuccess = true;
+                    requestDto.getBranch().getName(), certCode));
         } catch (MailException e) {
-            new ApiException(ApiResponseCode.SERVER_ERROR, "다시 시도해주세요");
+            e.printStackTrace();
         }
-        return isSuccess;
     }
 
-    private SimpleMailMessage createInviteMessage(String email, String name, String branchName, String certCode) {
+    private SimpleMailMessage createInviteMessage(String email, String branchName, String certCode) {
         SimpleMailMessage message = new SimpleMailMessage();
 
         StringBuilder content = new StringBuilder();
-        content.append(branchName + "으로부터 근무자 합류 초대를 하였습니다.\n");
+        content.append(branchName).append("으로부터 근무자 합류 초대를 하였습니다.\n");
         content.append("https://cproduction.net/certcode\n");
         content.append("초대코드를 입력해주세요.\n");
         content.append(certCode);
@@ -139,13 +133,11 @@ public class EmployServiceImpl implements EmployService {
         int targetStringLength = 6;
         Random random = new Random();
 
-        String code = random.ints(leftLimit, rightLimit + 1)
+        return random.ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
-
-        return code;
     }
 
     @Transactional
@@ -169,7 +161,7 @@ public class EmployServiceImpl implements EmployService {
 
             isSuccess = true;
         } else {
-            new ApiException(ApiResponseCode.BAD_REQUEST, "코드가 일치하지 않습니다");
+            throw new ApiException(ApiResponseCode.BAD_REQUEST, "코드가 일치하지 않습니다");
         }
 
         return isSuccess;
@@ -180,8 +172,7 @@ public class EmployServiceImpl implements EmployService {
     public boolean checkCode(String requestCertCode) {
         boolean isChecked = false;
 
-        // TODO exist로 바꿀 것
-        if (employRepository.findByCertCode(requestCertCode) != null) {
+        if (employRepository.existCertCode(requestCertCode)) {
             isChecked = true;
         }
 
@@ -191,23 +182,18 @@ public class EmployServiceImpl implements EmployService {
     @Transactional
     @Override
     public boolean disableEmployee(long no) {
-        boolean isSuccess = false;
-
         Employ employ = employRepository.findById(no)
                 .orElseThrow(() -> new ApiException(
                         ApiResponseCode.NOT_FOUND, "해당 고용 정보가 없습니다"));
 
         employ.disabledEmployee();
-        isSuccess = true;
 
-        return isSuccess;
+        return true;
     }
 
     @Transactional
     @Override
     public boolean reInviteEmployee(long no) {
-        boolean isSuccess = false;
-
         Employ employ = employRepository.findById(no)
                 .orElseThrow(() -> new ApiException(ApiResponseCode.NOT_FOUND,
                         "해당 고용 정보가 없습니다"));
@@ -215,8 +201,7 @@ public class EmployServiceImpl implements EmployService {
         String certCode = createCode();
         sendInviteMail(new EmployAddRequestDto(employ), certCode);
         employ.inviteMember(certCode);
-        isSuccess = true;
 
-        return isSuccess;
+        return true;
     }
 }

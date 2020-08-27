@@ -4,25 +4,21 @@ import com.dreamsecurity.shopface.domain.Branch;
 import com.dreamsecurity.shopface.domain.Member;
 import com.dreamsecurity.shopface.domain.Occupation;
 import com.dreamsecurity.shopface.domain.Schedule;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @NoArgsConstructor
 public class ScheduleAddRequestDto {
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
   private LocalDateTime workStartTime;
-
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
   private LocalDateTime workEndTime;
   private String color;
   private Long employNo;
   private Long occupationNo;
+  private String state = "R";
 
   @JsonIgnore
   private Member member;
@@ -50,6 +46,7 @@ public class ScheduleAddRequestDto {
             .workEndTime(this.workEndTime)
             .occupation(this.occupation)
             .color(this.color)
+            .state(this.state)
             .build();
   }
 

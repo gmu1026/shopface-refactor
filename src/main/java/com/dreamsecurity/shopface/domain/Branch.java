@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,11 +17,6 @@ import java.util.List;
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Branch extends BaseTimeEntity {
-  @PrePersist
-  public void setDefaultState() {
-    this.state = this.state == null ? "W" : this.state;
-  }
-
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long no;
@@ -46,23 +40,23 @@ public class Branch extends BaseTimeEntity {
   @Column(nullable = false, length = 5)
   private String zipCode;
 
-  @Column(nullable = true, length = 1000, insertable = false)
+  @Column(length = 1000, insertable = false)
   private String businessLicensePath;
 
   @Column(nullable = false, length = 1)
   private String state;
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "branch")
-  private List<Role> roles = new ArrayList<Role>();
+  private List<Role> roles = new ArrayList<>();
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "branch")
-  private List<Department> departments = new ArrayList<Department>();
+  private List<Department> departments = new ArrayList<>();
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "branch")
-  private List<Occupation> occupations = new ArrayList<Occupation>();
+  private List<Occupation> occupations = new ArrayList<>();
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "branch")
-  private List<Employ> employs = new ArrayList<Employ>();
+  private List<Employ> employs = new ArrayList<>();
 
   @Builder
   public Branch(
@@ -117,5 +111,9 @@ public class Branch extends BaseTimeEntity {
     } else {
       throw new ApiException(ApiResponseCode.BAD_REQUEST, "이미 확인된 지점입니다");
     }
+  }
+
+  public void reject() {
+    this.state = "N";
   }
 }

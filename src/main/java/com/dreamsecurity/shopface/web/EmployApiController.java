@@ -6,7 +6,6 @@ import com.dreamsecurity.shopface.dto.employ.EmployEditRequestDto;
 import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.EmployService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor

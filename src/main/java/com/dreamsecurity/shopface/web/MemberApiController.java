@@ -5,7 +5,6 @@ import com.dreamsecurity.shopface.dto.member.MemberEditRequestDto;
 import com.dreamsecurity.shopface.response.ApiResponseDto;
 import com.dreamsecurity.shopface.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -42,5 +41,10 @@ public class MemberApiController {
     memberService.removeMember(id);
 
     return ApiResponseDto.createOK(true);
+  }
+
+  @GetMapping(value = "/member/{id}/check")
+  public ApiResponseDto checkDuplicateId(@PathVariable("id") String memberId) {
+    return ApiResponseDto.createOK(memberService.checkDuplicateId(memberId));
   }
 }

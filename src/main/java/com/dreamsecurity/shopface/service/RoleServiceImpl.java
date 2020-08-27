@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -57,7 +56,7 @@ public class RoleServiceImpl implements RoleService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 직급이 없습니다."));
         List<Employ> results = employRepository.findAllByBranchNoAndRoleNo(entity.getBranch().getNo(), no);
         for (Employ employ : results) {
-            employ.update(employ.getSalary(), null, employ.getDepartment());
+            employ.update(employ.getSalary(), null, employ.getDepartment(), null);
         }
 
         roleRepository.delete(entity);

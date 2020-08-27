@@ -6,18 +6,11 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @NoArgsConstructor
 @Entity
 public class Schedule {
-  @PrePersist
-  public void setDefaultState() {
-    this.state = this.state == null ? "R" : this.state;
-    // R = Ready
-  }
-
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long no;
@@ -66,25 +59,39 @@ public class Schedule {
       LocalDateTime workEndTime,
       Occupation occupation,
       String color) {
-    this.member = member;
-    this.workStartTime = workStartTime;
-    this.workEndTime = workEndTime;
-    this.occupation = occupation;
-    this.color = color;
+    if (member != null) {
+      this.member = member;
+    }
+
+    if (workStartTime != null) {
+      this.workStartTime = workStartTime;
+    }
+
+    if (workEndTime != null) {
+      this.workEndTime = workEndTime;
+    }
+
+    if (occupation != null) {
+      this.occupation = occupation;
+    }
+
+    if (color != null) {
+      this.color = color;
+    }
   }
 
-  public void startSchedule() {
+  public void workingSchedule() {
+    if (LocalDateTime.now().isAfter(this.workStartTime)) {
+      this.state = "L";
+    }
     this.state = "W";
-    // W = Working
   }
 
-  public void endSchedule() {
+  public void quittingSchedule() {
     this.state = "C";
-    // C = Complete
   }
 
   public void absenteeism() {
     this.state = "A";
-    // A = Absenteeism
   }
 }

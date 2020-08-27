@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -34,13 +32,13 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 100)
     private String phone;
 
-    @Column(nullable = true, length = 100)
+    @Column(length = 100)
     private String email;
 
-    @Column(nullable = true, length = 100, insertable = false)
+    @Column(length = 100, insertable = false)
     private String bankName;
 
-    @Column(nullable = true, length = 30, insertable = false)
+    @Column(length = 30, insertable = false)
     private String accountNum;
 
     @Column(nullable = false, length = 1)
@@ -49,13 +47,13 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 1)
     private String type;
 
-    @Column(nullable = true, length = 300, insertable = false)
+    @Column(length = 300, insertable = false)
     private String address;
 
-    @Column(nullable = true, length = 300, insertable = false)
+    @Column(length = 300, insertable = false)
     private String detailAddress;
 
-    @Column(nullable = true, length = 5, insertable = false)
+    @Column(length = 5, insertable = false)
     private String zipCode;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "member")

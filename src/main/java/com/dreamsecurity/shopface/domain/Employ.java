@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,12 +14,6 @@ import java.time.LocalDateTime;
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Employ {
-//    @PrePersist
-//    public void setDefaultState() {
-//        this.state = this.state == null ? "I" : this.state;
-//    }
-    //I = Invite
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long no;
@@ -44,13 +37,13 @@ public class Employ {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = true)
+    @Column
     private Long salary;
 
     @Column(nullable = false, length = 100)
     private String email;
 
-    @Column(nullable = true, length = 6)
+    @Column(length = 6, unique = true)
     private String certCode;
 
     @Column
@@ -77,7 +70,7 @@ public class Employ {
         this.certCode = certCode;
     }
 
-    public void update(long salary, Role role, Department department) {
+    public void update(long salary, Role role, Department department, String name) {
         if (salary > 0) {
             this.salary = salary;
         }
@@ -88,6 +81,10 @@ public class Employ {
 
         if (department != null) {
             this.department = department;
+        }
+
+        if (name != null) {
+            this.name = name;
         }
     }
 
@@ -106,5 +103,6 @@ public class Employ {
     public void disabledEmployee() {
         this.state = "D";
         this.member = null;
+        this.closeDate = LocalDateTime.now();
     }
 }

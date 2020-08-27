@@ -3,7 +3,6 @@ package com.dreamsecurity.shopface.web;
 import com.dreamsecurity.shopface.domain.*;
 import com.dreamsecurity.shopface.dto.employ.EmployAddRequestDto;
 import com.dreamsecurity.shopface.dto.employ.EmployEditRequestDto;
-import com.dreamsecurity.shopface.dto.employ.EmployListResponseDto;
 import com.dreamsecurity.shopface.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
@@ -22,7 +21,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.dreamsecurity.shopface.ApiDocumentUtils.getDocumentRequest;
@@ -49,7 +47,7 @@ public class EmployApiControllerTest {
     @Autowired
     WebApplicationContext context;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     EmployRepository employRepository;
@@ -270,7 +268,7 @@ public class EmployApiControllerTest {
         departmentRepository.save(editDepartment);
 
         EmployEditRequestDto requestDto = new EmployEditRequestDto(
-                10000, editRole.getNo(), editDepartment.getNo());
+                10000, editRole.getNo(), editDepartment.getNo(), editDepartment.getName());
 
         String content = objectMapper.writeValueAsString(requestDto);
         //when
@@ -293,7 +291,8 @@ public class EmployApiControllerTest {
                         requestFields(
                                 fieldWithPath("salary").type(JsonFieldType.NUMBER).description("시급").optional(),
                                 fieldWithPath("roleNo").type(JsonFieldType.NUMBER).description("역할 번호").optional(),
-                                fieldWithPath("departmentNo").type(JsonFieldType.NUMBER).description("부서 번호").optional()
+                                fieldWithPath("departmentNo").type(JsonFieldType.NUMBER).description("부서 번호").optional(),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("이름").optional()
                         ),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("결과코드"),
