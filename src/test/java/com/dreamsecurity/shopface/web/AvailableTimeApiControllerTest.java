@@ -194,8 +194,6 @@ public class AvailableTimeApiControllerTest {
         Member member = memberRepository.findAll().get(1);
         Branch branch = branchRepository.findAll().get(0);
 
-
-
         AvailableTime availableTime = AvailableTime.builder()
                 .member(member)
                 .branch(branch)
@@ -204,10 +202,12 @@ public class AvailableTimeApiControllerTest {
                 .build();
 
         AvailableTimeAddRequestDto requestDto = new AvailableTimeAddRequestDto(availableTime);
+
         requestDto.setMemberId(member.getId());
         requestDto.setBranchNo(branch.getNo());
 
         String content = objectMapper.writeValueAsString(requestDto);
+        System.out.println(content);
         //when
         ResultActions result = mockMvc.perform(post("/availabletime")
                 .content(content).contentType(MediaType.APPLICATION_JSON_VALUE))
